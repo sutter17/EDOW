@@ -1,0 +1,111 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//DC Episcopal Fellowship//DCEF Events//EN
+X-WR-CALNAME:DCEF Events
+X-WR-TIMEZONE:America/New_York
+
+BEGIN:VEVENT
+UID:dcef-candlemas-20260202@dcepiscopalfellowship.org
+DTSTART;VALUE=DATE:20260202
+DTEND;VALUE=DATE:20260203
+SUMMARY:Candlemas at St. Paul's Parish
+DESCRIPTION:We celebrated the Feast of Candlemas at St. Paul's K Street and
+  came together afterwards for a fellowship dinner.
+LOCATION:St. Paul's K Street\, Washington DC
+CATEGORIES:PAST
+X-IMAGE:images/3c49a13bbca377ee22c261df762016ed.png
+END:VEVENT
+
+BEGIN:VEVENT
+UID:dcef-gracestable-20260314@dcepiscopalfellowship.org
+DTSTART;VALUE=DATE:20260314
+DTEND;VALUE=DATE:20260315
+SUMMARY:Grace's Table Volunteer Day
+DESCRIPTION:DCEF volunteered at Grace's Table\, a ministry of Grace Church
+  in Georgetown\, where anyone in need can come together and share a meal.
+LOCATION:Grace Church Georgetown\, Washington DC
+CATEGORIES:PAST
+X-IMAGE:images/8dbf6fc067094c4f7af258ceeb7b3fce.png
+END:VEVENT
+
+BEGIN:VEVENT
+UID:dcef-eveningprayer-20260415@dcepiscopalfellowship.org
+DTSTART;TZID=America/New_York:20260415T180000
+DTEND;TZID=America/New_York:20260415T210000
+SUMMARY:Evening Prayer & Happy Hour
+DESCRIPTION:Join us at Lincoln Park for evening prayer followed by a happy
+  hour at Barrel on Pennsylvania Ave.
+LOCATION:Lincoln Park\, Washington DC
+URL:https://partiful.com/e/flQMZuaZj5SS6fv5LEIR
+CATEGORIES:UPCOMING
+X-IMAGE:images/f2a2e19144cd2cde365c0bcecddf09c3.png
+END:VEVENT
+
+BEGIN:VEVENT
+UID:dcef-churchtomorrow-2026@dcepiscopalfellowship.org
+DTSTART;TZID=America/New_York:20260420T180000
+DTEND;TZID=America/New_York:20260420T210000
+SUMMARY:Becoming the Church of Tomorrow
+DESCRIPTION:Join Bishop Mariann Budde and Canon Stephanie Spellers for an
+  evening of worship\, food\, and great conversation! Spellers' latest book\,
+  Church Tomorrow?\, wrestles with the decline of traditional religion\, the
+  wisdom of nonreligious Millennials and Gen Zs\, and our call to be
+  courageous witnesses for the God of love.
+URL:https://stephaniespellers.com/church-tomorrow
+CATEGORIES:UPCOMING
+X-IMAGE:images/7279785fdcf6480d426751609e40a6fb.jpg
+END:VEVENT
+
+BEGIN:VEVENT
+UID:dcef-rivercleanup-20260418@dcepiscopalfellowship.org
+DTSTART;TZID=America/New_York:20260418T090000
+DTEND;TZID=America/New_York:20260418T120000
+SUMMARY:River Cleanup
+DESCRIPTION:Join us for the Water & Wilderness Church Earth Day Clean Up
+  Event at Gravelly Point Park.
+LOCATION:Gravelly Point Park\, Arlington VA
+URL:https://waterandwilderness.org
+CATEGORIES:DIOCESE
+X-IMAGE:images/d31b97df4099249b6f9081ec7e36f17f.png
+END:VEVENT
+
+BEGIN:VEVENT
+UID:dcef-singalong-20260423@dcepiscopalfellowship.org
+DTSTART;TZID=America/New_York:20260423T190000
+DTEND;TZID=America/New_York:20260423T210000
+SUMMARY:Community Sing-Along
+DESCRIPTION:Gather with our friends at Water & Wilderness Church to hear
+  Father Pete Nunnally lead us in music at the Titanic Memorial.
+LOCATION:Titanic Memorial\, Washington DC
+CATEGORIES:DIOCESE
+X-IMAGE:images/d78095404af505c83bc609cd28d87af3.png
+END:VEVENT
+
+BEGIN:VEVENT
+UID:dcef-baseball-20260502@dcepiscopalfellowship.org
+DTSTART;TZID=America/New_York:20260502T153000
+DTEND;TZID=America/New_York:20260502T190000
+SUMMARY:DCEF Baseball Game
+DESCRIPTION:Join us at Nationals Stadium for an afternoon of fun and
+  fellowship at a very special Star Wars themed game! Email
+  dcepiscopalfellowship@gmail.com to reserve a ticket or with any questions.
+LOCATION:Nationals Stadium\, Washington DC
+URL:https://partiful.com/e/Z7DAPkqxvMxhcbiPH7Ao
+CATEGORIES:UPCOMING
+X-IMAGE:images/9a7e7d05941be419b7cedb0f498aeb57.png
+END:VEVENT
+
+BEGIN:VEVENT
+UID:dcef-scavengerhunt-20260523@dcepiscopalfellowship.org
+DTSTART;TZID=America/New_York:20260523T140000
+DTEND;TZID=America/New_York:20260523T170000
+SUMMARY:Spring Scavenger Hunt & Social
+DESCRIPTION:Come together for a spring-themed scavenger hunt and social.
+  The hunt begins at 2 p.m.\, and light food and refreshments will follow!
+LOCATION:All Souls' Episcopal Church\, Washington DC
+URL:https://partiful.com/e/wvzST2r3Q3bQoPQq6AMn
+CATEGORIES:UPCOMING
+X-IMAGE:images/a411d159750e71cac8d5d817c8fd8f0c.jpg
+END:VEVENT
+
+END:VCALENDAR

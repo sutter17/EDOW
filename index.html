@@ -1,0 +1,1101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DC Episcopal Fellowship — Spring 2026</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:   #00277d;
+      --blue:   #1a62ff;
+      --cream:  #faf3eb;
+      --sand:   #e9ddcd;
+      --brown:  #47342b;
+      --page:   #f0f1f5;
+      --border: #ddd0be;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background-color: var(--page);
+      font-family: Verdana, Geneva, sans-serif;
+      color: #000;
+    }
+
+    a { color: var(--blue); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* ════════════════════════════
+       NAV
+    ════════════════════════════ */
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background-color: var(--navy);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      height: 60px;
+      box-shadow: 0 2px 8px rgba(0,0,0,.2);
+      gap: 12px;
+    }
+    .nav-logo {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      text-decoration: none !important;
+    }
+    .nav-logo img {
+      height: 38px;
+      width: auto;
+      display: block;
+    }
+    .nav-links {
+      display: flex;
+      gap: 4px;
+      list-style: none;
+      flex: 1;
+      justify-content: center;
+    }
+    .nav-links a {
+      font-family: 'League Spartan', Arial, sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      color: rgba(255,255,255,.8);
+      text-decoration: none;
+      padding: 6px 10px;
+      border-radius: 3px;
+      transition: background-color .15s, color .15s;
+      white-space: nowrap;
+    }
+    .nav-links a:hover {
+      background-color: rgba(255,255,255,.15);
+      color: #fff;
+      text-decoration: none;
+    }
+    .nav-social {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .nav-social a {
+      display: flex;
+      align-items: center;
+      text-decoration: none !important;
+      opacity: .75;
+      transition: opacity .15s;
+    }
+    .nav-social a:hover { opacity: 1; }
+    .nav-social img {
+      width: 24px;
+      height: 24px;
+      object-fit: contain;
+      filter: brightness(0) invert(1);
+      display: block;
+    }
+
+    /* ════════════════════════════
+       PAGE WRAPPER
+    ════════════════════════════ */
+    .page {
+      max-width: 860px;
+      margin: 32px auto;
+      background-color: var(--cream);
+      border-radius: 6px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0,0,0,.10);
+    }
+
+    /* ════════════════════════════
+       HERO SLIDESHOW
+    ════════════════════════════ */
+    #welcome { position: relative; }
+
+    .hero {
+      position: relative;
+      height: 380px;
+      overflow: hidden;
+      background-color: #1a2a4a;
+    }
+    .hero-slide {
+      position: absolute;
+      inset: 0;
+      background-size: cover;
+      background-position: center;
+      opacity: 0;
+      transition: opacity 1.2s ease;
+    }
+    .hero-slide.active { opacity: 1; }
+
+    .welcome-overlay {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      background: linear-gradient(to top, rgba(0,10,40,.82) 0%, transparent 100%);
+      padding: 48px 40px 32px;
+      z-index: 2;
+    }
+    .welcome-overlay h2 {
+      font-family: 'League Spartan', Arial, sans-serif;
+      font-size: 30px;
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+      line-height: 1.15;
+    }
+    .welcome-overlay p {
+      font-size: 14px;
+      color: rgba(255,255,255,.9);
+      line-height: 1.7;
+      max-width: 560px;
+      margin-bottom: 20px;
+    }
+    .btn-subscribe {
+      display: inline-block;
+      background-color: #fff;
+      color: var(--navy) !important;
+      font-family: 'League Spartan', Arial, sans-serif;
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 11px 26px;
+      border-radius: 3px;
+      text-decoration: none !important;
+      transition: background-color .15s;
+    }
+    .btn-subscribe:hover { background-color: var(--sand); }
+
+    /* Slideshow dots */
+    .hero-dots {
+      position: absolute;
+      bottom: 12px;
+      right: 16px;
+      z-index: 3;
+      display: flex;
+      gap: 6px;
+    }
+    .hero-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: rgba(255,255,255,.45);
+      cursor: pointer;
+      transition: background .2s;
+      border: none;
+      padding: 0;
+    }
+    .hero-dot.active { background: #fff; }
+
+    /* ════════════════════════════
+       SECTION HEADINGS
+    ════════════════════════════ */
+    .section-heading {
+      background-color: var(--sand);
+      padding: 16px 36px;
+      font-family: 'League Spartan', Arial, sans-serif;
+      font-size: 19px;
+      font-weight: 700;
+      color: var(--navy);
+      letter-spacing: 0.03em;
+    }
+    .section-intro {
+      padding: 22px 36px 18px;
+      font-size: 14px;
+      line-height: 1.75;
+      color: var(--brown);
+      background-color: var(--cream);
+    }
+
+    /* ════════════════════════════
+       UPCOMING EVENT CARDS
+    ════════════════════════════ */
+    .event-card {
+      display: grid;
+      grid-template-columns: 200px 1fr;
+      background-color: var(--cream);
+      border-top: 1px solid var(--border);
+    }
+    .event-card.no-img { grid-template-columns: 1fr; }
+    .event-card .event-img { overflow: hidden; }
+    .event-card .event-img img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .event-card .event-info { padding: 22px 28px 22px 24px; }
+    .event-card.no-img .event-info { padding: 22px 36px; }
+
+    .event-title {
+      font-family: 'League Spartan', Arial, sans-serif;
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 6px;
+      line-height: 1.25;
+    }
+    .event-meta {
+      font-family: 'League Spartan', Arial, sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--brown);
+      letter-spacing: 0.03em;
+      margin-bottom: 10px;
+    }
+    .event-desc {
+      font-size: 13px;
+      line-height: 1.7;
+      color: var(--brown);
+      margin-bottom: 16px;
+    }
+    .event-desc em { font-style: italic; }
+    .btn-rsvp {
+      display: inline-block;
+      background-color: var(--navy);
+      color: #fff !important;
+      font-family: 'League Spartan', Arial, sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 9px 20px;
+      border-radius: 3px;
+      text-decoration: none !important;
+      transition: background-color .15s;
+    }
+    .btn-rsvp:hover { background-color: var(--blue); }
+
+    /* ════════════════════════════
+       CALENDAR
+    ════════════════════════════ */
+    .calendars-wrap {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+      padding: 24px 36px 32px;
+      background-color: var(--cream);
+    }
+    .cal-month-title {
+      font-family: 'League Spartan', Arial, sans-serif;
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--navy);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      text-align: center;
+      margin-bottom: 12px;
+    }
+    .cal-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 3px;
+    }
+    .cal-day-name {
+      font-family: 'League Spartan', Arial, sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--brown);
+      text-align: center;
+      padding: 4px 0;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .cal-day {
+      aspect-ratio: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'League Spartan', Arial, sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--brown);
+      border-radius: 50%;
+    }
+    .cal-day.today { background-color: var(--sand); color: var(--navy); }
+    .cal-day.has-event {
+      background-color: var(--navy);
+      color: #fff;
+      cursor: default;
+      font-weight: 800;
+    }
+    .cal-day.has-event:hover { background-color: var(--blue); }
+    .cal-legend {
+      margin-top: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .cal-legend-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      font-size: 12px;
+      color: var(--brown);
+      line-height: 1.4;
+    }
+    .cal-legend-dot {
+      flex-shrink: 0;
+      width: 20px;
+      height: 20px;
+      background-color: var(--navy);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'League Spartan', Arial, sans-serif;
+      font-size: 10px;
+      font-weight: 800;
+      color: #fff;
+      margin-top: 1px;
+    }
+
+    /* ════════════════════════════
+       DIOCESE EVENTS
+    ════════════════════════════ */
+    .diocese-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      background-color: var(--cream);
+      border-top: 1px solid var(--border);
+    }
+    .diocese-card { padding: 18px 22px 22px; }
+    .diocese-card + .diocese-card { border-left: 1px solid var(--border); }
+    .diocese-card img {
+      display: block;
+      width: 100%;
+      height: 160px;
+      object-fit: cover;
+      border-radius: 3px;
+      margin-bottom: 12px;
+    }
+    .diocese-card .event-title { font-size: 14px; }
+    .card-body {
+      font-size: 13px;
+      line-height: 1.7;
+      color: var(--brown);
+      margin-top: 8px;
+    }
+
+    /* ════════════════════════════
+       PAST EVENTS
+    ════════════════════════════ */
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      background-color: var(--cream);
+    }
+    .two-col .card { padding: 20px 22px 24px; }
+    .two-col .card + .card { border-left: 1px solid var(--border); }
+    .two-col .card img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      display: block;
+      border-radius: 3px;
+      margin-bottom: 14px;
+    }
+    .card-date {
+      font-family: 'League Spartan', Arial, sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--navy);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: 6px;
+    }
+
+    /* ════════════════════════════
+       EMPTY / LOADING STATES
+    ════════════════════════════ */
+    .state-msg {
+      padding: 32px 36px;
+      font-size: 13px;
+      color: var(--brown);
+      text-align: center;
+      background-color: var(--cream);
+      border-top: 1px solid var(--border);
+    }
+    .state-msg code {
+      font-family: monospace;
+      background: var(--sand);
+      padding: 2px 6px;
+      border-radius: 3px;
+    }
+
+    /* ════════════════════════════
+       SUBSCRIBE
+    ════════════════════════════ */
+    #subscribe {
+      background-color: var(--navy);
+      padding: 36px 40px;
+      text-align: center;
+    }
+    #subscribe h3 {
+      font-family: 'League Spartan', Arial, sans-serif;
+      font-size: 20px;
+      font-weight: 800;
+      color: #fff;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 10px;
+    }
+    #subscribe p {
+      font-size: 13px;
+      color: rgba(255,255,255,.85);
+      line-height: 1.7;
+      margin-bottom: 22px;
+      max-width: 480px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .subscribe-form {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .subscribe-form input[type="email"] {
+      flex: 1 1 240px;
+      max-width: 320px;
+      padding: 11px 16px;
+      font-size: 14px;
+      font-family: Verdana, Geneva, sans-serif;
+      border: 2px solid rgba(255,255,255,.3);
+      border-radius: 3px;
+      background-color: rgba(255,255,255,.12);
+      color: #fff;
+      outline: none;
+      transition: border-color .15s;
+    }
+    .subscribe-form input::placeholder { color: rgba(255,255,255,.5); }
+    .subscribe-form input:focus { border-color: rgba(255,255,255,.7); }
+    .subscribe-form button {
+      padding: 11px 26px;
+      background-color: #fff;
+      color: var(--navy);
+      font-family: 'League Spartan', Arial, sans-serif;
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      border: none;
+      border-radius: 3px;
+      cursor: pointer;
+      transition: background-color .15s;
+    }
+    .subscribe-form button:hover { background-color: var(--sand); }
+
+    /* ════════════════════════════
+       FOOTER
+    ════════════════════════════ */
+    .footer {
+      background-color: var(--navy);
+      padding: 28px 36px 24px;
+      text-align: center;
+    }
+    .footer-text {
+      font-family: 'League Spartan', Arial, sans-serif;
+      font-size: 13px;
+      color: rgba(255,255,255,.75);
+      line-height: 1.7;
+    }
+    .footer-text a { color: #fff; text-decoration: underline; }
+
+    /* ════════════════════════════
+       RESPONSIVE
+    ════════════════════════════ */
+    @media (max-width: 640px) {
+      .page { margin: 0; border-radius: 0; }
+      .nav { padding: 0 16px; }
+      .nav-links a { font-size: 11px; padding: 5px 7px; }
+      .hero { height: 260px; }
+      .welcome-overlay { padding: 32px 20px 24px; }
+      .welcome-overlay h2 { font-size: 22px; }
+      .section-heading { padding: 14px 20px; }
+      .section-intro, .calendars-wrap, #subscribe { padding-left: 20px; padding-right: 20px; }
+      .event-card { grid-template-columns: 1fr; }
+      .event-card .event-img { height: 180px; }
+      .two-col, .diocese-grid { grid-template-columns: 1fr; }
+      .two-col .card + .card,
+      .diocese-card + .diocese-card { border-left: none; border-top: 1px solid var(--border); }
+      .footer { padding: 24px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── Navigation ── -->
+<nav class="nav">
+  <a class="nav-logo" href="#welcome">
+    <img src="images/Logo.png" alt="DC Episcopal Fellowship">
+  </a>
+  <ul class="nav-links">
+    <li><a href="#upcoming">Events</a></li>
+    <li><a href="#calendar">Calendar</a></li>
+    <li><a href="#diocese">Diocese</a></li>
+    <li><a href="#past">Past Events</a></li>
+    <li><a href="#subscribe">Subscribe</a></li>
+  </ul>
+  <div class="nav-social">
+    <a href="https://www.instagram.com/dc_episcopal_fellowship/" target="_blank" title="Instagram">
+      <img src="images/icon-instagram.png" alt="Instagram">
+    </a>
+    <a href="https://partiful.com/u/TdAJl2k33LHLrWpyeNeC" target="_blank" title="Partiful">
+      <img src="images/icon-partiful.png" alt="Partiful">
+    </a>
+    <a href="https://wa.me/" target="_blank" title="WhatsApp">
+      <img src="images/icon-whatsapp.png" alt="WhatsApp">
+    </a>
+  </div>
+</nav>
+
+<div class="page">
+
+  <!-- ════ HERO / WELCOME ════ -->
+  <section id="welcome">
+    <div class="hero" id="hero">
+      <!-- slides injected by JS; fallback background set inline -->
+    </div>
+    <div class="welcome-overlay">
+      <h2>Welcome, Spring 2026</h2>
+      <p>As we enter the seasons of Easter and spring, everything is blooming. We celebrate the joy of the resurrection as our world wakes up from its winter slumber. Please join us for our spring events, filled with faith, fellowship, and lots of fun!</p>
+      <a class="btn-subscribe" href="#subscribe">Get the Newsletter</a>
+    </div>
+    <div class="hero-dots" id="hero-dots"></div>
+  </section>
+
+  <!-- ════ UPCOMING EVENTS ════ -->
+  <section id="upcoming">
+    <div class="section-heading">Upcoming Events</div>
+    <div class="section-intro">
+      <p>This spring, we have a full calendar of fun events! From baseball to scavenger hunts, we hope you will join us as we come together in this season of joy and community. Find all event info on our <a href="https://www.instagram.com/dc_episcopal_fellowship/" target="_blank">Instagram</a> or <a href="https://partiful.com/u/TdAJl2k33LHLrWpyeNeC" target="_blank">Partiful</a>!</p>
+    </div>
+    <div id="events-upcoming"></div>
+  </section>
+
+  <!-- ════ CALENDAR ════ -->
+  <section id="calendar">
+    <div class="section-heading">Event Calendar</div>
+    <div class="calendars-wrap" id="calendar-wrap"></div>
+  </section>
+
+  <!-- ════ DIOCESE EVENTS ════ -->
+  <section id="diocese">
+    <div class="section-heading">Events Around the Diocese</div>
+    <div class="section-intro">
+      <p>We are also partnering with other organizations to spread word of events young adults in the diocese might enjoy. If you have ideas or are hosting something, please <a href="https://forms.gle/epcKDnZ1tQeatfwU9" target="_blank">share them with us</a>!</p>
+    </div>
+    <div class="diocese-grid" id="events-diocese"></div>
+  </section>
+
+  <!-- ════ PAST EVENTS ════ -->
+  <section id="past">
+    <div class="section-heading">Looking Back</div>
+    <div class="section-intro" id="past-intro">
+      <p>Here's a look at how we spent the winter together — from Candlemas celebrations to community meals in Georgetown.</p>
+    </div>
+    <div class="two-col" id="events-past"></div>
+  </section>
+
+  <!-- ════ SUBSCRIBE ════ -->
+  <section id="subscribe">
+    <h3>Stay Connected</h3>
+    <p>Get our newsletter delivered directly to your inbox — events, recaps, and community news from DC Episcopal Fellowship.</p>
+    <form class="subscribe-form" onsubmit="handleSubscribe(event)">
+      <input type="email" placeholder="Your email address" required>
+      <button type="submit">Subscribe</button>
+    </form>
+  </section>
+
+  <!-- ════ FOOTER ════ -->
+  <footer class="footer">
+    <div class="footer-text">
+      <p>Forwarded this page? Email <a href="mailto:dcepiscopalfellowship@gmail.com">dcepiscopalfellowship@gmail.com</a> to join the list.</p>
+    </div>
+  </footer>
+
+</div><!-- /.page -->
+
+<script>
+/* ═══════════════════════════════════════════════
+   UTILITIES
+═══════════════════════════════════════════════ */
+function esc(str) {
+  return String(str)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+const MONTH_NAMES  = ['January','February','March','April','May','June',
+                      'July','August','September','October','November','December'];
+const MONTH_SHORT  = ['Jan','Feb','Mar','Apr','May','Jun',
+                      'Jul','Aug','Sep','Oct','Nov','Dec'];
+const DAY_NAMES    = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+
+function formatTime(date) {
+  let h = date.getHours(), m = date.getMinutes();
+  const ap = h >= 12 ? 'p.m.' : 'a.m.';
+  h = h % 12 || 12;
+  return `${h}:${String(m).padStart(2,'0')} ${ap}`;
+}
+
+function formatDateMeta(date, hasTime, location) {
+  let parts = [`${DAY_NAMES[date.getDay()]}, ${MONTH_NAMES[date.getMonth()]} ${date.getDate()}`];
+  if (hasTime) parts.push(formatTime(date));
+  if (location) parts.push(location);
+  return parts.join(' &bull; ');
+}
+
+/* ═══════════════════════════════════════════════
+   ICS PARSER
+═══════════════════════════════════════════════ */
+function parseICS(text) {
+  // Unfold continuation lines (CRLF or LF followed by space/tab)
+  const unfolded = text.replace(/\r?\n[ \t]/g, '');
+  const lines    = unfolded.split(/\r?\n/);
+
+  const events = [];
+  let ev = null;
+
+  for (const raw of lines) {
+    // Split property name (with optional params) from value at first ':'
+    const ci = raw.indexOf(':');
+    if (ci === -1) continue;
+    const keyFull = raw.slice(0, ci).trim();
+    const val     = raw.slice(ci + 1); // preserve value as-is
+
+    // Strip parameters to get base key (e.g. DTSTART;TZID=... → DTSTART)
+    const key     = keyFull.split(';')[0].toUpperCase();
+    // Collect parameters as a string for easy checking
+    const params  = keyFull.includes(';') ? keyFull.slice(keyFull.indexOf(';') + 1).toUpperCase() : '';
+
+    if (key === 'BEGIN' && val.trim() === 'VEVENT') { ev = {}; continue; }
+    if (key === 'END'   && val.trim() === 'VEVENT') { if (ev) events.push(ev); ev = null; continue; }
+    if (!ev) continue;
+
+    const v = unescapeICS(val.trim());
+
+    switch (key) {
+      case 'SUMMARY':     ev.summary     = v; break;
+      case 'DESCRIPTION': ev.description = v; break;
+      case 'LOCATION':    ev.location    = v; break;
+      case 'URL':         ev.url         = v; break;
+      case 'CATEGORIES':  ev.categories  = v.toUpperCase().split(',').map(s => s.trim()); break;
+      case 'X-IMAGE':     ev.image       = v; break;
+      case 'DTSTART': {
+        const isDateOnly = params.includes('VALUE=DATE') || (!val.includes('T'));
+        ev.dtstart  = parseDt(val.trim());
+        ev.hasTime  = !isDateOnly;
+        break;
+      }
+    }
+  }
+  // Post-process every event: extract description tags, auto-assign categories
+  events.forEach(processEvent);
+  return events;
+}
+
+function unescapeICS(s) {
+  return s.replace(/\\n/g,'\n').replace(/\\,/g,',').replace(/\\;/g,';').replace(/\\\\/g,'\\');
+}
+
+function parseDt(s) {
+  // Strip Z suffix; format: YYYYMMDD or YYYYMMDDTHHMMSS[Z]
+  const c = s.replace('Z','');
+  const y = +c.substr(0,4), mo = +c.substr(4,2)-1, d = +c.substr(6,2);
+  const h = c.length > 8 ? +c.substr(9,2) : 0;
+  const m = c.length > 11 ? +c.substr(11,2) : 0;
+  return new Date(y, mo, d, h, m);
+}
+
+/* Extracts special tags from an event's description and auto-assigns categories.
+ *
+ * In your Google Calendar event description you can use:
+ *   [image:filename.jpg]               → event photo (images/ prepended automatically)
+ *   RSVP: https://partiful.com/e/...   → RSVP button (on its own line)
+ *   #DIOCESE                           → routes to "Events Around the Diocese" section
+ *
+ * All tags are stripped from the displayed description text.
+ * Category defaults: future events → UPCOMING, past events → PAST.
+ */
+function processEvent(ev) {
+  const raw = ev.description || '';
+
+  // Extract RSVP URL from the href attribute BEFORE stripping HTML.
+  // Google converts "RSVP: https://..." into "RSVP: <a href="url">Page Title</a>",
+  // so the URL only exists in the href — not in the visible text after stripping.
+  if (!ev.url) {
+    const m = raw.match(/RSVP:\s*<a[^>]+href="([^"]+)"/i)   // Google-linkified form
+               || raw.match(/RSVP:\s*(https?:\/\/[^\s<"]+)/i); // plain-text form
+    if (m) ev.url = m[1];
+  }
+
+  // Strip HTML tags, then decode entities
+  let desc = raw.replace(/<[^>]+>/g, '');
+  desc = desc.replace(/&quot;/g,'"').replace(/&amp;/g,'&')
+             .replace(/&#39;/g,"'").replace(/&lt;/g,'<').replace(/&gt;/g,'>');
+
+  // Remove RSVP tag from displayed description wherever it appears
+  desc = desc.replace(/RSVP:\s*[^\n]*/gi, '');
+
+  // Extract [image:filename] — tolerant of Google adding spaces/quotes
+  if (!ev.image) {
+    desc = desc.replace(/\[image:\s*"?([^"\]\n]+?)"?\s*\]/gi, (_, p) => {
+      const p2 = p.trim();
+      ev.image = p2.includes('/') ? p2 : 'images/' + p2;
+      return '';
+    });
+  }
+
+  // Extract #DIOCESE tag
+  const tagCategories = [];
+  desc = desc.replace(/#(DIOCESE)\b/gi, (_, c) => { tagCategories.push(c.toUpperCase()); return ''; });
+
+  ev.description = desc.replace(/\n{3,}/g, '\n\n').trim();
+
+  // Auto-assign category if not set by X-IMAGE / CATEGORIES ICS property
+  if (!ev.categories || !ev.categories.length) {
+    const today = new Date(); today.setHours(0,0,0,0);
+    ev.categories = tagCategories.length ? tagCategories
+                  : [ev.dtstart >= today ? 'UPCOMING' : 'PAST'];
+  } else if (tagCategories.includes('DIOCESE')) {
+    ev.categories = ['DIOCESE'];
+  }
+}
+
+/* ═══════════════════════════════════════════════
+   RENDER — UPCOMING EVENTS
+═══════════════════════════════════════════════ */
+function renderUpcoming(events) {
+  const wrap = document.getElementById('events-upcoming');
+  const today = new Date(); today.setHours(0,0,0,0);
+
+  const upcoming = events
+    .filter(e => e.dtstart >= today && e.categories.includes('UPCOMING'))
+    .sort((a,b) => a.dtstart - b.dtstart);
+
+  if (!upcoming.length) {
+    wrap.innerHTML = `<div class="state-msg">No upcoming events — check back soon!</div>`;
+    return;
+  }
+
+  wrap.innerHTML = upcoming.map(ev => {
+    const meta = formatDateMeta(ev.dtstart, ev.hasTime, ev.location);
+    const imgCol = ev.image
+      ? `<div class="event-img"><img src="${esc(ev.image)}" alt="${esc(ev.summary)}"></div>`
+      : '';
+    const rsvp = ev.url
+      ? `<a class="btn-rsvp" href="${esc(ev.url)}" target="_blank">RSVP Here</a>`
+      : '';
+    return `
+      <div class="event-card${ev.image ? '' : ' no-img'}">
+        ${imgCol}
+        <div class="event-info">
+          <div class="event-title">${esc(ev.summary)}</div>
+          <div class="event-meta">${meta}</div>
+          <p class="event-desc">${esc(ev.description || '')}</p>
+          ${rsvp}
+        </div>
+      </div>`;
+  }).join('');
+}
+
+/* ═══════════════════════════════════════════════
+   RENDER — CALENDAR
+═══════════════════════════════════════════════ */
+function renderCalendar(events) {
+  const wrap  = document.getElementById('calendar-wrap');
+  const today = new Date(); today.setHours(0,0,0,0);
+
+  // Gather upcoming events (UPCOMING + DIOCESE) into a year-month map
+  const relevant = events.filter(e =>
+    e.dtstart >= today &&
+    e.categories && (e.categories.includes('UPCOMING') || e.categories.includes('DIOCESE'))
+  );
+
+  if (!relevant.length) {
+    wrap.innerHTML = `<div class="state-msg">No upcoming events to display on the calendar.</div>`;
+    return;
+  }
+
+  // Determine which months to show (up to 4)
+  const monthKeys = [...new Set(
+    relevant.map(e => `${e.dtstart.getFullYear()}-${e.dtstart.getMonth()}`)
+  )].slice(0, 4);
+
+  wrap.innerHTML = monthKeys.map(key => {
+    const [y, mo] = key.split('-').map(Number);
+    // Build day→events map for this month
+    const dayMap = new Map();
+    relevant
+      .filter(e => e.dtstart.getFullYear() === y && e.dtstart.getMonth() === mo)
+      .forEach(e => {
+        const d = e.dtstart.getDate();
+        if (!dayMap.has(d)) dayMap.set(d, []);
+        dayMap.get(d).push(e);
+      });
+    return renderMonth(y, mo, dayMap);
+  }).join('');
+}
+
+function renderMonth(year, month, dayMap) {
+  const firstDay    = new Date(year, month, 1).getDay();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const today       = new Date();
+  const isNow       = today.getFullYear() === year && today.getMonth() === month;
+
+  let grid = '';
+  // Day-name headers
+  for (const n of ['Su','Mo','Tu','We','Th','Fr','Sa'])
+    grid += `<div class="cal-day-name">${n}</div>`;
+  // Empty leading cells
+  for (let i = 0; i < firstDay; i++)
+    grid += `<div class="cal-day"></div>`;
+  // Day cells
+  for (let d = 1; d <= daysInMonth; d++) {
+    const isToday   = isNow && today.getDate() === d;
+    const evs       = dayMap.get(d) || [];
+    const hasEv     = evs.length > 0;
+    const title     = evs.map(e => e.summary).join(', ');
+    let cls = 'cal-day';
+    if (isToday) cls += ' today';
+    if (hasEv)   cls += ' has-event';
+    grid += `<div class="${cls}"${title ? ` title="${esc(title)}"` : ''}>${d}</div>`;
+  }
+  // Trailing empty cells to fill last row
+  const total = firstDay + daysInMonth;
+  const remainder = total % 7 === 0 ? 0 : 7 - (total % 7);
+  for (let i = 0; i < remainder; i++)
+    grid += `<div class="cal-day"></div>`;
+
+  // Legend
+  let legend = '';
+  if (dayMap.size > 0) {
+    const sorted = [...dayMap.entries()].sort((a,b) => a[0]-b[0]);
+    legend = `<div class="cal-legend">` + sorted.flatMap(([day, evs]) =>
+      evs.map(ev => {
+        const timeStr = ev.hasTime ? formatTime(ev.dtstart) : '';
+        const loc     = ev.location ? ev.location.split(',')[0] : '';
+        const detail  = [timeStr, loc].filter(Boolean).join(', ');
+        return `<div class="cal-legend-item">
+          <div class="cal-legend-dot">${day}</div>
+          <span><strong>${MONTH_SHORT[month]} ${day}</strong> — ${esc(ev.summary)}${detail ? ', ' + esc(detail) : ''}</span>
+        </div>`;
+      })
+    ).join('') + `</div>`;
+  }
+
+  return `<div class="cal-month">
+    <div class="cal-month-title">${MONTH_NAMES[month]} ${year}</div>
+    <div class="cal-grid">${grid}</div>
+    ${legend}
+  </div>`;
+}
+
+/* ═══════════════════════════════════════════════
+   RENDER — DIOCESE EVENTS
+═══════════════════════════════════════════════ */
+function renderDiocese(events) {
+  const wrap  = document.getElementById('events-diocese');
+  const today = new Date(); today.setHours(0,0,0,0);
+
+  const diocese = events
+    .filter(e => e.categories.includes('DIOCESE') && e.dtstart >= today)
+    .sort((a,b) => a.dtstart - b.dtstart);
+
+  if (!diocese.length) {
+    wrap.innerHTML = `<div class="state-msg" style="grid-column:1/-1">No diocese events currently listed.</div>`;
+    return;
+  }
+
+  wrap.innerHTML = diocese.map(ev => {
+    const meta = formatDateMeta(ev.dtstart, ev.hasTime, ev.location);
+    const img  = ev.image
+      ? `<img src="${esc(ev.image)}" alt="${esc(ev.summary)}">`
+      : '';
+    const link = ev.url
+      ? `<a href="${esc(ev.url)}" target="_blank">Learn more</a>`
+      : '';
+    return `<div class="diocese-card">
+      ${img}
+      <div class="event-title">${esc(ev.summary)}</div>
+      <div class="event-meta">${meta}</div>
+      <p class="card-body">${esc(ev.description || '')}${link ? ' ' + link : ''}</p>
+    </div>`;
+  }).join('');
+}
+
+/* ═══════════════════════════════════════════════
+   RENDER — PAST EVENTS
+═══════════════════════════════════════════════ */
+function renderPast(events) {
+  const wrap  = document.getElementById('events-past');
+  const today = new Date(); today.setHours(0,0,0,0);
+
+  const past = events
+    .filter(e => e.categories.includes('PAST'))
+    .sort((a,b) => b.dtstart - a.dtstart);  // newest first
+
+  if (!past.length) {
+    wrap.innerHTML = `<div class="state-msg">No past events to show yet.</div>`;
+    return;
+  }
+
+  wrap.innerHTML = past.map(ev => {
+    const label = `${MONTH_NAMES[ev.dtstart.getMonth()]} ${ev.dtstart.getFullYear()}` +
+                  (ev.location ? ` — ${ev.location.split(',')[0]}` : '');
+    const img   = ev.image
+      ? `<img src="${esc(ev.image)}" alt="${esc(ev.summary)}">`
+      : '';
+    return `<div class="card">
+      ${img}
+      <div class="card-date">${esc(label)}</div>
+      <p class="card-body">${esc(ev.description || '')}</p>
+    </div>`;
+  }).join('');
+}
+
+/* ═══════════════════════════════════════════════
+   CONFIG
+   Make your Google Calendar public:
+     Calendar Settings → Access permissions →
+     "Make available to public" ✓
+═══════════════════════════════════════════════ */
+const GCAL_ICS_URL = 'https://calendar.google.com/calendar/ical/'
+                   + 'dcepiscopalfellowship%40gmail.com/public/basic.ics';
+
+// Free CORS proxy — required because browsers block direct cross-origin ICS fetches
+const CORS_PROXY   = 'https://corsproxy.io/?';
+
+/* ═══════════════════════════════════════════════
+   LOAD EVENTS
+   Fetches Google Calendar ICS via CORS proxy.
+   Falls back to local events.ics if unreachable.
+═══════════════════════════════════════════════ */
+function renderAll(events) {
+  renderUpcoming(events);
+  renderCalendar(events);
+  renderDiocese(events);
+  renderPast(events);
+}
+
+async function loadEvents() {
+  // ── Google Calendar (live) ──
+  try {
+    const res = await fetch(CORS_PROXY + encodeURIComponent(GCAL_ICS_URL), { cache: 'no-store' });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    renderAll(parseICS(await res.text()));
+    return;
+  } catch (err) {
+    console.warn('Google Calendar fetch failed, trying local fallback:', err);
+  }
+
+  // ── Local events.ics fallback ──
+  try {
+    const res = await fetch('events.ics');
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    renderAll(parseICS(await res.text()));
+  } catch (err) {
+    console.warn('Could not load events.ics:', err);
+    showError(`Could not load events. Make sure your Google Calendar is set to <strong>public</strong>
+      (Calendar Settings → Access permissions), or open this page via a local server
+      (e.g. <code>npx serve .</code>) to load <code>events.ics</code>.`);
+  }
+}
+
+function showError(msg) {
+  const html = `<div class="state-msg">${msg}</div>`;
+  ['events-upcoming','calendar-wrap','events-diocese','events-past']
+    .forEach(id => { const el = document.getElementById(id); if (el) el.innerHTML = html; });
+}
+
+/* ═══════════════════════════════════════════════
+   HERO SLIDESHOW
+   Drop images into hero-images/ and list them in
+   hero-images/manifest.json → { "images": ["a.jpg", ...], "interval": 6000 }
+═══════════════════════════════════════════════ */
+async function initHero() {
+  const hero = document.getElementById('hero');
+  const dots = document.getElementById('hero-dots');
+
+  let srcs     = ['images/242e9a9fc21b5f936f40236a56e20ac2.jpg'];
+  let interval = 6000;
+
+  try {
+    const res = await fetch('hero-images/manifest.json');
+    if (res.ok) {
+      const manifest = await res.json();
+      if (Array.isArray(manifest.images) && manifest.images.length > 0) {
+        srcs     = manifest.images.map(f => 'hero-images/' + f);
+        interval = manifest.interval || 6000;
+      }
+    }
+  } catch (e) { /* use fallback */ }
+
+  // Build slides
+  const slides = srcs.map((src, i) => {
+    const div = document.createElement('div');
+    div.className = 'hero-slide' + (i === 0 ? ' active' : '');
+    div.style.backgroundImage = `url('${src}')`;
+    hero.insertBefore(div, hero.firstChild);
+    return div;
+  });
+
+  if (slides.length <= 1) return;
+
+  // Build dots
+  let current = 0;
+  slides.forEach((_, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'hero-dot' + (i === 0 ? ' active' : '');
+    btn.setAttribute('aria-label', `Slide ${i + 1}`);
+    btn.addEventListener('click', () => goTo(i));
+    dots.appendChild(btn);
+  });
+
+  function goTo(idx) {
+    slides[current].classList.remove('active');
+    dots.children[current].classList.remove('active');
+    current = idx;
+    slides[current].classList.add('active');
+    dots.children[current].classList.add('active');
+  }
+
+  setInterval(() => goTo((current + 1) % slides.length), interval);
+}
+
+/* ═══════════════════════════════════════════════
+   SUBSCRIBE FORM
+═══════════════════════════════════════════════ */
+function handleSubscribe(e) {
+  e.preventDefault();
+  const email = e.target.querySelector('input[type="email"]').value;
+  const btn   = e.target.querySelector('button');
+  window.location.href =
+    `mailto:dcepiscopalfellowship@gmail.com?subject=Newsletter%20Subscribe&body=Please%20add%20${encodeURIComponent(email)}%20to%20the%20mailing%20list.`;
+  btn.textContent = 'Request Sent!';
+  btn.disabled = true;
+}
+
+/* ═══════════════════════════════════════════════
+   INIT
+═══════════════════════════════════════════════ */
+document.addEventListener('DOMContentLoaded', () => {
+  initHero();
+  loadEvents();
+});
+</script>
+
+</body>
+</html>
