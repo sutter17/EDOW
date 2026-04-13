@@ -330,6 +330,31 @@
       font-weight: 800;
     }
     .cal-day.has-event:hover { background-color: var(--blue); }
+    .cal-day.has-event.diocese {
+      background-color: #5a8a5a;
+    }
+    .cal-day.has-event.diocese:hover { background-color: #6fa86f; }
+    .cal-color-key {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      padding: 0 36px 20px;
+      font-family: 'League Spartan', Arial, sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--brown);
+      letter-spacing: 0.03em;
+    }
+    .cal-color-key span { display: flex; align-items: center; gap: 6px; }
+    .key-dot {
+      display: inline-block;
+      width: 14px; height: 14px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .key-dot.navy  { background-color: var(--navy); }
+    .key-dot.green { background-color: #5a8a5a; }
+
     .cal-legend {
       margin-top: 12px;
       display: flex;
@@ -374,10 +399,12 @@
     .diocese-card img {
       display: block;
       width: 100%;
-      height: 160px;
-      object-fit: cover;
+      max-height: 240px;
+      object-fit: contain;
+      object-position: top;
       border-radius: 3px;
       margin-bottom: 12px;
+      background-color: var(--cream);
     }
     .diocese-card .event-title { font-size: 14px; }
     .card-body {
@@ -465,9 +492,9 @@
       justify-content: center;
       flex-wrap: wrap;
     }
-    .subscribe-form input[type="email"] {
-      flex: 1 1 240px;
-      max-width: 320px;
+    .subscribe-form input {
+      flex: 1 1 180px;
+      max-width: 260px;
       padding: 11px 16px;
       font-size: 14px;
       font-family: Verdana, Geneva, sans-serif;
@@ -479,7 +506,7 @@
       transition: border-color .15s;
     }
     .subscribe-form input::placeholder { color: rgba(255,255,255,.5); }
-    .subscribe-form input:focus { border-color: rgba(255,255,255,.7); }
+    .subscribe-form input:focus { border-color: rgba(255,255,255,.7); outline: none; }
     .subscribe-form button {
       padding: 11px 26px;
       background-color: #fff;
@@ -588,6 +615,10 @@
   <section id="calendar">
     <div class="section-heading">Event Calendar</div>
     <div class="calendars-wrap" id="calendar-wrap"></div>
+    <div class="cal-color-key">
+      <span><i class="key-dot navy"></i>DCEF Event</span>
+      <span><i class="key-dot green"></i>Diocese Event</span>
+    </div>
   </section>
 
   <!-- ════ DIOCESE EVENTS ════ -->
@@ -612,10 +643,12 @@
   <section id="subscribe">
     <h3>Stay Connected</h3>
     <p>Get our newsletter delivered directly to your inbox — events, recaps, and community news from DC Episcopal Fellowship.</p>
-    <form class="subscribe-form" onsubmit="handleSubscribe(event)">
-      <input type="email" placeholder="Your email address" required>
-      <button type="submit">Subscribe</button>
+    <form class="subscribe-form" id="signup-form" onsubmit="handleSubscribe(event)">
+      <input type="text"  name="name"  placeholder="Your name"          autocomplete="name">
+      <input type="email" name="email" placeholder="Your email address" autocomplete="email" required>
+      <button type="submit" id="signup-btn">Subscribe</button>
     </form>
+    <p id="signup-msg" style="display:none;margin-top:14px;font-family:'League Spartan',Arial,sans-serif;font-size:14px;color:#fff;"></p>
   </section>
 
   <!-- ════ FOOTER ════ -->
@@ -746,10 +779,8 @@ function processEvent(ev) {
   desc = desc.replace(/&quot;/g,'"').replace(/&amp;/g,'&')
              .replace(/&#39;/g,"'").replace(/&lt;/g,'<').replace(/&gt;/g,'>');
 
-  // Remove RSVP tag from displayed description wherever it appears
-  desc = desc.replace(/RSVP:\s*[^\n]*/gi, '');
-
-  // Extract [image:filename] — tolerant of Google adding spaces/quotes
+  // Extract [image:filename] BEFORE removing RSVP line — otherwise the RSVP
+  // removal regex can eat the image tag if they appear on the same line
   if (!ev.image) {
     desc = desc.replace(/\[image:\s*"?([^"\]\n]+?)"?\s*\]/gi, (_, p) => {
       const p2 = p.trim();
@@ -757,6 +788,9 @@ function processEvent(ev) {
       return '';
     });
   }
+
+  // Remove RSVP tag from displayed description wherever it appears
+  desc = desc.replace(/RSVP:\s*[^\n]*/gi, '');
 
   // Extract #DIOCESE tag
   const tagCategories = [];
@@ -868,9 +902,11 @@ function renderMonth(year, month, dayMap) {
     const evs       = dayMap.get(d) || [];
     const hasEv     = evs.length > 0;
     const title     = evs.map(e => e.summary).join(', ');
+    const isDiocese = hasEv && evs.every(e => e.categories.includes('DIOCESE'));
     let cls = 'cal-day';
-    if (isToday) cls += ' today';
-    if (hasEv)   cls += ' has-event';
+    if (isToday)   cls += ' today';
+    if (hasEv)     cls += ' has-event';
+    if (isDiocese) cls += ' diocese';
     grid += `<div class="${cls}"${title ? ` title="${esc(title)}"` : ''}>${d}</div>`;
   }
   // Trailing empty cells to fill last row
@@ -972,11 +1008,18 @@ function renderPast(events) {
      Calendar Settings → Access permissions →
      "Make available to public" ✓
 ═══════════════════════════════════════════════ */
+// Formspree endpoint for email signups — sign up free at formspree.io,
+// create a form, and paste the endpoint here: e.g. 'https://formspree.io/f/xpwzgkbn'
+const SIGNUP_ENDPOINT = 'https://script.google.com/macros/s/AKfycbyC11DNrEkOIvBeGvgTBoRyV5cRML3YuTyqiFVsiLMYFNlkxTDmPFHWVFFlWehigqVILA/exec';
+
 const GCAL_ICS_URL = 'https://calendar.google.com/calendar/ical/'
                    + 'dcepiscopalfellowship%40gmail.com/public/basic.ics';
 
-// Free CORS proxy — required because browsers block direct cross-origin ICS fetches
-const CORS_PROXY   = 'https://corsproxy.io/?';
+// Live ICS sources — tried in order, first success wins
+const CORS_PROXIES = [
+  () => `/.netlify/functions/fetch-ics`,
+  url => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}&_=${Date.now()}`,
+];
 
 /* ═══════════════════════════════════════════════
    LOAD EVENTS
@@ -990,24 +1033,50 @@ function renderAll(events) {
   renderPast(events);
 }
 
+const ICS_CACHE_KEY = 'edow_ics_cache';
+
 async function loadEvents() {
-  // ── Google Calendar (live) ──
-  try {
-    const res = await fetch(CORS_PROXY + encodeURIComponent(GCAL_ICS_URL), { cache: 'no-store' });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    renderAll(parseICS(await res.text()));
-    return;
-  } catch (err) {
-    console.warn('Google Calendar fetch failed, trying local fallback:', err);
+  // ── Step 1: Render whatever we have cached (localStorage → events.ics) ──
+  let renderedText = null;
+
+  const stored = localStorage.getItem(ICS_CACHE_KEY);
+  if (stored && stored.includes('BEGIN:VCALENDAR')) {
+    renderedText = stored;
+    renderAll(parseICS(stored));
+  } else {
+    try {
+      const res = await fetch('events.ics');
+      if (res.ok) {
+        const text = await res.text();
+        if (text.includes('BEGIN:VCALENDAR')) {
+          renderedText = text;
+          renderAll(parseICS(text));
+        }
+      }
+    } catch (err) {
+      console.warn('Could not load local events.ics:', err);
+    }
   }
 
-  // ── Local events.ics fallback ──
-  try {
-    const res = await fetch('events.ics');
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    renderAll(parseICS(await res.text()));
-  } catch (err) {
-    console.warn('Could not load events.ics:', err);
+  // ── Step 2: Fetch live ICS in the background ──
+  for (const proxy of CORS_PROXIES) {
+    try {
+      const res = await fetch(proxy(GCAL_ICS_URL), { cache: 'no-store' });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const liveText = await res.text();
+      if (!liveText.includes('BEGIN:VCALENDAR')) throw new Error('Invalid ICS response');
+      if (liveText !== renderedText) {
+        renderAll(parseICS(liveText));
+      }
+      localStorage.setItem(ICS_CACHE_KEY, liveText);
+      return;
+    } catch (err) {
+      console.warn('Proxy failed, trying next:', err);
+    }
+  }
+
+  // ── If nothing worked at all, show error ──
+  if (!renderedText) {
     showError(`Could not load events. Make sure your Google Calendar is set to <strong>public</strong>
       (Calendar Settings → Access permissions), or open this page via a local server
       (e.g. <code>npx serve .</code>) to load <code>events.ics</code>.`);
@@ -1078,14 +1147,31 @@ async function initHero() {
 /* ═══════════════════════════════════════════════
    SUBSCRIBE FORM
 ═══════════════════════════════════════════════ */
-function handleSubscribe(e) {
+async function handleSubscribe(e) {
   e.preventDefault();
-  const email = e.target.querySelector('input[type="email"]').value;
-  const btn   = e.target.querySelector('button');
-  window.location.href =
-    `mailto:dcepiscopalfellowship@gmail.com?subject=Newsletter%20Subscribe&body=Please%20add%20${encodeURIComponent(email)}%20to%20the%20mailing%20list.`;
-  btn.textContent = 'Request Sent!';
+  const form  = e.target;
+  const btn   = document.getElementById('signup-btn');
+  const msg   = document.getElementById('signup-msg');
+  const email = form.querySelector('input[type="email"]').value;
+  const name  = (form.querySelector('input[type="text"]').value || '').trim();
+
+  btn.textContent = 'Sending…';
   btn.disabled = true;
+
+  if (SIGNUP_ENDPOINT) {
+    // Google Apps Script requires no-cors + FormData — we can't read the response,
+    // so we show success optimistically after the request is sent.
+    const body = new URLSearchParams({ email, name });
+    fetch(SIGNUP_ENDPOINT, { method: 'POST', mode: 'no-cors', body });
+    form.style.display = 'none';
+    msg.textContent = name ? `Thanks, ${name}! You're on the list.` : `Thanks! You're on the list.`;
+    msg.style.display = 'block';
+  } else {
+    // Fallback: mailto until endpoint is configured
+    window.location.href =
+      `mailto:dcepiscopalfellowship@gmail.com?subject=Newsletter%20Subscribe&body=Please%20add%20${encodeURIComponent(email)}%20to%20the%20mailing%20list.`;
+    btn.textContent = 'Request Sent!';
+  }
 }
 
 /* ═══════════════════════════════════════════════

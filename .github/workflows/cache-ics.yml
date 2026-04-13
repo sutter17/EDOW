@@ -1,0 +1,26 @@
+name: Cache Google Calendar ICS
+
+on:
+  schedule:
+    - cron: '0 */6 * * *'   # every 6 hours
+  workflow_dispatch:          # allow manual trigger from GitHub Actions tab
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fetch latest ICS from Google Calendar
+        run: |
+          curl -fsSL \
+            "https://calendar.google.com/calendar/ical/dcepiscopalfellowship%40gmail.com/public/basic.ics" \
+            -o events.ics
+
+      - name: Commit if changed
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add events.ics
+          git diff --staged --quiet || git commit -m "chore: update events.ics cache"
+          git push
