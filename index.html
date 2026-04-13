@@ -544,19 +544,55 @@
     ════════════════════════════ */
     @media (max-width: 640px) {
       .page { margin: 0; border-radius: 0; }
-      .nav { padding: 0 16px; }
-      .nav-links a { font-size: 11px; padding: 5px 7px; }
-      .hero { height: 260px; }
-      .welcome-overlay { padding: 32px 20px 24px; }
-      .welcome-overlay h2 { font-size: 22px; }
-      .section-heading { padding: 14px 20px; }
-      .section-intro, .calendars-wrap, #subscribe { padding-left: 20px; padding-right: 20px; }
+
+      /* Nav */
+      .nav { padding: 0 12px; height: auto; min-height: 52px; flex-wrap: wrap; gap: 0; justify-content: center; }
+      .nav-logo { order: 0; padding: 8px 0 4px; }
+      .nav-logo img { height: 32px; }
+      .nav-social { display: none; }
+      .nav-links {
+        flex: 0 0 100%;
+        order: 1;
+        justify-content: center;
+        flex-wrap: wrap;
+        padding: 4px 0 8px;
+        gap: 2px;
+      }
+      .nav-links a { font-size: 11px; padding: 5px 8px; white-space: nowrap; }
+
+      /* Hero */
+      .hero { height: 240px; }
+      .welcome-overlay { padding: 28px 16px 20px; text-align: center; }
+      .welcome-overlay h2 { font-size: 20px; }
+      .welcome-overlay p { font-size: 13px; margin-bottom: 14px; }
+
+      /* Sections */
+      .section-heading { padding: 14px 16px; font-size: 16px; text-align: center; }
+      .section-intro { padding: 16px 16px 14px; text-align: center; }
+
+      /* Upcoming event cards */
       .event-card { grid-template-columns: 1fr; }
       .event-card .event-img { height: 180px; }
+      .event-card .event-info { padding: 16px; text-align: center; }
+      .event-card.no-img .event-info { padding: 16px; text-align: center; }
+      .event-meta { text-align: center; }
+      .btn-rsvp { display: block; text-align: center; }
+
+      /* Calendar */
+      .calendars-wrap { padding: 16px 16px 24px; }
+      .cal-color-key { padding: 0 16px 16px; justify-content: center; }
+      .cal-legend-item { justify-content: center; }
+
+      /* Diocese & past event cards */
       .two-col, .diocese-grid { grid-template-columns: 1fr; }
+      .two-col .card { padding: 16px; text-align: center; }
+      .diocese-card { text-align: center; }
       .two-col .card + .card,
       .diocese-card + .diocese-card { border-left: none; border-top: 1px solid var(--border); }
-      .footer { padding: 24px 20px; }
+
+      /* Subscribe & footer */
+      #subscribe { padding: 28px 16px; }
+      .footer { padding: 24px 16px; }
     }
   </style>
 </head>
@@ -565,7 +601,7 @@
 <!-- ── Navigation ── -->
 <nav class="nav">
   <a class="nav-logo" href="#welcome">
-    <img src="images/Logo.png" alt="DC Episcopal Fellowship">
+    <img src="images/Logo.jpg" alt="DC Episcopal Fellowship">
   </a>
   <ul class="nav-links">
     <li><a href="#upcoming">Events</a></li>
@@ -997,6 +1033,7 @@ function renderPast(events) {
     return `<div class="card">
       ${img}
       <div class="card-date">${esc(label)}</div>
+      <div class="event-title" style="font-size:15px;margin-bottom:8px;">${esc(ev.summary)}</div>
       <p class="card-body">${esc(ev.description || '')}</p>
     </div>`;
   }).join('');
