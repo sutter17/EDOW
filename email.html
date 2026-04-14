@@ -10,244 +10,214 @@
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --navy:  #00277d;
-      --blue:  #1a62ff;
-      --cream: #faf3eb;
-      --sand:  #e9ddcd;
-      --brown: #47342b;
-      --page:  #f0f1f5;
-      --border:#ddd0be;
+      --navy: #00277d; --blue: #1a62ff; --cream: #faf3eb;
+      --sand: #e9ddcd; --brown: #47342b; --page: #f0f1f5; --border: #ddd0be;
     }
-    body {
-      background: var(--page);
-      font-family: Verdana, Geneva, sans-serif;
-      color: #000;
-    }
+    html, body { height: 100%; }
+    body { font-family: Verdana, Geneva, sans-serif; background: var(--page); overflow: hidden; }
 
-    /* ── toolbar ── */
+    /* ── Toolbar ── */
     .toolbar {
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      background: var(--navy);
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 0 24px;
-      height: 56px;
-      box-shadow: 0 2px 8px rgba(0,0,0,.25);
+      height: 52px; background: var(--navy); display: flex; align-items: center;
+      gap: 10px; padding: 0 18px; box-shadow: 0 2px 8px rgba(0,0,0,.25); flex-shrink: 0;
     }
     .toolbar-title {
-      font-family: 'League Spartan', Arial, sans-serif;
-      font-size: 15px;
-      font-weight: 800;
-      color: #fff;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-      flex: 1;
+      font-family: 'League Spartan', sans-serif; font-size: 14px; font-weight: 800;
+      color: #fff; letter-spacing: .05em; text-transform: uppercase; flex: 1;
     }
     .toolbar-status {
-      font-family: 'League Spartan', Arial, sans-serif;
-      font-size: 12px;
-      color: rgba(255,255,255,.6);
+      font-family: 'League Spartan', sans-serif; font-size: 11px; color: rgba(255,255,255,.55);
     }
     .btn {
-      font-family: 'League Spartan', Arial, sans-serif;
-      font-size: 12px;
-      font-weight: 700;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-      padding: 8px 18px;
-      border-radius: 3px;
-      border: none;
-      cursor: pointer;
-      transition: background .15s, opacity .15s;
-      white-space: nowrap;
+      font-family: 'League Spartan', sans-serif; font-size: 11px; font-weight: 700;
+      letter-spacing: .05em; text-transform: uppercase; padding: 7px 14px; border-radius: 3px;
+      border: none; cursor: pointer; transition: background .15s, opacity .15s; white-space: nowrap;
     }
-    .btn:disabled { opacity: .4; cursor: default; }
-    .btn-white  { background: #fff; color: var(--navy); }
-    .btn-white:hover:not(:disabled)  { background: var(--sand); }
-    .btn-outline { background: transparent; color: rgba(255,255,255,.85);
-                   border: 1.5px solid rgba(255,255,255,.4); }
-    .btn-outline:hover:not(:disabled) { background: rgba(255,255,255,.12);
-                                        color: #fff; border-color: rgba(255,255,255,.7); }
-    .btn-navy { background: var(--navy); color: #fff; }
+    .btn:disabled { opacity: .35; cursor: default; }
+    .btn-white   { background: #fff; color: var(--navy); }
+    .btn-white:hover:not(:disabled) { background: var(--sand); }
+    .btn-outline { background: transparent; color: rgba(255,255,255,.8); border: 1.5px solid rgba(255,255,255,.35); }
+    .btn-outline:hover:not(:disabled) { background: rgba(255,255,255,.12); color: #fff; }
+    .btn-navy    { background: var(--navy); color: #fff; }
     .btn-navy:hover:not(:disabled) { background: var(--blue); }
+    .btn-ghost   { background: transparent; color: var(--brown); border: 1px solid var(--border); }
+    .btn-ghost:hover:not(:disabled) { background: var(--sand); }
+    .btn-danger  { background: transparent; color: #c0392b; border: 1px solid #e0b0b0; }
+    .btn-danger:hover:not(:disabled) { background: #fdf0f0; }
 
-    /* ── config panel ── */
-    .config-bar {
-      background: var(--cream);
-      border-bottom: 1px solid var(--border);
+    /* ── App layout ── */
+    .app {
+      display: flex; height: calc(100vh - 52px); overflow: hidden;
     }
-    .config-toggle {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 10px 24px;
-      cursor: pointer;
-      font-family: 'League Spartan', Arial, sans-serif;
-      font-size: 12px;
-      font-weight: 700;
-      color: var(--navy);
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-      user-select: none;
-      border: none;
-      background: transparent;
-      width: 100%;
-      text-align: left;
-    }
-    .config-toggle:hover { background: var(--sand); }
-    .config-arrow { transition: transform .2s; display: inline-block; margin-left: 2px; }
-    .config-toggle.open .config-arrow { transform: rotate(180deg); }
 
-    .config-fields {
-      padding: 16px 24px 20px;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 14px 24px;
+    /* ── Sidebar ── */
+    .sidebar {
+      width: 290px; flex-shrink: 0; display: flex; flex-direction: column;
+      background: var(--cream); border-right: 1px solid var(--border); overflow: hidden;
     }
-    .config-fields.hidden { display: none; }
+    .sidebar-top {
+      flex-shrink: 0; border-bottom: 1px solid var(--border);
+      padding: 10px 0 6px;
+    }
+    .sidebar-label {
+      font-family: 'League Spartan', sans-serif; font-size: 10px; font-weight: 700;
+      color: var(--brown); letter-spacing: .06em; text-transform: uppercase;
+      padding: 0 14px 6px;
+    }
+    .section-row {
+      display: flex; align-items: center; gap: 8px; padding: 7px 14px;
+      cursor: pointer; transition: background .1s; user-select: none;
+    }
+    .section-row:hover { background: var(--sand); }
+    .section-row.selected { background: var(--sand); border-left: 3px solid var(--blue); padding-left: 11px; }
+    .section-row.hidden-section { opacity: .45; }
+    .section-row-label {
+      font-family: 'League Spartan', sans-serif; font-size: 12px; font-weight: 700;
+      color: var(--navy); flex: 1;
+    }
+    .section-row.custom-block .section-row-label { color: var(--brown); }
+    .badge {
+      font-family: 'League Spartan', sans-serif; font-size: 10px; font-weight: 700;
+      background: var(--navy); color: #fff; padding: 1px 6px; border-radius: 8px;
+    }
+    .section-row.hidden-section .badge { background: #bbb; }
+    .vis-btn {
+      background: none; border: none; cursor: pointer; padding: 2px 4px;
+      color: var(--brown); opacity: .5; font-size: 14px; line-height: 1;
+      transition: opacity .15s;
+    }
+    .vis-btn:hover { opacity: 1; }
+    .section-row.hidden-section .vis-btn { opacity: .35; }
+
+    .add-block-btn {
+      display: flex; align-items: center; gap: 6px; width: 100%;
+      padding: 8px 14px; margin-top: 2px;
+      background: none; border: none; cursor: pointer;
+      font-family: 'League Spartan', sans-serif; font-size: 11px; font-weight: 700;
+      color: var(--blue); letter-spacing: .04em; text-transform: uppercase;
+      transition: background .1s;
+    }
+    .add-block-btn:hover { background: var(--sand); }
+
+    /* ── Edit panel ── */
+    .edit-panel {
+      flex: 1; overflow-y: auto; padding: 14px;
+    }
+    .edit-panel-empty {
+      display: flex; align-items: center; justify-content: center; height: 100%;
+      font-family: 'League Spartan', sans-serif; font-size: 12px; color: var(--brown);
+      opacity: .5; text-align: center; padding: 20px;
+    }
+    .edit-panel-title {
+      font-family: 'League Spartan', sans-serif; font-size: 13px; font-weight: 800;
+      color: var(--navy); margin-bottom: 12px; text-transform: uppercase; letter-spacing: .04em;
+    }
+    .field { margin-bottom: 12px; }
     .field label {
-      display: block;
-      font-family: 'League Spartan', Arial, sans-serif;
-      font-size: 11px;
-      font-weight: 700;
-      color: var(--brown);
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-      margin-bottom: 5px;
+      display: block; font-family: 'League Spartan', sans-serif; font-size: 10px;
+      font-weight: 700; color: var(--brown); letter-spacing: .05em; text-transform: uppercase;
+      margin-bottom: 4px;
     }
-    .field input,
-    .field textarea {
-      width: 100%;
-      padding: 8px 10px;
-      font-family: Verdana, Geneva, sans-serif;
-      font-size: 12px;
-      border: 1px solid var(--border);
-      border-radius: 3px;
-      background: #fff;
-      color: #000;
+    .field input, .field textarea, .field select {
+      width: 100%; padding: 7px 9px; font-family: Verdana, Geneva, sans-serif; font-size: 12px;
+      border: 1px solid var(--border); border-radius: 3px; background: #fff; color: #000;
       resize: vertical;
     }
-    .field input:focus,
-    .field textarea:focus { outline: 2px solid var(--blue); border-color: var(--blue); }
-    .field.full { grid-column: 1 / -1; }
-    .config-actions { grid-column: 1 / -1; display: flex; gap: 10px; }
-
-    /* ── preview ── */
-    .preview-wrap {
-      padding: 32px 24px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 16px;
-      min-height: calc(100vh - 56px);
+    .field input:focus, .field textarea:focus, .field select:focus {
+      outline: 2px solid var(--blue); border-color: var(--blue);
     }
-    .preview-label {
-      font-family: 'League Spartan', Arial, sans-serif;
-      font-size: 11px;
-      font-weight: 700;
-      color: var(--brown);
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
+    .field-note {
+      font-size: 11px; color: var(--brown); opacity: .7; margin-top: 4px; line-height: 1.4;
+    }
+    .event-item {
+      border: 1px solid var(--border); border-radius: 3px; margin-bottom: 8px; overflow: hidden;
+    }
+    .event-item-header {
+      display: flex; align-items: center; gap: 8px; padding: 7px 10px;
+      background: var(--sand); cursor: pointer; user-select: none;
+    }
+    .event-item-header:hover { background: #ddd0be; }
+    .event-item-title {
+      font-family: 'League Spartan', sans-serif; font-size: 11px; font-weight: 700;
+      color: var(--navy); flex: 1; line-height: 1.3;
+    }
+    .event-item-toggle { font-size: 12px; color: var(--brown); }
+    .event-item-body { padding: 10px; display: none; background: #fff; }
+    .event-item-body.open { display: block; }
+    .ev-vis { appearance: none; width: 14px; height: 14px; border: 2px solid var(--border);
+               border-radius: 2px; cursor: pointer; flex-shrink: 0; position: relative; }
+    .ev-vis:checked { background: var(--navy); border-color: var(--navy); }
+    .ev-vis:checked::after { content: '✓'; position: absolute; top: -2px; left: 1px;
+                              color: #fff; font-size: 11px; }
+    .panel-actions { display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap; }
+
+    /* ── Preview pane ── */
+    .preview-pane {
+      flex: 1; overflow-y: auto; padding: 28px 24px;
+      display: flex; flex-direction: column; align-items: center; gap: 12px;
+    }
+    .preview-meta {
+      font-family: 'League Spartan', sans-serif; font-size: 10px; font-weight: 700;
+      color: var(--brown); letter-spacing: .06em; text-transform: uppercase; opacity: .6;
     }
     #preview-frame {
-      width: 100%;
-      max-width: 640px;
-      border: none;
-      border-radius: 4px;
-      box-shadow: 0 4px 24px rgba(0,0,0,.14);
-      background: #fff;
-      display: none;
+      width: 640px; max-width: 100%; border: none; border-radius: 4px;
+      box-shadow: 0 4px 24px rgba(0,0,0,.13); background: #fff; display: none;
     }
-    .loading-msg {
-      font-family: 'League Spartan', Arial, sans-serif;
-      font-size: 14px;
-      color: var(--brown);
-      padding: 60px 0;
-      text-align: center;
+    .preview-loading {
+      font-family: 'League Spartan', sans-serif; font-size: 13px; color: var(--brown);
+      padding: 60px 0; text-align: center; opacity: .7;
     }
-    .copy-feedback {
-      position: fixed;
-      bottom: 24px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: var(--navy);
-      color: #fff;
-      font-family: 'League Spartan', Arial, sans-serif;
-      font-size: 13px;
-      font-weight: 700;
-      padding: 10px 22px;
-      border-radius: 4px;
-      pointer-events: none;
-      opacity: 0;
-      transition: opacity .2s;
+
+    /* ── Toast ── */
+    .toast {
+      position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+      background: var(--navy); color: #fff; font-family: 'League Spartan', sans-serif;
+      font-size: 12px; font-weight: 700; padding: 9px 20px; border-radius: 4px;
+      pointer-events: none; opacity: 0; transition: opacity .2s; z-index: 999;
     }
-    .copy-feedback.show { opacity: 1; }
+    .toast.show { opacity: 1; }
   </style>
 </head>
 <body>
 
-<!-- ── Toolbar ── -->
+<!-- Toolbar -->
 <div class="toolbar">
   <span class="toolbar-title">Email Generator</span>
-  <span class="toolbar-status" id="status">Loading events…</span>
-  <button class="btn btn-outline" id="btn-regenerate" disabled>Regenerate</button>
-  <button class="btn btn-outline" id="btn-copy"       disabled>Copy HTML</button>
-  <button class="btn btn-white"   id="btn-download"   disabled>Download</button>
+  <span class="toolbar-status" id="status">Loading…</span>
+  <button class="btn btn-outline" id="btn-regen"     disabled>Regenerate</button>
+  <button class="btn btn-outline" id="btn-copy"      disabled>Copy HTML</button>
+  <button class="btn btn-white"   id="btn-download"  disabled>Download</button>
 </div>
 
-<!-- ── Config panel ── -->
-<div class="config-bar">
-  <button class="config-toggle" id="config-toggle">
-    Configure <span class="config-arrow">&#9660;</span>
-  </button>
-  <div class="config-fields hidden" id="config-fields">
-    <div class="field">
-      <label>Season / Edition</label>
-      <input id="cfg-season" type="text" value="Spring 2026">
-    </div>
-    <div class="field">
-      <label>Hero Image URL</label>
-      <input id="cfg-hero" type="text" value="images/242e9a9fc21b5f936f40236a56e20ac2.jpg">
-    </div>
-    <div class="field full">
-      <label>Welcome Text</label>
-      <textarea id="cfg-welcome" rows="3">As we enter the seasons of Easter and spring, everything is blooming. We celebrate the joy of the resurrection as our world wakes up from its winter slumber. Please join us for our spring events, filled with faith, fellowship, and lots of fun!</textarea>
-    </div>
-    <div class="field full">
-      <label>Upcoming Events Intro</label>
-      <textarea id="cfg-upcoming-intro" rows="3">This spring, we have a full calendar of fun events! From baseball to scavenger hunts, we hope you will join us as we come together in this season of joy and community. You can find all of the information for all of our events on the DCEF Instagram or Partiful!</textarea>
-    </div>
-    <div class="field full">
-      <label>Diocese Section Intro</label>
-      <textarea id="cfg-diocese-intro" rows="2">We are also partnering with other organizations to host and spread word of events young adults in the diocese might be interested in. If you have any ideas please share them with us!</textarea>
-    </div>
-    <div class="field full">
-      <label>Site Base URL (for relative image paths)</label>
-      <input id="cfg-base-url" type="text" value="https://edow.netlify.app">
-    </div>
-    <div class="config-actions">
-      <button class="btn btn-navy" id="btn-apply">Apply &amp; Regenerate</button>
-    </div>
-  </div>
-</div>
+<!-- App -->
+<div class="app">
 
-<!-- ── Preview ── -->
-<div class="preview-wrap">
-  <div class="preview-label">Preview — 600px email width</div>
-  <div style="width:100%;max-width:640px;">
-    <p class="loading-msg" id="loading-msg">Fetching calendar events…</p>
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-top">
+      <div class="sidebar-label">Sections</div>
+      <div id="sections-list"></div>
+      <button class="add-block-btn" id="btn-add-block">＋ Add Text Block</button>
+    </div>
+    <div class="edit-panel" id="edit-panel">
+      <div class="edit-panel-empty">Click a section to edit it</div>
+    </div>
+  </aside>
+
+  <!-- Preview -->
+  <div class="preview-pane">
+    <div class="preview-meta">600px preview — click any section to edit</div>
+    <p class="preview-loading" id="preview-loading">Fetching calendar events…</p>
     <iframe id="preview-frame" scrolling="no"></iframe>
   </div>
 </div>
 
-<div class="copy-feedback" id="copy-feedback">HTML copied to clipboard!</div>
+<div class="toast" id="toast"></div>
 
 <script>
 /* ═══════════════════════════════════════════════
-   COLOURS / FONTS
+   CONSTANTS
 ═══════════════════════════════════════════════ */
 const C = {
   navy:'#00277d', blue:'#1a62ff', cream:'#faf3eb',
@@ -256,14 +226,10 @@ const C = {
 };
 const FH = '"League Spartan", Arial, Helvetica, sans-serif';
 const FB = 'Verdana, Geneva, sans-serif';
-
 const MONTH_NAMES = ['January','February','March','April','May','June',
                      'July','August','September','October','November','December'];
 const DAY_NAMES   = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
 
-/* ═══════════════════════════════════════════════
-   ICS FETCH
-═══════════════════════════════════════════════ */
 const GCAL_ICS_URL = 'https://calendar.google.com/calendar/ical/'
                    + 'dcepiscopalfellowship%40gmail.com/public/basic.ics';
 const CORS_PROXIES = [
@@ -272,36 +238,73 @@ const CORS_PROXIES = [
 ];
 
 /* ═══════════════════════════════════════════════
+   STATE
+═══════════════════════════════════════════════ */
+const state = {
+  rawEvents: [],
+  selected: null,           // currently selected section id
+  hiddenSections: new Set(),
+  hiddenEvents: new Set(),  // event summaries hidden from output
+  expandedEvents: new Set(),// event summaries expanded in sidebar UI
+  overrides: {
+    season:        'Spring 2026',
+    heroUrl:       'images/242e9a9fc21b5f936f40236a56e20ac2.jpg',
+    baseUrl:       'https://edow.netlify.app',
+    welcomeText:   'As we enter the seasons of Easter and spring, everything is blooming. We celebrate the joy of the resurrection as our world wakes up from its winter slumber. Please join us for our spring events, filled with faith, fellowship, and lots of fun!',
+    upcomingIntro: 'This spring, we have a full calendar of fun events! From baseball to scavenger hunts, we hope you will join us as we come together in this season of joy and community. You can find all of the information for all of our events on the DCEF Instagram or Partiful!',
+    dioceseIntro:  'We are also partnering with other organizations to host and spread word of events young adults in the diocese might be interested in. If you have any ideas please share them with us!',
+    eventDesc: {},   // summary → override string
+    eventImg:  {},   // summary → override URL
+  },
+  customBlocks: [], // [{id, title, body, position}]
+  _customBlockId: 0,
+};
+
+const FIXED_SECTIONS = [
+  { id: 'header',   label: 'Header' },
+  { id: 'hero',     label: 'Hero Image' },
+  { id: 'welcome',  label: 'Welcome' },
+  { id: 'past',     label: 'Past Events' },
+  { id: 'upcoming', label: 'Upcoming Events' },
+  { id: 'diocese',  label: 'Diocese Events' },
+  { id: 'footer',   label: 'Footer' },
+];
+
+const BLOCK_POSITIONS = [
+  { value: 'after-welcome',  label: 'After Welcome' },
+  { value: 'after-past',     label: 'After Past Events' },
+  { value: 'after-upcoming', label: 'After Upcoming Events' },
+  { value: 'after-diocese',  label: 'After Diocese Events' },
+  { value: 'before-footer',  label: 'Before Footer' },
+];
+
+/* ═══════════════════════════════════════════════
    DATE HELPERS
 ═══════════════════════════════════════════════ */
 function parseDt(s) {
-  const c = s.replace('Z','');
-  const y=+c.substr(0,4), mo=+c.substr(4,2)-1, d=+c.substr(6,2);
-  const h=c.length>8?+c.substr(9,2):0, m=c.length>11?+c.substr(11,2):0;
-  return new Date(y,mo,d,h,m);
+  const c=s.replace('Z','');
+  return new Date(+c.substr(0,4),+c.substr(4,2)-1,+c.substr(6,2),
+                  c.length>8?+c.substr(9,2):0, c.length>11?+c.substr(11,2):0);
 }
 function formatTime(dt) {
-  let h=dt.getHours(), m=dt.getMinutes();
-  const ap=h>=12?'p.m.':'a.m.'; h=h%12||12;
-  return `${h}:${String(m).padStart(2,'0')} ${ap}`;
+  let h=dt.getHours(),m=dt.getMinutes(); const ap=h>=12?'p.m.':'a.m.';
+  h=h%12||12; return `${h}:${String(m).padStart(2,'0')} ${ap}`;
 }
-function formatDateMeta(dt, hasTime, loc) {
-  const parts=[`${DAY_NAMES[dt.getDay()]}, ${MONTH_NAMES[dt.getMonth()]} ${dt.getDate()}`];
-  if (hasTime) parts.push(formatTime(dt));
-  if (loc) parts.push(loc);
-  return parts.join(' &bull; ');
+function formatDateMeta(dt,hasTime,loc) {
+  const p=[`${DAY_NAMES[dt.getDay()]}, ${MONTH_NAMES[dt.getMonth()]} ${dt.getDate()}`];
+  if(hasTime) p.push(formatTime(dt));
+  if(loc) p.push(loc);
+  return p.join(' &bull; ');
 }
 
 /* ═══════════════════════════════════════════════
    ICS PARSER
 ═══════════════════════════════════════════════ */
-function unescapeICS(s) {
-  return s.replace(/\\n/g,'\n').replace(/\\,/g,',').replace(/\\;/g,';').replace(/\\\\/g,'\\');
-}
+function unescapeICS(s){ return s.replace(/\\n/g,'\n').replace(/\\,/g,',').replace(/\\;/g,';').replace(/\\\\/g,'\\'); }
 function parseICS(text) {
-  const lines = text.replace(/\r?\n[ \t]/g,'').split(/\r?\n/);
+  const lines=text.replace(/\r?\n[ \t]/g,'').split(/\r?\n/);
   const events=[]; let ev=null;
-  for (const raw of lines) {
+  for(const raw of lines){
     const ci=raw.indexOf(':'); if(ci===-1) continue;
     const keyFull=raw.slice(0,ci).trim(), val=raw.slice(ci+1);
     const key=keyFull.split(';')[0].toUpperCase();
@@ -317,11 +320,10 @@ function parseICS(text) {
       case 'URL':         ev.url=v;         break;
       case 'CATEGORIES':  ev.categories=v.toUpperCase().split(',').map(s=>s.trim()); break;
       case 'X-IMAGE':     ev.image=v;       break;
-      case 'DTSTART': {
+      case 'DTSTART':
         ev.dtstart=parseDt(val.trim());
         ev.hasTime=!(params.includes('VALUE=DATE')||!val.includes('T'));
         break;
-      }
     }
   }
   events.forEach(processEvent);
@@ -334,12 +336,9 @@ function processEvent(ev) {
     if(m) ev.url=m[1];
   }
   let desc=raw.replace(/<[^>]+>/g,'');
-  desc=desc.replace(/&quot;/g,'"').replace(/&amp;/g,'&').replace(/&#39;/g,"'")
-           .replace(/&lt;/g,'<').replace(/&gt;/g,'>');
+  desc=desc.replace(/&quot;/g,'"').replace(/&amp;/g,'&').replace(/&#39;/g,"'").replace(/&lt;/g,'<').replace(/&gt;/g,'>');
   if(!ev.image){
-    desc=desc.replace(/\[image:\s*"?([^"\]\n]+?)"?\s*\]/gi,(_,p)=>{
-      const p2=p.trim(); ev.image=p2.includes('/')?p2:'images/'+p2; return '';
-    });
+    desc=desc.replace(/\[image:\s*"?([^"\]\n]+?)"?\s*\]/gi,(_,p)=>{ const p2=p.trim(); ev.image=p2.includes('/')?p2:'images/'+p2; return ''; });
   }
   desc=desc.replace(/RSVP:\s*[^\n]*/gi,'');
   const tagCats=[];
@@ -352,270 +351,613 @@ function processEvent(ev) {
 }
 
 /* ═══════════════════════════════════════════════
-   EMAIL HTML BUILDER
+   RESOLVE — apply overrides to events
+═══════════════════════════════════════════════ */
+function resolveEvents() {
+  const today=new Date(); today.setHours(0,0,0,0);
+  return state.rawEvents
+    .filter(e=>!state.hiddenEvents.has(e.summary))
+    .map(e=>({
+      ...e,
+      description: state.overrides.eventDesc[e.summary] ?? e.description,
+      image:        state.overrides.eventImg[e.summary]  ?? e.image,
+    }));
+}
+function categorise(events) {
+  const today=new Date(); today.setHours(0,0,0,0);
+  return {
+    past:     events.filter(e=>e.categories.includes('PAST')).sort((a,b)=>b.dtstart-a.dtstart),
+    upcoming: events.filter(e=>e.categories.includes('UPCOMING')&&e.dtstart>=today).sort((a,b)=>a.dtstart-b.dtstart),
+    diocese:  events.filter(e=>e.categories.includes('DIOCESE')&&e.dtstart>=today).sort((a,b)=>a.dtstart-b.dtstart),
+  };
+}
+
+/* ═══════════════════════════════════════════════
+   HELPERS
 ═══════════════════════════════════════════════ */
 function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-
-function imgUrl(src) {
-  if (!src) return '';
-  if (src.startsWith('http')) return src;
-  const base = document.getElementById('cfg-base-url').value.replace(/\/$/,'');
-  return `${base}/${src.replace(/^\//,'')}`;
+function imgUrl(src){
+  if(!src) return '';
+  if(src.startsWith('http')) return src;
+  return `${state.overrides.baseUrl.replace(/\/$/,'')}/${src.replace(/^\//,'')}`;
 }
-function cfgVal(id) { return document.getElementById(id).value.trim(); }
+function isHidden(id){ return state.hiddenSections.has(id); }
 
-function buildEmail(events) {
-  const today = new Date(); today.setHours(0,0,0,0);
-  const past     = events.filter(e=>e.categories.includes('PAST')).sort((a,b)=>b.dtstart-a.dtstart);
-  const upcoming = events.filter(e=>e.categories.includes('UPCOMING')&&e.dtstart>=today).sort((a,b)=>a.dtstart-b.dtstart);
-  const diocese  = events.filter(e=>e.categories.includes('DIOCESE')&&e.dtstart>=today).sort((a,b)=>a.dtstart-b.dtstart);
-  return [
-    shellOpen(), header(), hero(), welcome(),
-    past.length     ? sectionPast(past)         : '',
-    upcoming.length ? sectionUpcoming(upcoming) : '',
-    diocese.length  ? sectionDiocese(diocese)   : '',
-    footer(), shellClose(),
-  ].join('\n');
+/* ═══════════════════════════════════════════════
+   PREVIEW RENDERER  (div-based, click-friendly)
+═══════════════════════════════════════════════ */
+function buildPreview() {
+  const events = resolveEvents();
+  const { past, upcoming, diocese } = categorise(events);
+  const o = state.overrides;
+
+  const blocks = [];
+
+  if(!isHidden('header'))   blocks.push(pvSection('header', pvHeader(o)));
+  if(!isHidden('hero'))     blocks.push(pvSection('hero', pvHero(o)));
+  if(!isHidden('welcome'))  blocks.push(pvSection('welcome', pvWelcome(o)));
+  blocksAt('after-welcome').forEach(b=>blocks.push(pvCustomBlock(b)));
+  if(!isHidden('past')&&past.length)         blocks.push(pvSection('past', pvPast(past, o)));
+  blocksAt('after-past').forEach(b=>blocks.push(pvCustomBlock(b)));
+  if(!isHidden('upcoming')&&upcoming.length) blocks.push(pvSection('upcoming', pvUpcoming(upcoming, o)));
+  blocksAt('after-upcoming').forEach(b=>blocks.push(pvCustomBlock(b)));
+  if(!isHidden('diocese')&&diocese.length)   blocks.push(pvSection('diocese', pvDiocese(diocese, o)));
+  blocksAt('after-diocese').forEach(b=>blocks.push(pvCustomBlock(b)));
+  blocksAt('before-footer').forEach(b=>blocks.push(pvCustomBlock(b)));
+  if(!isHidden('footer'))   blocks.push(pvSection('footer', pvFooter()));
+
+  return `<!DOCTYPE html><html><head>
+<meta charset="UTF-8">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:#f0f1f5;font-family:Verdana,Geneva,sans-serif;}
+.ew{max-width:600px;margin:16px auto;border-radius:6px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.1);}
+.ps{cursor:pointer;position:relative;outline:2px solid transparent;transition:outline-color .12s;}
+.ps:hover{outline-color:rgba(26,98,255,.35);}
+.ps.sel{outline-color:#1a62ff;}
+.ps-tag{position:absolute;top:0;left:0;background:#1a62ff;color:#fff;font-family:sans-serif;
+        font-size:9px;font-weight:700;padding:2px 7px;letter-spacing:.04em;text-transform:uppercase;
+        opacity:0;transition:opacity .12s;pointer-events:none;border-radius:0 0 3px 0;z-index:5;}
+.ps:hover .ps-tag,.ps.sel .ps-tag{opacity:1;}
+.two-col{display:flex;gap:20px;}
+.two-col .col{flex:1;min-width:0;}
+</style>
+</head><body>
+<div class="ew">${blocks.join('\n')}</div>
+<script>
+window.addEventListener('message',e=>{
+  if(e.data.type==='select'){
+    document.querySelectorAll('.ps').forEach(el=>el.classList.remove('sel'));
+    if(e.data.id){ const el=document.querySelector('[data-s="'+e.data.id+'"]'); if(el){el.classList.add('sel');el.scrollIntoView({behavior:'smooth',block:'nearest'});} }
+  }
+});
+document.querySelectorAll('.ps').forEach(el=>{
+  el.addEventListener('click',e=>{e.stopPropagation();window.parent.postMessage({type:'sectionClick',id:el.dataset.s},'*');});
+});
+<\/script>
+</body></html>`;
 }
 
-function shellOpen() {
+function blocksAt(pos){ return state.customBlocks.filter(b=>b.position===pos); }
+
+function pvSection(id, content) {
+  const label = FIXED_SECTIONS.find(s=>s.id===id)?.label || id;
+  return `<div class="ps" data-s="${id}"><div class="ps-tag">${label}</div>${content}</div>`;
+}
+function pvCustomBlock(b) {
+  return `<div class="ps" data-s="block-${b.id}" style="background:${C.cream};padding:20px 32px;border-top:1px solid ${C.border};">
+    <div class="ps-tag">Text Block</div>
+    ${b.title?`<p style="font-family:${FH};font-size:15px;font-weight:700;color:${C.navy};margin-bottom:10px;">${esc(b.title)}</p>`:''}
+    <p style="font-family:${FB};font-size:13px;line-height:1.7;color:${C.brown};">${esc(b.body||'')}</p>
+  </div>`;
+}
+function pvHeader(o){
+  return `<div style="background:${C.navy};padding:20px 24px;text-align:center;">
+    <p style="font-family:${FH};font-size:18px;font-weight:800;color:#fff;letter-spacing:.06em;text-transform:uppercase;">DC EPISCOPAL FELLOWSHIP</p>
+    <p style="font-family:${FH};font-size:13px;font-weight:600;color:rgba(255,255,255,.75);letter-spacing:.04em;text-transform:uppercase;margin-top:6px;">${esc(o.season)}</p>
+  </div>`;
+}
+function pvHero(o){
+  const url=imgUrl(o.heroUrl);
+  return url?`<div style="font-size:0;"><img src="${esc(url)}" style="display:block;width:100%;height:auto;"></div>`
+            :`<div style="background:#1a2a4a;height:160px;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.4);font-family:${FH};font-size:12px;">No hero image set</div>`;
+}
+function pvWelcome(o){
+  return `<div style="background:${C.cream};padding:28px 32px 24px;">
+    <p style="font-family:${FB};font-size:14px;line-height:1.75;color:${C.brown};">${esc(o.welcomeText)}</p>
+  </div>`;
+}
+function pvPast(past,o){
+  const cells=past.map(ev=>{
+    const label=`${MONTH_NAMES[ev.dtstart.getMonth()]} ${ev.dtstart.getFullYear()}`+(ev.location?` — ${ev.location.split(',')[0]}`:'');
+    const img=ev.image?`<img src="${esc(imgUrl(ev.image))}" style="display:block;width:100%;height:140px;object-fit:cover;border-radius:3px;margin-bottom:10px;">`:'';
+    return `<div class="col">${img}<p style="font-family:${FH};font-size:10px;font-weight:700;color:${C.navy};text-transform:uppercase;letter-spacing:.04em;margin-bottom:3px;">${esc(label)}</p>
+      <p style="font-family:${FH};font-size:13px;font-weight:700;color:${C.navy};margin-bottom:6px;">${esc(ev.summary)}</p>
+      <p style="font-family:${FB};font-size:12px;line-height:1.65;color:${C.brown};">${esc(ev.description||'')}</p></div>`;
+  });
+  const rows=[];
+  for(let i=0;i<cells.length;i+=2) rows.push(`<div class="two-col">${cells[i]}${cells[i+1]||'<div class="col"></div>'}</div>`);
+  return `<div style="background:${C.sand};padding:12px 32px;"><p style="font-family:${FH};font-size:17px;font-weight:700;color:${C.navy};">Looking Back</p></div>
+    <div style="background:${C.cream};padding:16px 24px 20px;">${rows.join('<div style="height:16px;"></div>')}</div>`;
+}
+function pvUpcoming(upcoming,o){
+  const cards=upcoming.map(ev=>{
+    const meta=formatDateMeta(ev.dtstart,ev.hasTime,ev.location);
+    const img=ev.image?`<img src="${esc(imgUrl(ev.image))}" style="display:block;width:100%;max-height:240px;object-fit:cover;margin-bottom:0;">`:'';
+    const btn=ev.url?`<a href="${esc(ev.url)}" style="display:inline-block;background:${C.navy};color:#fff;font-family:${FH};font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;text-decoration:none;padding:9px 20px;border-radius:3px;">RSVP Here</a>`:'';
+    return `<div style="border-top:1px solid ${C.border};">${img}
+      <div style="padding:18px 24px 20px;">
+        <p style="font-family:${FH};font-size:16px;font-weight:700;color:${C.navy};margin-bottom:5px;">${esc(ev.summary)}</p>
+        <p style="font-family:${FH};font-size:11px;font-weight:700;color:${C.brown};margin-bottom:9px;">${meta}</p>
+        <p style="font-family:${FB};font-size:13px;line-height:1.7;color:${C.brown};margin-bottom:${btn?'13px':'0'};">${esc(ev.description||'')}</p>
+        ${btn}
+      </div></div>`;
+  });
+  return `<div style="background:${C.sand};padding:12px 32px;"><p style="font-family:${FH};font-size:17px;font-weight:700;color:${C.navy};">Upcoming Events</p></div>
+    <div style="background:${C.cream};padding:14px 24px 8px;"><p style="font-family:${FB};font-size:13px;line-height:1.7;color:${C.brown};">${esc(o.upcomingIntro)}</p></div>
+    <div style="background:${C.cream};">${cards.join('')}</div>`;
+}
+function pvDiocese(diocese,o){
+  const cells=diocese.map(ev=>{
+    const meta=formatDateMeta(ev.dtstart,ev.hasTime,ev.location);
+    const img=ev.image?`<img src="${esc(imgUrl(ev.image))}" style="display:block;width:100%;max-height:140px;object-fit:cover;border-radius:3px;margin-bottom:8px;">`:'';
+    const link=ev.url?` <a href="${esc(ev.url)}" style="color:${C.blue};text-decoration:none;">Learn more</a>`:'';
+    return `<div class="col">${img}<p style="font-family:${FH};font-size:13px;font-weight:700;color:${C.navy};margin-bottom:3px;">${esc(ev.summary)}</p>
+      <p style="font-family:${FH};font-size:10px;font-weight:700;color:${C.brown};margin-bottom:6px;">${meta}</p>
+      <p style="font-family:${FB};font-size:12px;line-height:1.65;color:${C.brown};">${esc(ev.description||'')}${link}</p></div>`;
+  });
+  const rows=[];
+  for(let i=0;i<cells.length;i+=2) rows.push(`<div class="two-col">${cells[i]}${cells[i+1]||'<div class="col"></div>'}</div>`);
+  return `<div style="background:${C.sand};padding:12px 32px;"><p style="font-family:${FH};font-size:17px;font-weight:700;color:${C.navy};">Events Around the Diocese</p></div>
+    <div style="background:${C.cream};padding:14px 24px 8px;"><p style="font-family:${FB};font-size:13px;line-height:1.7;color:${C.brown};">${esc(o.dioceseIntro)}</p></div>
+    <div style="background:${C.cream};padding:12px 24px 16px;">${rows.join('<div style="height:16px;"></div>')}</div>`;
+}
+function pvFooter(){
+  return `<div style="background:${C.navy};padding:22px 32px;text-align:center;">
+    <p style="font-family:${FH};font-size:12px;color:rgba(255,255,255,.8);line-height:1.7;">
+      Forwarded this email? Email <a href="mailto:dcepiscopalfellowship@gmail.com" style="color:#fff;">dcepiscopalfellowship@gmail.com</a> to get on the email list!
+    </p></div>`;
+}
+
+/* ═══════════════════════════════════════════════
+   EMAIL EXPORT RENDERER  (table-based, clean)
+═══════════════════════════════════════════════ */
+function buildEmail() {
+  const events=resolveEvents(); const {past,upcoming,diocese}=categorise(events); const o=state.overrides;
+  const parts=[emailShellOpen(o)];
+  if(!isHidden('header'))   parts.push(emailHeader(o));
+  if(!isHidden('hero'))     parts.push(emailHero(o));
+  if(!isHidden('welcome'))  parts.push(emailWelcome(o));
+  blocksAt('after-welcome').forEach(b=>parts.push(emailCustomBlock(b)));
+  if(!isHidden('past')&&past.length)         parts.push(emailPast(past));
+  blocksAt('after-past').forEach(b=>parts.push(emailCustomBlock(b)));
+  if(!isHidden('upcoming')&&upcoming.length) parts.push(emailUpcoming(upcoming,o));
+  blocksAt('after-upcoming').forEach(b=>parts.push(emailCustomBlock(b)));
+  if(!isHidden('diocese')&&diocese.length)   parts.push(emailDiocese(diocese,o));
+  blocksAt('after-diocese').forEach(b=>parts.push(emailCustomBlock(b)));
+  blocksAt('before-footer').forEach(b=>parts.push(emailCustomBlock(b)));
+  if(!isHidden('footer'))   parts.push(emailFooter());
+  parts.push(emailShellClose());
+  return parts.join('\n');
+}
+function emailShellOpen(o){
   return `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
-<head>
+<html xmlns="http://www.w3.org/1999/xhtml"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<meta name="format-detection" content="telephone=no,date=no,address=no,email=no">
-<title>DC Episcopal Fellowship &mdash; ${esc(cfgVal('cfg-season'))}</title>
+<title>DC Episcopal Fellowship &mdash; ${esc(o.season)}</title>
 <style>
 body,table,td{-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;}
-table,td{mso-table-lspace:0pt;mso-table-rspace:0pt;}
-img{-ms-interpolation-mode:bicubic;border:0;outline:none;text-decoration:none;}
-body{margin:0;padding:0;background-color:${C.page};}
-a{color:${C.blue};}
-@media screen and (max-width:600px){
-  .email-body{width:100%!important;}
-  .col-half{display:block!important;width:100%!important;padding:16px 20px!important;}
-  .col-spacer{display:none!important;}
-  .rsvp-btn{display:block!important;text-align:center!important;}
-}
-</style>
-</head>
+img{border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic;}
+body{margin:0;padding:0;background-color:${C.page};}a{color:${C.blue};}
+@media screen and (max-width:600px){.email-body{width:100%!important;}.col-half{display:block!important;width:100%!important;padding:16px 18px!important;}.col-spacer{display:none!important;}.rsvp-btn{display:block!important;text-align:center!important;}}
+</style></head>
 <body style="margin:0;padding:0;background-color:${C.page};">
-<table width="100%" border="0" cellpadding="0" cellspacing="0" style="background-color:${C.page};">
-<tr><td align="center" style="padding:24px 0;">
-<table class="email-body" width="600" border="0" cellpadding="0" cellspacing="0"
-  style="max-width:600px;width:100%;background-color:${C.cream};border-radius:6px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.10);">`;
+<table width="100%" border="0" cellpadding="0" cellspacing="0" style="background-color:${C.page};"><tr><td align="center" style="padding:24px 0;">
+<table class="email-body" width="600" border="0" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background-color:${C.cream};border-radius:6px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.10);">`;
 }
-function shellClose() { return `</table></td></tr></table></body></html>`; }
-
-function header() {
+function emailShellClose(){ return `</table></td></tr></table></body></html>`; }
+function emailDiv(){ return `<tr><td style="font-size:0;height:1px;background-color:${C.border};">&nbsp;</td></tr>`; }
+function emailHeader(o){
   return `<tr><td bgcolor="${C.navy}" style="background-color:${C.navy};padding:20px 24px;text-align:center;">
-  <p style="margin:0;font-family:${FH};font-size:18px;font-weight:800;color:${C.white};letter-spacing:.06em;text-transform:uppercase;">DC EPISCOPAL FELLOWSHIP</p>
-  <p style="margin:6px 0 0;font-family:${FH};font-size:13px;font-weight:600;color:rgba(255,255,255,.75);letter-spacing:.04em;text-transform:uppercase;">${esc(cfgVal('cfg-season'))}</p>
+  <p style="margin:0;font-family:${FH};font-size:18px;font-weight:800;color:#fff;letter-spacing:.06em;text-transform:uppercase;">DC EPISCOPAL FELLOWSHIP</p>
+  <p style="margin:6px 0 0;font-family:${FH};font-size:13px;font-weight:600;color:rgba(255,255,255,.75);letter-spacing:.04em;text-transform:uppercase;">${esc(o.season)}</p>
 </td></tr>`;
 }
-function hero() {
-  const url = imgUrl(cfgVal('cfg-hero'));
-  if (!url) return '';
-  return `<tr><td style="padding:0;font-size:0;line-height:0;">
-  <img src="${esc(url)}" width="600" alt="DC Episcopal Fellowship" style="display:block;width:100%;max-width:600px;height:auto;">
+function emailHero(o){
+  const url=imgUrl(o.heroUrl); if(!url) return '';
+  return `<tr><td style="padding:0;font-size:0;line-height:0;"><img src="${esc(url)}" width="600" alt="DC Episcopal Fellowship" style="display:block;width:100%;max-width:600px;height:auto;"></td></tr>`;
+}
+function emailWelcome(o){
+  return `<tr><td style="padding:28px 36px 24px;background-color:${C.cream};">
+  <p style="margin:0;font-family:${FB};font-size:14px;line-height:1.75;color:${C.brown};">${esc(o.welcomeText)}</p>
 </td></tr>`;
 }
-function welcome() {
-  return `<tr><td style="background-color:${C.cream};padding:28px 36px 24px;">
-  <p style="margin:0;font-family:${FB};font-size:14px;line-height:1.75;color:${C.brown};">${esc(cfgVal('cfg-welcome'))}</p>
+function emailCustomBlock(b){
+  return emailDiv()+`<tr><td style="background-color:${C.cream};padding:20px 36px;">
+  ${b.title?`<p style="margin:0 0 10px;font-family:${FH};font-size:16px;font-weight:700;color:${C.navy};">${esc(b.title)}</p>`:''}
+  <p style="margin:0;font-family:${FB};font-size:13px;line-height:1.75;color:${C.brown};">${esc(b.body||'')}</p>
 </td></tr>`;
 }
-
-function sectionHead(title) {
+function emailSectionHead(title){
   return `<tr><td bgcolor="${C.sand}" style="background-color:${C.sand};padding:14px 36px;">
   <p style="margin:0;font-family:${FH};font-size:18px;font-weight:700;color:${C.navy};letter-spacing:.03em;">${esc(title)}</p>
 </td></tr>`;
 }
-function divider() {
-  return `<tr><td style="font-size:0;height:1px;background-color:${C.border};">&nbsp;</td></tr>`;
+function emailTwoColRow(cellA,cellB){
+  const gap=cellB?`<td class="col-spacer" width="16" style="width:16px;">&nbsp;</td>`:`<td width="268" style="width:268px;">&nbsp;</td>`;
+  return `<tr><td style="padding:0 20px;background-color:${C.cream};"><table width="100%" border="0" cellpadding="0" cellspacing="0"><tr>${cellA}${gap}${cellB||''}</tr></table></td></tr>`;
 }
-function twoColRow(cellA, cellB) {
-  const gap = cellB
-    ? `<td class="col-spacer" width="16" style="width:16px;">&nbsp;</td>`
-    : `<td width="268" style="width:268px;">&nbsp;</td>`;
-  return `<tr><td style="padding:0 20px;"><table width="100%" border="0" cellpadding="0" cellspacing="0"><tr>${cellA}${gap}${cellB||''}</tr></table></td></tr>`;
-}
-
-function sectionPast(past) {
-  const cell = ev => {
-    const label = `${MONTH_NAMES[ev.dtstart.getMonth()]} ${ev.dtstart.getFullYear()}`
-                + (ev.location ? ` &mdash; ${esc(ev.location.split(',')[0])}` : '');
-    const img = ev.image
-      ? `<img src="${esc(imgUrl(ev.image))}" width="252" alt="${esc(ev.summary)}" style="display:block;width:100%;max-width:252px;height:160px;object-fit:cover;border-radius:3px;margin-bottom:12px;">`
-      : '';
-    return `<td class="col-half" valign="top" width="252" style="width:252px;padding:18px 0 22px;vertical-align:top;">
-      ${img}
+function emailPast(past){
+  const cell=ev=>{
+    const label=`${MONTH_NAMES[ev.dtstart.getMonth()]} ${ev.dtstart.getFullYear()}`+(ev.location?` &mdash; ${esc(ev.location.split(',')[0])}`: '');
+    const img=ev.image?`<img src="${esc(imgUrl(ev.image))}" width="252" alt="${esc(ev.summary)}" style="display:block;width:100%;max-width:252px;height:160px;object-fit:cover;border-radius:3px;margin-bottom:12px;">`:'';
+    return `<td class="col-half" valign="top" width="252" style="width:252px;padding:18px 0 22px;vertical-align:top;">${img}
       <p style="margin:0 0 4px;font-family:${FH};font-size:11px;font-weight:700;color:${C.navy};text-transform:uppercase;letter-spacing:.04em;">${label}</p>
       <p style="margin:0 0 8px;font-family:${FH};font-size:14px;font-weight:700;color:${C.navy};line-height:1.25;">${esc(ev.summary)}</p>
       <p style="margin:0;font-family:${FB};font-size:13px;line-height:1.7;color:${C.brown};">${esc(ev.description||'')}</p>
     </td>`;
   };
-  const rows = [];
-  for (let i=0; i<past.length; i+=2) rows.push(twoColRow(cell(past[i]), past[i+1]?cell(past[i+1]):null));
-  return sectionHead('Looking Back') + rows.join('');
+  const rows=[];
+  for(let i=0;i<past.length;i+=2) rows.push(emailTwoColRow(cell(past[i]),past[i+1]?cell(past[i+1]):null));
+  return emailSectionHead('Looking Back')+rows.join('');
 }
-
-function sectionUpcoming(upcoming) {
-  const cards = upcoming.map(ev => {
-    const meta   = formatDateMeta(ev.dtstart, ev.hasTime, ev.location);
-    const imgTag = ev.image
-      ? `<tr><td style="padding:0;font-size:0;line-height:0;"><img src="${esc(imgUrl(ev.image))}" width="600" alt="${esc(ev.summary)}" style="display:block;width:100%;max-width:600px;height:auto;max-height:280px;object-fit:cover;"></td></tr>`
-      : '';
-    const btn = ev.url
-      ? `<tr><td style="padding:6px 0 0;"><a class="rsvp-btn" href="${esc(ev.url)}" style="display:inline-block;background-color:${C.navy};color:${C.white};font-family:${FH};font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;text-decoration:none;padding:10px 22px;border-radius:3px;">RSVP Here</a></td></tr>`
-      : '';
-    return divider() + `<tr><td style="background-color:${C.cream};">
-      <table width="100%" border="0" cellpadding="0" cellspacing="0">
-        ${imgTag}
-        <tr><td style="padding:20px 28px 22px;">
-          <p style="margin:0 0 6px;font-family:${FH};font-size:17px;font-weight:700;color:${C.navy};line-height:1.25;">${esc(ev.summary)}</p>
-          <p style="margin:0 0 10px;font-family:${FH};font-size:12px;font-weight:700;color:${C.brown};letter-spacing:.03em;">${meta}</p>
-          <p style="margin:0 0 14px;font-family:${FB};font-size:13px;line-height:1.7;color:${C.brown};">${esc(ev.description||'')}</p>
-          <table border="0" cellpadding="0" cellspacing="0">${btn}</table>
-        </td></tr>
-      </table>
-    </td></tr>`;
+function emailUpcoming(upcoming,o){
+  const cards=upcoming.map(ev=>{
+    const meta=formatDateMeta(ev.dtstart,ev.hasTime,ev.location);
+    const img=ev.image?`<tr><td style="padding:0;font-size:0;"><img src="${esc(imgUrl(ev.image))}" width="600" alt="${esc(ev.summary)}" style="display:block;width:100%;max-width:600px;height:auto;max-height:280px;object-fit:cover;"></td></tr>`:'';
+    const btn=ev.url?`<tr><td style="padding:6px 0 0;"><a class="rsvp-btn" href="${esc(ev.url)}" style="display:inline-block;background-color:${C.navy};color:#fff;font-family:${FH};font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;text-decoration:none;padding:10px 22px;border-radius:3px;">RSVP Here</a></td></tr>`:'';
+    return emailDiv()+`<tr><td style="background-color:${C.cream};"><table width="100%" border="0" cellpadding="0" cellspacing="0">${img}<tr><td style="padding:20px 28px 22px;">
+      <p style="margin:0 0 6px;font-family:${FH};font-size:17px;font-weight:700;color:${C.navy};line-height:1.25;">${esc(ev.summary)}</p>
+      <p style="margin:0 0 10px;font-family:${FH};font-size:12px;font-weight:700;color:${C.brown};letter-spacing:.03em;">${meta}</p>
+      <p style="margin:0 0 14px;font-family:${FB};font-size:13px;line-height:1.7;color:${C.brown};">${esc(ev.description||'')}</p>
+      <table border="0" cellpadding="0" cellspacing="0">${btn}</table>
+    </td></tr></table></td></tr>`;
   });
-  return sectionHead('Upcoming Events')
-    + `<tr><td style="padding:16px 28px 8px;"><p style="margin:0;font-family:${FB};font-size:14px;line-height:1.75;color:${C.brown};">${cfgVal('cfg-upcoming-intro')}</p></td></tr>`
-    + cards.join('');
+  return emailSectionHead('Upcoming Events')
+    +`<tr><td style="padding:16px 28px 8px;background-color:${C.cream};"><p style="margin:0;font-family:${FB};font-size:14px;line-height:1.75;color:${C.brown};">${esc(o.upcomingIntro)}</p></td></tr>`
+    +cards.join('');
 }
-
-function sectionDiocese(diocese) {
-  const cell = ev => {
-    const meta = formatDateMeta(ev.dtstart, ev.hasTime, ev.location);
-    const img  = ev.image
-      ? `<img src="${esc(imgUrl(ev.image))}" width="252" alt="${esc(ev.summary)}" style="display:block;width:100%;max-width:252px;height:auto;max-height:180px;object-fit:cover;border-radius:3px;margin-bottom:10px;">`
-      : '';
-    const link = ev.url ? ` <a href="${esc(ev.url)}" style="color:${C.blue};text-decoration:none;">Learn more</a>` : '';
-    return `<td class="col-half" valign="top" width="252" style="width:252px;padding:16px 0 20px;vertical-align:top;">
-      ${img}
+function emailDiocese(diocese,o){
+  const cell=ev=>{
+    const meta=formatDateMeta(ev.dtstart,ev.hasTime,ev.location);
+    const img=ev.image?`<img src="${esc(imgUrl(ev.image))}" width="252" alt="${esc(ev.summary)}" style="display:block;width:100%;max-width:252px;height:auto;max-height:180px;object-fit:cover;border-radius:3px;margin-bottom:10px;">`:'';
+    const link=ev.url?` <a href="${esc(ev.url)}" style="color:${C.blue};text-decoration:none;">Learn more</a>`:'';
+    return `<td class="col-half" valign="top" width="252" style="width:252px;padding:16px 0 20px;vertical-align:top;">${img}
       <p style="margin:0 0 4px;font-family:${FH};font-size:14px;font-weight:700;color:${C.navy};line-height:1.25;">${esc(ev.summary)}</p>
       <p style="margin:0 0 8px;font-family:${FH};font-size:11px;font-weight:700;color:${C.brown};letter-spacing:.03em;">${meta}</p>
       <p style="margin:0;font-family:${FB};font-size:13px;line-height:1.7;color:${C.brown};">${esc(ev.description||'')}${link}</p>
     </td>`;
   };
-  const rows = [];
-  for (let i=0; i<diocese.length; i+=2) rows.push(twoColRow(cell(diocese[i]), diocese[i+1]?cell(diocese[i+1]):null));
-  return sectionHead('Events Around the Diocese')
-    + `<tr><td style="padding:14px 28px 4px;"><p style="margin:0;font-family:${FB};font-size:14px;line-height:1.75;color:${C.brown};">${cfgVal('cfg-diocese-intro')}</p></td></tr>`
-    + rows.join('');
+  const rows=[];
+  for(let i=0;i<diocese.length;i+=2) rows.push(emailTwoColRow(cell(diocese[i]),diocese[i+1]?cell(diocese[i+1]):null));
+  return emailSectionHead('Events Around the Diocese')
+    +`<tr><td style="padding:14px 28px 4px;background-color:${C.cream};"><p style="margin:0;font-family:${FB};font-size:14px;line-height:1.75;color:${C.brown};">${esc(o.dioceseIntro)}</p></td></tr>`
+    +rows.join('');
 }
-
-function footer() {
-  return divider() + `<tr><td bgcolor="${C.navy}" style="background-color:${C.navy};padding:24px 36px;text-align:center;">
+function emailFooter(){
+  return emailDiv()+`<tr><td bgcolor="${C.navy}" style="background-color:${C.navy};padding:24px 36px;text-align:center;">
   <p style="margin:0;font-family:${FH};font-size:13px;color:rgba(255,255,255,.8);line-height:1.7;">
-    Forwarded this email? Email
-    <a href="mailto:dcepiscopalfellowship@gmail.com" style="color:#ffffff;">dcepiscopalfellowship@gmail.com</a>
-    to get on the email list!
-  </p>
-</td></tr>`;
+    Forwarded this email? Email <a href="mailto:dcepiscopalfellowship@gmail.com" style="color:#ffffff;">dcepiscopalfellowship@gmail.com</a> to get on the email list!
+  </p></td></tr>`;
 }
 
 /* ═══════════════════════════════════════════════
-   UI
+   SIDEBAR RENDERER
 ═══════════════════════════════════════════════ */
-let generatedHTML = '';
-let cachedEvents  = null;
+function renderSidebarList() {
+  const today=new Date(); today.setHours(0,0,0,0);
+  const events=resolveEvents(); const {past,upcoming,diocese}=categorise(events);
+  const counts={'past':past.length,'upcoming':upcoming.length,'diocese':diocese.length};
 
-function setStatus(msg) { document.getElementById('status').textContent = msg; }
+  let html='';
+  const allSections=[
+    ...FIXED_SECTIONS.filter(s=>s.id!=='footer'),
+    ...state.customBlocks.map(b=>({id:`block-${b.id}`,label:b.title||'Text Block',isCustom:true})),
+    {id:'footer',label:'Footer'},
+  ];
 
-function showPreview(html) {
-  generatedHTML = html;
-  const frame = document.getElementById('preview-frame');
-  frame.srcdoc = html;
-  frame.onload = () => {
-    try { frame.style.height = (frame.contentDocument.documentElement.scrollHeight + 4) + 'px'; }
-    catch(e) { frame.style.height = '1400px'; }
-  };
-  frame.style.display = 'block';
-  document.getElementById('loading-msg').style.display = 'none';
-  document.getElementById('btn-copy').disabled     = false;
-  document.getElementById('btn-download').disabled = false;
+  for(const s of allSections){
+    const hidden=isHidden(s.id);
+    const sel=state.selected===s.id;
+    const count=counts[s.id];
+    html+=`<div class="section-row${sel?' selected':''}${hidden?' hidden-section':''}${s.isCustom?' custom-block':''}"
+              data-sid="${s.id}" onclick="selectSection('${s.id}')">
+      <span class="section-row-label">${esc(s.label)}</span>
+      ${count?`<span class="badge">${count}</span>`:''}
+      <button class="vis-btn" title="${hidden?'Show':'Hide'}" onclick="event.stopPropagation();toggleSection('${s.id}')">${hidden?'○':'●'}</button>
+    </div>`;
+  }
+  document.getElementById('sections-list').innerHTML=html;
 }
 
-function regenerate() {
-  if (cachedEvents) showPreview(buildEmail(cachedEvents));
-}
+function renderEditPanel() {
+  const panel=document.getElementById('edit-panel');
+  const id=state.selected;
+  if(!id){ panel.innerHTML=`<div class="edit-panel-empty">Click a section<br>to edit it</div>`; return; }
 
-function applyEvents(text, source) {
-  cachedEvents = parseICS(text);
-  const today = new Date(); today.setHours(0,0,0,0);
-  const u = cachedEvents.filter(e=>e.categories.includes('UPCOMING')&&e.dtstart>=today).length;
-  const p = cachedEvents.filter(e=>e.categories.includes('PAST')).length;
-  const d = cachedEvents.filter(e=>e.categories.includes('DIOCESE')&&e.dtstart>=today).length;
-  setStatus(`${u} upcoming · ${p} past · ${d} diocese${source ? ' — ' + source : ''}`);
-  document.getElementById('btn-regenerate').disabled = false;
-  showPreview(buildEmail(cachedEvents));
-}
-
-async function loadAndRender() {
-  setStatus('Fetching calendar…');
-
-  // ── 1. Try live proxies ──
-  for (const proxy of CORS_PROXIES) {
-    try {
-      const res = await fetch(proxy(GCAL_ICS_URL), { cache: 'no-store' });
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const text = await res.text();
-      if (!text.includes('BEGIN:VCALENDAR')) throw new Error('Invalid ICS');
-      applyEvents(text);
-      return;
-    } catch(err) { console.warn('Proxy failed:', err); }
+  // Custom block
+  if(id.startsWith('block-')){
+    const bid=parseInt(id.replace('block-',''));
+    const b=state.customBlocks.find(x=>x.id===bid);
+    if(!b){ panel.innerHTML=`<div class="edit-panel-empty">Block not found</div>`; return; }
+    panel.innerHTML=`<div class="edit-panel-title">Text Block</div>
+      <div class="field"><label>Title (optional)</label>
+        <input type="text" id="ep-block-title" value="${esc(b.title||'')}" placeholder="Leave blank for no heading">
+      </div>
+      <div class="field"><label>Body Text</label>
+        <textarea id="ep-block-body" rows="6">${esc(b.body||'')}</textarea>
+      </div>
+      <div class="field"><label>Position</label>
+        <select id="ep-block-pos">
+          ${BLOCK_POSITIONS.map(p=>`<option value="${p.value}"${b.position===p.value?' selected':''}>${p.label}</option>`).join('')}
+        </select>
+      </div>
+      <div class="panel-actions">
+        <button class="btn btn-danger" onclick="deleteBlock(${bid})">Delete Block</button>
+      </div>`;
+    document.getElementById('ep-block-title').addEventListener('input',e=>{b.title=e.target.value;scheduleUpdate();renderSidebarList();});
+    document.getElementById('ep-block-body').addEventListener('input',e=>{b.body=e.target.value;scheduleUpdate();});
+    document.getElementById('ep-block-pos').addEventListener('change',e=>{b.position=e.target.value;scheduleUpdate();renderSidebarList();});
+    return;
   }
 
-  // ── 2. Fall back to local events.ics ──
-  try {
-    const res = await fetch('events.ics');
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const text = await res.text();
-    if (!text.includes('BEGIN:VCALENDAR')) throw new Error('Invalid ICS');
-    applyEvents(text, 'local events.ics');
-    return;
-  } catch(err) { console.warn('Local ICS failed:', err); }
+  switch(id){
+    case 'header':
+      panel.innerHTML=`<div class="edit-panel-title">Header</div>
+        <div class="field"><label>Season / Edition</label>
+          <input type="text" id="ep-season" value="${esc(state.overrides.season)}">
+        </div>`;
+      document.getElementById('ep-season').addEventListener('input',e=>{state.overrides.season=e.target.value;scheduleUpdate();});
+      break;
 
-  // ── 3. Nothing worked ──
-  setStatus('Could not load calendar.');
-  document.getElementById('loading-msg').textContent =
-    'Could not load calendar events. Make sure the calendar is set to public, or place an events.ics file in the project root.';
+    case 'hero':
+      panel.innerHTML=`<div class="edit-panel-title">Hero Image</div>
+        <div class="field"><label>Image URL</label>
+          <input type="text" id="ep-hero" value="${esc(state.overrides.heroUrl)}">
+          <p class="field-note">Use a full URL (Drive, etc.) or a path like <code>images/file.jpg</code></p>
+        </div>
+        <div class="field"><label>Base URL for relative paths</label>
+          <input type="text" id="ep-baseurl" value="${esc(state.overrides.baseUrl)}">
+        </div>`;
+      document.getElementById('ep-hero').addEventListener('input',e=>{state.overrides.heroUrl=e.target.value;scheduleUpdate();});
+      document.getElementById('ep-baseurl').addEventListener('input',e=>{state.overrides.baseUrl=e.target.value;scheduleUpdate();});
+      break;
+
+    case 'welcome':
+      panel.innerHTML=`<div class="edit-panel-title">Welcome</div>
+        <div class="field"><label>Paragraph Text</label>
+          <textarea id="ep-welcome" rows="7">${esc(state.overrides.welcomeText)}</textarea>
+        </div>`;
+      document.getElementById('ep-welcome').addEventListener('input',e=>{state.overrides.welcomeText=e.target.value;scheduleUpdate();});
+      break;
+
+    case 'past':
+    case 'upcoming':
+    case 'diocese': {
+      const today2=new Date(); today2.setHours(0,0,0,0);
+      const label={'past':'Looking Back','upcoming':'Upcoming Events','diocese':'Diocese Events'}[id];
+      let evList=state.rawEvents.filter(e=>e.categories.includes(id.toUpperCase()));
+      if(id==='upcoming') evList=evList.filter(e=>e.dtstart>=today2).sort((a,b)=>a.dtstart-b.dtstart);
+      if(id==='past')     evList=evList.sort((a,b)=>b.dtstart-a.dtstart);
+      if(id==='diocese')  evList=evList.filter(e=>e.dtstart>=today2).sort((a,b)=>a.dtstart-b.dtstart);
+
+      let introField='';
+      if(id==='upcoming'){
+        introField=`<div class="field"><label>Section Intro</label>
+          <textarea id="ep-upintro" rows="4">${esc(state.overrides.upcomingIntro)}</textarea>
+        </div>`;
+      } else if(id==='diocese'){
+        introField=`<div class="field"><label>Section Intro</label>
+          <textarea id="ep-diointro" rows="4">${esc(state.overrides.dioceseIntro)}</textarea>
+        </div>`;
+      }
+
+      const eventItems=evList.map(ev=>{
+        const hidden=state.hiddenEvents.has(ev.summary);
+        const expanded=state.expandedEvents.has(ev.summary);
+        const descVal=state.overrides.eventDesc[ev.summary]??ev.description??'';
+        const imgVal=state.overrides.eventImg[ev.summary]??ev.image??'';
+        return `<div class="event-item" data-ev="${esc(ev.summary)}">
+          <div class="event-item-header" onclick="toggleEventExpand(this)">
+            <input type="checkbox" class="ev-vis" ${hidden?'':'checked'}
+              onclick="event.stopPropagation();toggleEventVis('${esc(ev.summary).replace(/'/g,"\\'")}')">
+            <span class="event-item-title">${esc(ev.summary)}</span>
+            <span class="event-item-toggle">${expanded?'▴':'▾'}</span>
+          </div>
+          <div class="event-item-body${expanded?' open':''}">
+            <div class="field"><label>Description override</label>
+              <textarea rows="4" onchange="setEventDesc('${esc(ev.summary).replace(/'/g,"\\'")}',this.value)">${esc(descVal)}</textarea>
+            </div>
+            <div class="field"><label>Image URL override</label>
+              <input type="text" value="${esc(imgVal)}" onchange="setEventImg('${esc(ev.summary).replace(/'/g,"\\'")}',this.value)">
+              <p class="field-note">Leave blank to use calendar value</p>
+            </div>
+          </div>
+        </div>`;
+      }).join('');
+
+      panel.innerHTML=`<div class="edit-panel-title">${esc(label)}</div>
+        ${introField}
+        <div class="sidebar-label" style="margin-bottom:8px;">Events</div>
+        ${eventItems||'<p style="font-size:12px;color:var(--brown);opacity:.6">No events in this category</p>'}`;
+
+      if(id==='upcoming') document.getElementById('ep-upintro')?.addEventListener('input',e=>{state.overrides.upcomingIntro=e.target.value;scheduleUpdate();});
+      if(id==='diocese')  document.getElementById('ep-diointro')?.addEventListener('input',e=>{state.overrides.dioceseIntro=e.target.value;scheduleUpdate();});
+      break;
+    }
+
+    case 'footer':
+      panel.innerHTML=`<div class="edit-panel-title">Footer</div>
+        <p class="field-note" style="margin-bottom:12px;">The footer text is fixed. Toggle visibility using the ● button in the sections list.</p>`;
+      break;
+
+    default:
+      panel.innerHTML=`<div class="edit-panel-empty">No editable fields for this section</div>`;
+  }
 }
 
-document.getElementById('btn-regenerate').addEventListener('click', regenerate);
-document.getElementById('btn-apply').addEventListener('click', () => {
-  document.getElementById('config-fields').classList.add('hidden');
-  document.getElementById('config-toggle').classList.remove('open');
-  regenerate();
+/* ═══════════════════════════════════════════════
+   UI ACTIONS
+═══════════════════════════════════════════════ */
+function selectSection(id){
+  state.selected=id;
+  renderSidebarList();
+  renderEditPanel();
+  // Tell preview iframe to highlight this section
+  const frame=document.getElementById('preview-frame');
+  try{ frame.contentWindow.postMessage({type:'select',id},'*'); } catch(e){}
+}
+
+function toggleSection(id){
+  if(state.hiddenSections.has(id)) state.hiddenSections.delete(id);
+  else state.hiddenSections.add(id);
+  renderSidebarList();
+  scheduleUpdate();
+}
+
+function toggleEventVis(summary){
+  if(state.hiddenEvents.has(summary)) state.hiddenEvents.delete(summary);
+  else state.hiddenEvents.add(summary);
+  renderSidebarList();
+  scheduleUpdate();
+}
+
+function toggleEventExpand(headerEl){
+  const body=headerEl.nextElementSibling;
+  const summary=headerEl.closest('.event-item').dataset.ev;
+  const isOpen=body.classList.toggle('open');
+  headerEl.querySelector('.event-item-toggle').textContent=isOpen?'▴':'▾';
+  if(isOpen) state.expandedEvents.add(summary);
+  else state.expandedEvents.delete(summary);
+}
+
+function setEventDesc(summary,val){
+  if(val.trim()) state.overrides.eventDesc[summary]=val;
+  else delete state.overrides.eventDesc[summary];
+  scheduleUpdate();
+}
+function setEventImg(summary,val){
+  if(val.trim()) state.overrides.eventImg[summary]=val;
+  else delete state.overrides.eventImg[summary];
+  scheduleUpdate();
+}
+
+function addBlock(){
+  const id=++state._customBlockId;
+  state.customBlocks.push({id,title:'',body:'',position:'after-welcome'});
+  renderSidebarList();
+  selectSection(`block-${id}`);
+  scheduleUpdate();
+}
+
+function deleteBlock(id){
+  state.customBlocks=state.customBlocks.filter(b=>b.id!==id);
+  state.selected=null;
+  renderSidebarList();
+  renderEditPanel();
+  scheduleUpdate();
+}
+
+/* ═══════════════════════════════════════════════
+   PREVIEW UPDATE
+═══════════════════════════════════════════════ */
+let _updateTimer=null;
+function scheduleUpdate(){ clearTimeout(_updateTimer); _updateTimer=setTimeout(updatePreview,280); }
+
+function updatePreview(){
+  const frame=document.getElementById('preview-frame');
+  const html=buildPreview();
+  frame.srcdoc=html;
+  frame.onload=()=>{
+    try{ frame.style.height=(frame.contentDocument.documentElement.scrollHeight+4)+'px'; }
+    catch(e){ frame.style.height='1400px'; }
+    // Restore selection highlight after reload
+    if(state.selected){
+      try{ frame.contentWindow.postMessage({type:'select',id:state.selected},'*'); }catch(e){}
+    }
+  };
+}
+
+function showPreview(){
+  document.getElementById('preview-frame').style.display='block';
+  document.getElementById('preview-loading').style.display='none';
+  document.getElementById('btn-copy').disabled=false;
+  document.getElementById('btn-download').disabled=false;
+  document.getElementById('btn-regen').disabled=false;
+  updatePreview();
+}
+
+/* ═══════════════════════════════════════════════
+   LOAD EVENTS
+═══════════════════════════════════════════════ */
+function setStatus(msg){ document.getElementById('status').textContent=msg; }
+
+function applyLoaded(text,src){
+  state.rawEvents=parseICS(text);
+  const today=new Date();today.setHours(0,0,0,0);
+  const u=state.rawEvents.filter(e=>e.categories.includes('UPCOMING')&&e.dtstart>=today).length;
+  const p=state.rawEvents.filter(e=>e.categories.includes('PAST')).length;
+  const d=state.rawEvents.filter(e=>e.categories.includes('DIOCESE')&&e.dtstart>=today).length;
+  setStatus(`${u} upcoming · ${p} past · ${d} diocese${src?' — '+src:''}`);
+  renderSidebarList();
+  renderEditPanel();
+  showPreview();
+}
+
+async function loadEvents(){
+  setStatus('Fetching calendar…');
+  for(const proxy of CORS_PROXIES){
+    try{
+      const res=await fetch(proxy(GCAL_ICS_URL),{cache:'no-store'});
+      if(!res.ok) throw new Error(`HTTP ${res.status}`);
+      const text=await res.text();
+      if(!text.includes('BEGIN:VCALENDAR')) throw new Error('Invalid ICS');
+      applyLoaded(text); return;
+    }catch(e){ console.warn('Proxy failed:',e); }
+  }
+  // Fallback to local events.ics
+  try{
+    const res=await fetch('events.ics');
+    if(!res.ok) throw new Error(`HTTP ${res.status}`);
+    const text=await res.text();
+    if(!text.includes('BEGIN:VCALENDAR')) throw new Error('Invalid');
+    applyLoaded(text,'local events.ics'); return;
+  }catch(e){ console.warn('Local ICS failed:',e); }
+  setStatus('Could not load calendar.');
+  document.getElementById('preview-loading').textContent='Could not load events. Make sure the calendar is public or place events.ics in the project root.';
+}
+
+/* ═══════════════════════════════════════════════
+   TOOLBAR ACTIONS
+═══════════════════════════════════════════════ */
+function showToast(msg){
+  const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2200);
+}
+
+document.getElementById('btn-regen').addEventListener('click',loadEvents);
+document.getElementById('btn-copy').addEventListener('click',async()=>{
+  try{ await navigator.clipboard.writeText(buildEmail()); showToast('Email HTML copied!'); }
+  catch(e){ alert('Copy failed — try Download instead.'); }
 });
-document.getElementById('btn-copy').addEventListener('click', async () => {
-  try {
-    await navigator.clipboard.writeText(generatedHTML);
-    const fb = document.getElementById('copy-feedback');
-    fb.classList.add('show');
-    setTimeout(() => fb.classList.remove('show'), 2200);
-  } catch(e) { alert('Copy failed — try Download instead.'); }
+document.getElementById('btn-download').addEventListener('click',()=>{
+  const blob=new Blob([buildEmail()],{type:'text/html'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download=`dcef-email-${new Date().toISOString().slice(0,10)}.html`;
+  a.click(); URL.revokeObjectURL(a.href);
 });
-document.getElementById('btn-download').addEventListener('click', () => {
-  const blob = new Blob([generatedHTML], { type: 'text/html' });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = `dcef-email-${new Date().toISOString().slice(0,10)}.html`;
-  a.click();
-  URL.revokeObjectURL(a.href);
-});
-document.getElementById('config-toggle').addEventListener('click', function() {
-  const fields = document.getElementById('config-fields');
-  const isOpen = !fields.classList.contains('hidden');
-  fields.classList.toggle('hidden', isOpen);
-  this.classList.toggle('open', !isOpen);
+document.getElementById('btn-add-block').addEventListener('click',addBlock);
+
+// Listen for section clicks from preview iframe
+window.addEventListener('message',e=>{
+  if(e.data?.type==='sectionClick') selectSection(e.data.id);
 });
 
-loadAndRender();
+/* ── Init ── */
+renderSidebarList();
+loadEvents();
 </script>
 </body>
 </html>
