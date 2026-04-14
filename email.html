@@ -1,91 +1,602 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="preload" as="image" href="images/242e9a9fc21b5f936f40236a56e20ac2.jpg"><link rel="preload" as="image" href="images/3c49a13bbca377ee22c261df762016ed.png"><link rel="preload" as="image" href="images/8dbf6fc067094c4f7af258ceeb7b3fce.png"><link rel="preload" as="image" href="images/f2a2e19144cd2cde365c0bcecddf09c3.png"><link rel="preload" as="image" href="images/7279785fdcf6480d426751609e40a6fb.jpg"><link rel="preload" as="image" href="images/9a7e7d05941be419b7cedb0f498aeb57.png"><link rel="preload" as="image" href="images/a411d159750e71cac8d5d817c8fd8f0c.jpg"><link rel="preload" as="image" href="images/d31b97df4099249b6f9081ec7e36f17f.png"><link rel="preload" as="image" href="images/d78095404af505c83bc609cd28d87af3.png"><link rel="preload" as="image" href="images/115a80d9717e3e5614fd99afd4bcc1f7.jpg"><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta name="format-detection" content="telephone=no, date=no, address=no, email=no"><meta name="x-apple-disable-message-reformatting"><meta name="keywords" content="DAHFuYSNxaU, BAG7Hfp5Zho"><!--[if mso]><div>
-                <noscript>
-                  <xml>
-                    <o:OfficeDocumentSettings>
-                      <o:AllowPNG/>
-                      <o:PixelsPerInch>96</o:PixelsPerInch>
-                    </o:OfficeDocumentSettings>
-                  </xml>
-                </noscript></div><![endif]--><!--[if !mso]><!--><style>@media (max-width: 450px) {
-        .layout-0 {
-          display: none !important;
-        }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Email Generator — DC Episcopal Fellowship</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --navy:  #00277d;
+      --blue:  #1a62ff;
+      --cream: #faf3eb;
+      --sand:  #e9ddcd;
+      --brown: #47342b;
+      --page:  #f0f1f5;
+      --border:#ddd0be;
+    }
+    body {
+      background: var(--page);
+      font-family: Verdana, Geneva, sans-serif;
+      color: #000;
+    }
+
+    /* ── toolbar ── */
+    .toolbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--navy);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 0 24px;
+      height: 56px;
+      box-shadow: 0 2px 8px rgba(0,0,0,.25);
+    }
+    .toolbar-title {
+      font-family: 'League Spartan', Arial, sans-serif;
+      font-size: 15px;
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      flex: 1;
+    }
+    .toolbar-status {
+      font-family: 'League Spartan', Arial, sans-serif;
+      font-size: 12px;
+      color: rgba(255,255,255,.6);
+    }
+    .btn {
+      font-family: 'League Spartan', Arial, sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      padding: 8px 18px;
+      border-radius: 3px;
+      border: none;
+      cursor: pointer;
+      transition: background .15s, opacity .15s;
+      white-space: nowrap;
+    }
+    .btn:disabled { opacity: .4; cursor: default; }
+    .btn-white  { background: #fff; color: var(--navy); }
+    .btn-white:hover:not(:disabled)  { background: var(--sand); }
+    .btn-outline { background: transparent; color: rgba(255,255,255,.85);
+                   border: 1.5px solid rgba(255,255,255,.4); }
+    .btn-outline:hover:not(:disabled) { background: rgba(255,255,255,.12);
+                                        color: #fff; border-color: rgba(255,255,255,.7); }
+    .btn-navy { background: var(--navy); color: #fff; }
+    .btn-navy:hover:not(:disabled) { background: var(--blue); }
+
+    /* ── config panel ── */
+    .config-bar {
+      background: var(--cream);
+      border-bottom: 1px solid var(--border);
+    }
+    .config-toggle {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 24px;
+      cursor: pointer;
+      font-family: 'League Spartan', Arial, sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--navy);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      user-select: none;
+      border: none;
+      background: transparent;
+      width: 100%;
+      text-align: left;
+    }
+    .config-toggle:hover { background: var(--sand); }
+    .config-arrow { transition: transform .2s; display: inline-block; margin-left: 2px; }
+    .config-toggle.open .config-arrow { transform: rotate(180deg); }
+
+    .config-fields {
+      padding: 16px 24px 20px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px 24px;
+    }
+    .config-fields.hidden { display: none; }
+    .field label {
+      display: block;
+      font-family: 'League Spartan', Arial, sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--brown);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      margin-bottom: 5px;
+    }
+    .field input,
+    .field textarea {
+      width: 100%;
+      padding: 8px 10px;
+      font-family: Verdana, Geneva, sans-serif;
+      font-size: 12px;
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      background: #fff;
+      color: #000;
+      resize: vertical;
+    }
+    .field input:focus,
+    .field textarea:focus { outline: 2px solid var(--blue); border-color: var(--blue); }
+    .field.full { grid-column: 1 / -1; }
+    .config-actions { grid-column: 1 / -1; display: flex; gap: 10px; }
+
+    /* ── preview ── */
+    .preview-wrap {
+      padding: 32px 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      min-height: calc(100vh - 56px);
+    }
+    .preview-label {
+      font-family: 'League Spartan', Arial, sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--brown);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    #preview-frame {
+      width: 100%;
+      max-width: 640px;
+      border: none;
+      border-radius: 4px;
+      box-shadow: 0 4px 24px rgba(0,0,0,.14);
+      background: #fff;
+      display: none;
+    }
+    .loading-msg {
+      font-family: 'League Spartan', Arial, sans-serif;
+      font-size: 14px;
+      color: var(--brown);
+      padding: 60px 0;
+      text-align: center;
+    }
+    .copy-feedback {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--navy);
+      color: #fff;
+      font-family: 'League Spartan', Arial, sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      padding: 10px 22px;
+      border-radius: 4px;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity .2s;
+    }
+    .copy-feedback.show { opacity: 1; }
+  </style>
+</head>
+<body>
+
+<!-- ── Toolbar ── -->
+<div class="toolbar">
+  <span class="toolbar-title">Email Generator</span>
+  <span class="toolbar-status" id="status">Loading events…</span>
+  <button class="btn btn-outline" id="btn-regenerate" disabled>Regenerate</button>
+  <button class="btn btn-outline" id="btn-copy"       disabled>Copy HTML</button>
+  <button class="btn btn-white"   id="btn-download"   disabled>Download</button>
+</div>
+
+<!-- ── Config panel ── -->
+<div class="config-bar">
+  <button class="config-toggle" id="config-toggle">
+    Configure <span class="config-arrow">&#9660;</span>
+  </button>
+  <div class="config-fields hidden" id="config-fields">
+    <div class="field">
+      <label>Season / Edition</label>
+      <input id="cfg-season" type="text" value="Spring 2026">
+    </div>
+    <div class="field">
+      <label>Hero Image URL</label>
+      <input id="cfg-hero" type="text" value="images/242e9a9fc21b5f936f40236a56e20ac2.jpg">
+    </div>
+    <div class="field full">
+      <label>Welcome Text</label>
+      <textarea id="cfg-welcome" rows="3">As we enter the seasons of Easter and spring, everything is blooming. We celebrate the joy of the resurrection as our world wakes up from its winter slumber. Please join us for our spring events, filled with faith, fellowship, and lots of fun!</textarea>
+    </div>
+    <div class="field full">
+      <label>Upcoming Events Intro</label>
+      <textarea id="cfg-upcoming-intro" rows="3">This spring, we have a full calendar of fun events! From baseball to scavenger hunts, we hope you will join us as we come together in this season of joy and community. You can find all of the information for all of our events on the DCEF Instagram or Partiful!</textarea>
+    </div>
+    <div class="field full">
+      <label>Diocese Section Intro</label>
+      <textarea id="cfg-diocese-intro" rows="2">We are also partnering with other organizations to host and spread word of events young adults in the diocese might be interested in. If you have any ideas please share them with us!</textarea>
+    </div>
+    <div class="field full">
+      <label>Site Base URL (for relative image paths)</label>
+      <input id="cfg-base-url" type="text" value="https://edow.netlify.app">
+    </div>
+    <div class="config-actions">
+      <button class="btn btn-navy" id="btn-apply">Apply &amp; Regenerate</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Preview ── -->
+<div class="preview-wrap">
+  <div class="preview-label">Preview — 600px email width</div>
+  <div style="width:100%;max-width:640px;">
+    <p class="loading-msg" id="loading-msg">Fetching calendar events…</p>
+    <iframe id="preview-frame" scrolling="no"></iframe>
+  </div>
+</div>
+
+<div class="copy-feedback" id="copy-feedback">HTML copied to clipboard!</div>
+
+<script>
+/* ═══════════════════════════════════════════════
+   COLOURS / FONTS
+═══════════════════════════════════════════════ */
+const C = {
+  navy:'#00277d', blue:'#1a62ff', cream:'#faf3eb',
+  sand:'#e9ddcd', brown:'#47342b', page:'#f0f1f5',
+  border:'#ddd0be', white:'#ffffff', diocese:'#5a8a5a',
+};
+const FH = '"League Spartan", Arial, Helvetica, sans-serif';
+const FB = 'Verdana, Geneva, sans-serif';
+
+const MONTH_NAMES = ['January','February','March','April','May','June',
+                     'July','August','September','October','November','December'];
+const DAY_NAMES   = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+
+/* ═══════════════════════════════════════════════
+   ICS FETCH
+═══════════════════════════════════════════════ */
+const GCAL_ICS_URL = 'https://calendar.google.com/calendar/ical/'
+                   + 'dcepiscopalfellowship%40gmail.com/public/basic.ics';
+const CORS_PROXIES = [
+  () => `/.netlify/functions/fetch-ics`,
+  url => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}&_=${Date.now()}`,
+];
+
+/* ═══════════════════════════════════════════════
+   DATE HELPERS
+═══════════════════════════════════════════════ */
+function parseDt(s) {
+  const c = s.replace('Z','');
+  const y=+c.substr(0,4), mo=+c.substr(4,2)-1, d=+c.substr(6,2);
+  const h=c.length>8?+c.substr(9,2):0, m=c.length>11?+c.substr(11,2):0;
+  return new Date(y,mo,d,h,m);
+}
+function formatTime(dt) {
+  let h=dt.getHours(), m=dt.getMinutes();
+  const ap=h>=12?'p.m.':'a.m.'; h=h%12||12;
+  return `${h}:${String(m).padStart(2,'0')} ${ap}`;
+}
+function formatDateMeta(dt, hasTime, loc) {
+  const parts=[`${DAY_NAMES[dt.getDay()]}, ${MONTH_NAMES[dt.getMonth()]} ${dt.getDate()}`];
+  if (hasTime) parts.push(formatTime(dt));
+  if (loc) parts.push(loc);
+  return parts.join(' &bull; ');
+}
+
+/* ═══════════════════════════════════════════════
+   ICS PARSER
+═══════════════════════════════════════════════ */
+function unescapeICS(s) {
+  return s.replace(/\\n/g,'\n').replace(/\\,/g,',').replace(/\\;/g,';').replace(/\\\\/g,'\\');
+}
+function parseICS(text) {
+  const lines = text.replace(/\r?\n[ \t]/g,'').split(/\r?\n/);
+  const events=[]; let ev=null;
+  for (const raw of lines) {
+    const ci=raw.indexOf(':'); if(ci===-1) continue;
+    const keyFull=raw.slice(0,ci).trim(), val=raw.slice(ci+1);
+    const key=keyFull.split(';')[0].toUpperCase();
+    const params=keyFull.includes(';')?keyFull.slice(keyFull.indexOf(';')+1).toUpperCase():'';
+    if(key==='BEGIN'&&val.trim()==='VEVENT'){ev={};continue;}
+    if(key==='END'&&val.trim()==='VEVENT'){if(ev)events.push(ev);ev=null;continue;}
+    if(!ev) continue;
+    const v=unescapeICS(val.trim());
+    switch(key){
+      case 'SUMMARY':     ev.summary=v;     break;
+      case 'DESCRIPTION': ev.description=v; break;
+      case 'LOCATION':    ev.location=v;    break;
+      case 'URL':         ev.url=v;         break;
+      case 'CATEGORIES':  ev.categories=v.toUpperCase().split(',').map(s=>s.trim()); break;
+      case 'X-IMAGE':     ev.image=v;       break;
+      case 'DTSTART': {
+        ev.dtstart=parseDt(val.trim());
+        ev.hasTime=!(params.includes('VALUE=DATE')||!val.includes('T'));
+        break;
       }
-@media (max-width: 450px) and (min-width: 0px) {
-        .layout-0-under-450 {
-          display: table !important;
-        }
-      }</style><!--<![endif]--><!--[if !mso]><!--><style>@media (max-width: 1px) {
-        .layout-1 {
-          display: none !important;
-        }
-      }
-@media (max-width: 1px) and (min-width: 0px) {
-        .layout-1-under-1 {
-          display: table !important;
-        }
-      }</style><!--<![endif]--><!--[if !mso]><!--><style>@media (max-width: 450px) {
-        .layout-2 {
-          display: none !important;
-        }
-      }
-@media (max-width: 450px) and (min-width: 0px) {
-        .layout-2-under-450 {
-          display: table !important;
-        }
-      }</style><!--<![endif]--><!--[if !mso]><!--><style>@media (max-width: 1px) {
-        .layout-3 {
-          display: none !important;
-        }
-      }
-@media (max-width: 1px) and (min-width: 0px) {
-        .layout-3-under-1 {
-          display: table !important;
-        }
-      }</style><!--<![endif]--><!--[if !mso]><!--><style>@media (max-width: 450px) {
-        .layout-4 {
-          display: none !important;
-        }
-      }
-@media (max-width: 450px) and (min-width: 0px) {
-        .layout-4-under-450 {
-          display: table !important;
-        }
-      }</style><!--<![endif]--><!--[if !mso]><!--><style>@media (max-width: 1px) {
-        .layout-5 {
-          display: none !important;
-        }
-      }
-@media (max-width: 1px) and (min-width: 0px) {
-        .layout-5-under-1 {
-          display: table !important;
-        }
-      }</style><!--<![endif]--><!--[if !mso]><!--><style>@media (max-width: 450px) {
-        .layout-6 {
-          display: none !important;
-        }
-      }
-@media (max-width: 450px) and (min-width: 0px) {
-        .layout-6-under-450 {
-          display: table !important;
-        }
-      }</style><!--<![endif]--></head><body style="width:100%;-webkit-text-size-adjust:100%;text-size-adjust:100%;background-color:#f0f1f5;margin:0;padding:0"><table width="100%" border="0" cellpadding="0" cellspacing="0" bgcolor="#f0f1f5" style="background-color:#f0f1f5"><tbody><tr><td style="background-color:#f0f1f5"><!--[if mso]><center>
-                    <table align="center" border="0" cellpadding="0" cellspacing="0" width="600">
-                      <tbody>
-                        <tr>
-                          <td><![endif]--><table align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="max-width:600px;min-height:600px;margin:0 auto;background-color:#faf3eb"><tbody><tr><td style="vertical-align:top"></td></tr><tr><td style="vertical-align:top;padding:10px
-           0px
-           10px
-           0px"><table align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation"><tbody><tr><td style="padding:10px 0 10px 0;vertical-align:top"><table align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="color:#000;font-style:normal;font-weight:normal;font-size:16px;line-height:1.4;letter-spacing:0;text-align:left;direction:ltr;border-collapse:collapse;font-family:Arial, Helvetica, sans-serif;white-space:normal;word-wrap:break-word;word-break:break-word"><tbody><tr><td dir="ltr" style="color:#00277d;font-size:16px;font-family:&quot;League Spartan&quot;, Arial, Helvetica, sans-serif;white-space:pre-wrap;text-align:center;padding:0px 20px">DC EPISCOPAL FELLOWSHIP<br></td></tr><tr><td style="font-size:0;height:16px" height="16">&nbsp;</td></tr><tr><td><table cellpadding="0" cellspacing="0" border="0" style="width:100%"><tbody><tr><td align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:100%;max-width:600px"><tbody><tr><td style="width:100%;padding:0"><img src="images/242e9a9fc21b5f936f40236a56e20ac2.jpg" width="600" height="458" style="display:block;width:100%;height:auto;max-width:100%"></td></tr></tbody></table></td></tr></tbody></table></td></tr><tr><td style="font-size:0;height:16px" height="16">&nbsp;</td></tr><tr><td style="padding:0px 20px"><table cellpadding="0" cellspacing="0" border="0" style="width:100%"><tbody><tr><td align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:100%;max-width:560px"><tbody><tr><td height="1px" style="height:1px;border-radius:999px;line-height:1px;font-size:0;background-color:#bfc3c8">&nbsp;</td></tr></tbody></table></td></tr></tbody></table></td></tr><tr><td style="font-size:0;height:16px" height="16">&nbsp;</td></tr><tr><td style="padding:0px 20px"><table border="0" cellpadding="0" cellspacing="0" class="layout-0" align="center" style="display:table;border-spacing:0px;border-collapse:separate;width:100%;max-width:100%;table-layout:fixed;margin:0 auto"><tbody><tr><td style="text-align:center"><table border="0" cellpadding="0" cellspacing="0" style="border-spacing:0px;border-collapse:separate;width:100%;max-width:560px;table-layout:fixed;margin:0 auto"><tbody><tr><td width="100.00%" style="width:100.00%;box-sizing:border-box;vertical-align:top"><table border="0" cellpadding="0" cellspacing="0" style="border-spacing:0px;border-collapse:separate;width:100%;table-layout:fixed"><tbody><tr><td><table align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="color:#000;font-style:normal;font-weight:normal;font-size:16px;line-height:1.4;letter-spacing:0;text-align:left;direction:ltr;border-collapse:collapse;font-family:Arial, Helvetica, sans-serif;white-space:normal;word-wrap:break-word;word-break:break-word"><tbody><tr><td dir="ltr" style="color:#47342b;font-size:21.3332px;font-family:&quot;Times New Roman&quot;, Times, serif;white-space:pre-wrap;line-height:1.26;text-align:center">As we enter the seasons of Easter and spring, everything is blooming. We celebrate the joy of the resurrection as our world wakes up from its winter slumber. Please join us for our spring events, filled with faith, fellowship, and lots of fun!<br></td></tr></tbody></table></td></tr></tbody></table></td></tr></tbody></table></td></tr></tbody></table><!--[if !mso]><!--><table border="0" cellpadding="0" cellspacing="0" class="layout-0-under-450" align="center" style="display:none;border-spacing:0px;border-collapse:separate;width:100%;max-width:100%;table-layout:fixed;margin:0 auto"><tbody><tr><td style="text-align:center"><table border="0" cellpadding="0" cellspacing="0" style="border-spacing:0px;border-collapse:separate;width:100%;max-width:450px;table-layout:fixed;margin:0 auto"><tbody><tr><td width="100.00%" style="width:100.00%;box-sizing:border-box;vertical-align:top"><table border="0" cellpadding="0" cellspacing="0" style="border-spacing:0px;border-collapse:separate;width:100%;table-layout:fixed"><tbody><tr><td><table align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="color:#000;font-style:normal;font-weight:normal;font-size:16px;line-height:1.4;letter-spacing:0;text-align:left;direction:ltr;border-collapse:collapse;font-family:Arial, Helvetica, sans-serif;white-space:normal;word-wrap:break-word;word-break:break-word"><tbody><tr><td dir="ltr" style="color:#47342b;font-size:21.3332px;font-family:&quot;Times New Roman&quot;, Times, serif;white-space:pre-wrap;line-height:1.26;text-align:center">As we enter the seasons of Easter and spring, everything is blooming. We celebrate the joy of the resurrection as our world wakes up from its winter slumber. Please join us for our spring events, filled with faith, fellowship, and lots of fun!<br></td></tr></tbody></table></td></tr></tbody></table></td></tr></tbody></table></td></tr></tbody></table><!--<![endif]--></td></tr><tr><td style="font-size:0;height:16px" height="16">&nbsp;</td></tr><tr><td><table border="0" cellpadding="0" cellspacing="0" class="layout-1" align="center" style="display:table;border-spacing:0px;border-collapse:separate;width:100%;max-width:100%;table-layout:fixed;margin:0 auto;background-color:#e9ddcd;border-top-left-radius:0;border-top-right-radius:0;border-bottom-left-radius:0;border-bottom-right-radius:0"><tbody><tr><td style="text-align:center;padding:12px 20px"><table border="0" cellpadding="0" cellspacing="0" style="border-spacing:0px;border-collapse:separate;width:100%;max-width:560px;table-layout:fixed;margin:0 auto"><tbody><tr><td width="100.00%" style="width:100.00%;box-sizing:border-box;vertical-align:middle;border-top-left-radius:0;border-top-right-radius:0;border-bottom-left-radius:0;border-bottom-right-radius:0"><table border="0" cellpadding="0" cellspacing="0" style="border-spacing:0px;border-collapse:separate;width:100%;table-layout:fixed"><tbody><tr><td style="padding:5px"><table align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="color:#000;font-style:normal;font-weight:normal;font-size:16px;line-height:1.4;letter-spacing:0;text-align:left;direction:ltr;border-collapse:collapse;font-family:Arial, Helvetica, sans-serif;white-space:normal;word-wrap:break-word;word-break:break-word"><tbody><tr><td dir="ltr" style="color:#00277d;font-size:50.6665px;font-weight:700;font-family:Verdana, Geneva, sans-serif;white-space:pre-wrap;text-align:center">Looking Back to Winter 2026<br></td></tr><tr><td style="font-size:0;height:16px" height="16">&nbsp;</td></tr><tr><td><table cellpadding="0" cellspacing="0" border="0" style="width:100%"><tbody><tr><td align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:100%;max-width:550px"><tbody><tr><td height="0" style="border-top:1px dashed #ffffff;height:0;font-size:0">&nbsp;</td></tr></tbody></table></td></tr></tbody></table></td></tr></tbody></table></td></tr></tbody></table></td></tr></tbody></table></td></tr></tbody></table><!--[if !mso]><!--><table border="0" cellpadding="0" cellspacing="0" class="layout-1-under-1" align="center" style="display:none;border-spacing:0px;border-collapse:separate;width:100%;max-width:100%;table-layout:fixed;margin:0 auto;background-color:#e9ddcd;border-top-left-radius:0;border-top-right-radius:0;border-bottom-left-radius:0;border-bottom-right-radius:0"><tbody><tr><td style="text-align:center;padding:12px 20px"><table border="0" cellpadding="0" cellspacing="0" style="border-spacing:0px;border-collapse:separate;width:100%;max-width:1px;table-layout:fixed;margin:0 auto"><tbody><tr><td width="100.00%" style="width:100.00%;box-sizing:border-box;vertical-align:middle;border-top:-4.5px solid #000000;border-bottom:-4.5px solid #000000;border-left:-4.5px solid #000000;border-right:-4.5px solid #000000;border-top-left-radius:0;border-top-right-radius:0;border-bottom-left-radius:0;border-bottom-right-radius:0"><table border="0" cellpadding="0" cellspacing="0" style="border-spacing:0px;border-collapse:separate;width:100%;table-layout:fixed"><tbody><tr><td style="padding:5px"><table align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="color:#000;font-style:normal;font-weight:normal;font-size:16px;line-height:1.4;letter-spacing:0;text-align:left;direction:ltr;border-collapse:collapse;font-family:Arial, Helvetica, sans-serif;white-space:normal;word-wrap:break-word;word-break:break-word"><tbody><tr><td dir="ltr" style="color:#00277d;font-size:50.6665px;font-weight:700;font-family:Verdana, Geneva, sans-serif;white-space:pre-wrap;text-align:center">Looking Back to Winter 2026<br></td></tr><tr><td style="font-size:0;height:16px" height="16">&nbsp;</td></tr><tr><td><table cellpadding="0" cellspacing="0" border="0" style="width:100%"><tbody><tr><td align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:100%;max-width:0px"><tbody><tr><td height="0" style="border-top:1px dashed #ffffff;height:0;font-size:0">&nbsp;</td></tr></tbody></table></td></tr></tbody></table></td></tr></tbody></table></td></tr></tbody></table></td></tr></tbody></table></td></tr></tbody></table><!--<![endif]--></td></tr><tr><td style="font-size:0;height:16px" height="16">&nbsp;</td></tr><tr><td><table border="0" cellpadding="0" cellspacing="0" class="layout-2" align="center" style="display:table;border-spacing:0px;border-collapse:separate;width:100%;max-width:100%;table-layout:fixed;margin:0 auto;background-color:#e9ddcd"><tbody><tr><td style="text-align:center;padding:27.211501735410167px 0px"><table border="0" cellpadding="0" cellspacing="0" style="border-spacing:0px;border-collapse:separate;width:100%;max-width:560px;table-layout:fixed;margin:0 auto"><tbody><tr><td width="48.51%" style="width:48.51%;box-sizing:border-box;vertical-align:top"><table border="0" cellpadding="0" cellspacing="0" style="border-spacing:0px;border-collapse:separate;width:100%;table-layout:fixed"><tbody><tr><td><table align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="color:#000;font-style:normal;font-weight:normal;font-size:16px;line-height:1.4;letter-spacing:0;text-align:left;direction:ltr;border-collapse:collapse;font-family:Arial, Helvetica, sans-serif;white-space:normal;word-wrap:break-word;word-break:break-word"><tbody><tr><td><table cellpadding="0" cellspacing="0" border="0" style="width:100%"><tbody><tr><td align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:100%;max-width:272px"><tbody><tr><td style="width:100%;padding:0"><img src="images/3c49a13bbca377ee22c261df762016ed.png" width="272" height="320" style="display:block;width:100%;height:auto;max-width:100%"></td></tr></tbody></table></td></tr></tbody></table></td></tr><tr><td style="font-size:0;height:16px" height="16">&nbsp;</td></tr><tr><td dir="ltr" style="color:#47342b;font-size:19.9999px;font-weight:700;white-space:pre-wrap;line-height:1.15;text-align:center">February 2026:                   St. Paul’s Parish<br></td></tr><tr><td style="font-size:0;height:16px" height="16">&nbsp;</td></tr><tr><td dir="ltr" style="color:#47342b;font-size:16px;font-family:Helvetica, Arial, sans-serif;white-space:pre-wrap;line-height:1.15;text-align:center">In February, we celebrated the Feast of Candlemas at St. Paul’s K Street and came together afterwards for a fellowship dinner.<br></td></tr></tbody></table></td></tr></tbody></table></td><td width="20" style="width:20px;box-sizing:border-box;font-size:0">&nbsp;</td><td width="47.92%" style="width:47.92%;box-sizing:border-box;vertical-align:top"><table border="0" cellpadding="0" cellspacing="0" style="border-spacing:0px;border-collapse:separate;width:100%;table-layout:fixed"><tbody><tr><td><table align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="color:#000;font-style:normal;font-weight:normal;font-size:16px;line-height:1.4;letter-spacing:0;text-align:left;direction:ltr;border-collapse:collapse;font-family:Arial, Helvetica, sans-serif;white-space:normal;word-wrap:break-word;word-break:break-word"><tbody><tr><td><table cellpadding="0" cellspacing="0" border="0" style="width:100%"><tbody><tr><td align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:100%;max-width:269px"><tbody><tr><td style="width:100%;padding:0"><img src="images/8dbf6fc067094c4f7af258ceeb7b3fce.png" width="269" height="320" style="display:block;width:100%;height:auto;max-width:100%"></td></tr></tbody></table></td></tr></tbody></table></td></tr><tr><td style="font-size:0;height:16px" height="16">&nbsp;</td></tr><tr><td dir="ltr" style="color:#47342b;font-size:19.9999px;font-weight:700;white-space:pre-wrap;line-height:1.15;text-align:center">March 2026: Grace’s Table<br></td></tr><tr><td style="font-size:0;height:16px" height="16">&nbsp;</td></tr><tr><td dir="ltr" style="color:#47342b;font-size:16px;font-family:Helvetica, Arial, sans-serif;white-space:pre-wrap;line-height:1.15;text-align:center">In March, DCEF volunteered at Grace’s Table, a ministry of Grace Church in Georgetown, where anyone in need can come together and share a meal.<br></td></tr></tbody></table></td></tr></tbody></table></td></tr></tbody></table></td></tr></tbody></table><!--[if !mso]><!--><table border="0" cellpadding="0" cellspacing="0" class="layout-2-under-450" align="center" style="display:none;border-spacing:0px;border-collapse:separate;width:100%;max-width:100%;table-layout:fixed;margin:0 auto;background-color:#e9ddcd"><tbody><tr><td style="text-align:center;padding:27.211501735410167px 0px"><table border="0" cellpadding="0" cellspacing="0" style="border-spacing:0px;border-collapse:separate;width:100%;max-width:450px;table-layout:fixed;margin:0 auto"><tbody><tr><td width="100.00%" style="width:100.00%;box-sizing:border-box;vertical-align:top"><table border="0" cellpadding="0" cellspacing="0" style="border-spacing:0px;border-collapse:separate;width:100%;table-layout:fixed"><tbody><tr><td><table align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="color:#000;font-style:normal;font-weight:normal;font-size:16px;line-height:1.4;letter-spacing:0;text-align:left;direction:ltr;border-collapse:collapse;font-family:Arial, Helvetica, sans-serif;white-space:normal;word-wrap:break-word;word-break:break-word"><tbody><tr><td><table cellpadding="0" cellspacing="0" border="0" style="width:100%"><tbody><tr><td align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:100%;max-width:450px"><tbody><tr><td style="width:100%;padding:0"><img src="images/3c49a13bbca377ee22c261df762016ed.png" width="450" height="529" style="display:block;width:100%;height:auto;max-width:100%"></td></tr></tbody></table></td></tr></tbody></table></td></tr><tr><td style="font-size:0;height:16px" height="16">&nbsp;</td></tr><tr><td dir="ltr" style="color:#47342b;font-size:19.9999px;font-weight:700;white-space:pre-wrap;line-height:1.15;text-align:center">February 2026:                   St. Paul’s Parish<br></td></tr><tr><td style="font-size:0;height:16px" height="16">&nbsp;</td></tr><tr><td dir="ltr" style="color:#47342b;font-size:16px;font-family:Helvetica, Arial, sans-serif;white-space:pre-wrap;line-height:1.15;text-align:center">In February, we celebrated the Feast of Candlemas at St. Paul’s K Street and came together afterwards for a fellowship dinner.<br></td></tr></tbody></table></td></tr></tbody></table></td></tr><tr><td style="font-size:0;height:16px" height="16">&nbsp;</td></tr><tr><td width="100.00%" style="width:100.00%;box-sizing:border-box;vertical-align:top"><table border="0" cellpadding="0" cellspacing="0" style="border-spacing:0px;border-collapse:separate;width:100%;table-layout:fixed"><tbody><tr><td><table align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="color:#000;font-style:normal;font-weight:normal;font-size:16px;line-height:1.4;letter-spacing:0;text-align:left;direction:ltr;border-collapse:collapse;font-family:Arial, Helvetica, sans-serif;white-space:normal;word-wrap:break-word;word-break:break-word"><tbody><tr><td><table cellpadding="0" cellspacing="0" border="0" style="width:100%"><tbody><tr><td align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:100%;max-width:450px"><tbody><tr><td style="width:100%;padding:0"><img src="images/8dbf6fc067094c4f7af258ceeb7b3fce.png" width="450" height="536" style="display:block;width:100%;height:auto;max-width:100%"></td></tr></tbody></table></td></tr></tbody></table></td></tr><tr><td style="font-size:0;height:16px" height="16">&nbsp;</td></tr><tr><td dir="ltr" style="color:#47342b;font-size:19.9999px;font-weight:700;white-space:pre-wrap;line-height:1.15;text-align:center">March 2026: Grace’s Table<br></td></tr><tr><td style="font-size:0;height:16px" height="16">&nbsp;</td></tr><tr><td dir="ltr" style="color:#47342b;font-size:16px;font-family:Helvetica, Arial, sans-serif;white-space:pre-wrap;line-height:1.15;text-align:center">In March, DCEF volunteered at Grace’s Table, a ministry of Grace Church in Georgetown, where anyone in need can come together and share a meal.<br></td></tr></tbody></table></td></tr></tbody></table></td></tr></tbody></table></td></tr></tbody></table><!--<![endif]--></td></tr><tr><td style="font-size:0;height:16px" height="16">&nbsp;</td></tr><tr><td><table border="0" cellpadding="0" cellspacing="0" class="layout-3" align="center" style="display:table;border-spacing:0px;border-collapse:separate;width:100%;max-width:100%;table-layout:fixed;margin:0 auto;background-color:#e9ddcd;border-top-left-radius:0;border-top-right-radius:0;border-bottom-left-radius:0;border-bottom-right-radius:0"><tbody><tr><td style="text-align:center;padding:12px 20px"><table border="0" cellpadding="0" cellspacing="0" style="border-spacing:0px;border-collapse:separate;width:100%;max-width:560px;table-layout:fixed;margin:0 auto"><tbody><tr><td width="100.00%" style="width:100.00%;box-sizing:border-box;vertical-align:middle;border-top-left-radius:0;border-top-right-radius:0;border-bottom-left-radius:0;border-bottom-right-radius:0"><table border="0" cellpadding="0" cellspacing="0" style="border-spacing:0px;border-collapse:separate;width:100%;table-layout:fixed"><tbody><tr><td style="padding:5px"><table align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="color:#000;font-style:normal;font-weight:normal;font-size:16px;line-height:1.4;letter-spacing:0;text-align:left;direction:ltr;border-collapse:collapse;font-family:Arial, Helvetica, sans-serif;white-space:normal;word-wrap:break-word;word-break:break-word"><tbody><tr><td dir="ltr" style="color:#00277d;font-size:50.6665px;font-weight:700;font-family:Verdana, Geneva, sans-serif;white-space:pre-wrap;text-align:center">Upcoming Events<br></td></tr><tr><td style="font-size:0;height:16px" height="16">&nbsp;</td></tr><tr><td dir="ltr" style="font-size:18.6665px;font-family:Helvetica, Arial, sans-serif;text-align:center"><span style="white-space:pre-wrap">This spring, we have a full calendar of fun events! From baseball to scavenger hunts, we hope you will join us as we come together in this season of joy and community. You can find all of the information for all of our events on the DCEF </span><a href="https://www.instagram.com/dc_episcopal_fellowship/" target="_blank" rel="noopener nofollow" ses:no-track="" style="color:inherit;text-decoration:inherit"><span style="text-decoration:underline;color:#1a62ff;white-space:pre-wrap">Instagram</span></a><span style="white-space:pre-wrap"> or </span><a href="https://partiful.com/u/TdAJl2k33LHLrWpyeNeC" target="_blank" rel="noopener nofollow" ses:no-track="" style="color:inherit;text-decoration:inherit"><span style="text-decoration:underline;color:#1a62ff;white-space:pre-wrap">Partiful</span></a><span style="white-space:pre-wrap">!</span><span style="white-space:pre-wrap"><br></span></td></tr><tr><td style="font-size:0;height:16px" height="16">&nbsp;</td></tr><tr><td><table cellpadding="0" cellspacing="0" border="0" style="width:100%"><tbody><tr><td align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:100%;max-width:550px"><tbody><tr><td height="0" style="border-top:1px dashed #ffffff;height:0;font-size:0">&nbsp;</td></tr></tbody></table></td></tr></tbody></table></td></tr></tbody></table></td></tr></tbody></table></td></tr></tbody></table></td></tr></tbody></table><!--[if !mso]><!--><table border="0" cellpadding="0" cellspacing="0" class="layout-3-under-1" align="center" style="display:none;border-spacing:0px;border-collapse:separate;width:100%;max-width:100%;table-layout:fixed;margin:0 auto;background-color:#e9ddcd;border-top-left-radius:0;border-top-right-radius:0;border-bottom-left-radius:0;border-bottom-right-radius:0"><tbody><tr><td style="text-align:center;padding:12px 20px"><table border="0" cellpadding="0" cellspacing="0" style="border-spacing:0px;border-collapse:separate;width:100%;max-width:1px;table-layout:fixed;margin:0 auto"><tbody><tr><td width="100.00%" style="width:100.00%;box-sizing:border-box;vertical-align:middle;border-top:-4.5px solid #000000;border-bottom:-4.5px solid #000000;border-left:-4.5px solid #000000;border-right:-4.5px solid #000000;border-top-left-radius:0;border-top-right-radius:0;border-bottom-left-radius:0;border-bottom-right-radius:0"><table border="0" cellpadding="0" cellspacing="0" style="border-spacing:0px;border-collapse:separate;width:100%;table-layout:fixed"><tbody><tr><td style="padding:5px"><table align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="color:#000;font-style:normal;font-weight:normal;font-size:16px;line-height:1.4;letter-spacing:0;text-align:left;direction:ltr;border-collapse:collapse;font-family:Arial, Helvetica, sans-serif;white-space:normal;word-wrap:break-word;word-break:break-word"><tbody><tr><td dir="ltr" style="color:#00277d;font-size:50.6665px;font-weight:700;font-family:Verdana, Geneva, sans-serif;white-space:pre-wrap;text-align:center">Upcoming Events<br></td></tr><tr><td style="font-size:0;height:16px" height="16">&nbsp;</td></tr><tr><td dir="ltr" style="font-size:18.6665px;font-family:Helvetica, Arial, sans-serif;text-align:center"><span style="white-space:pre-wrap">This spring, we have a full calendar of fun events! From baseball to scavenger hunts, we hope you will join us as we come together in this season of joy and community. You can find all of the information for all of our events on the DCEF </span><a href="https://www.instagram.com/dc_episcopal_fellowship/" target="_blank" rel="noopener nofollow" ses:no-track="" style="color:inherit;text-decoration:inherit"><span style="text-decoration:underline;color:#1a62ff;white-space:pre-wrap">Instagram</span></a><span style="white-space:pre-wrap"> or </span><a href="https://partiful.com/u/TdAJl2k33LHLrWpyeNeC" target="_blank" rel="noopener nofollow" ses:no-track="" style="color:inherit;text-decoration:inherit"><span style="text-decoration:underline;color:#1a62ff;white-space:pre-wrap">Partiful</span></a><span style="white-space:pre-wrap">!</span><span style="white-space:pre-wrap"><br></span></td></tr><tr><td style="font-size:0;height:16px" height="16">&nbsp;</td></tr><tr><td><table cellpadding="0" cellspacing="0" border="0" style="width:100%"><tbody><tr><td align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:100%;max-width:0px"><tbody><tr><td height="0" style="border-top:1px dashed #ffffff;height:0;font-size:0">&nbsp;</td></tr></tbody></table></td></tr></tbody></table></td></tr></tbody></table></td></tr></tbody></table></td></tr></tbody></table></td></tr></tbody></table><!--<![endif]--></td></tr><tr><td style="font-size:0;height:16px" height="16">&nbsp;</td></tr><tr><td><table border="0" cellpadding="0" cellspacing="0" class="layout-4" align="center" style="display:table;border-spacing:0px;border-collapse:separate;width:100%;max-width:100%;table-layout:fixed;margin:0 auto;background-color:#e9ddcd"><tbody><tr><td style="text-align:center;padding:69.71150173541017px 0px"><table border="0" cellpadding="0" cellspacing="0" style="border-spacing:0px;border-collapse:separate;width:100%;max-width:560px;table-layout:fixed;margin:0 auto"><tbody><tr><td width="48.51%" style="width:48.51%;box-sizing:border-box;vertical-align:top"><table border="0" cellpadding="0" cellspacing="0" style="border-spacing:0px;border-collapse:separate;width:100%;table-layout:fixed"><tbody><tr><td><table align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="color:#000;font-style:normal;font-weight:normal;font-size:16px;line-height:1.4;letter-spacing:0;text-align:left;direction:ltr;border-collapse:collapse;font-family:Arial, Helvetica, sans-serif;white-space:normal;word-wrap:break-word;word-break:break-word"><tbody><tr><td><table cellpadding="0" cellspacing="0" border="0" style="width:100%"><tbody><tr><td align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:100%;max-width:272px"><tbody><tr><td style="width:100%;padding:0"><img src="images/f2a2e19144cd2cde365c0bcecddf09c3.png" width="272" height="187" style="display:block;width:100%;height:auto;max-width:100%"></td></tr></tbody></table></td></tr></tbody></table></td></tr><tr><td style="font-size:0;height:16px" height="16">&nbsp;</td></tr><tr><td dir="ltr" style="color:#47342b;font-size:19.9999px;font-weight:700;white-space:pre-wrap;line-height:0.55;text-align:center;mso-line-height-alt:1px">Evening Prayer<br></td></tr><tr><td style="font-size:0;height:16px" height="16">&nbsp;</td></tr><tr><td dir="ltr" style="color:#47342b;font-size:19.9999px;font-weight:700;white-space:pre-wrap;line-height:0.55;text-align:center;mso-line-height-alt:1px">and Happy Hour<br></td></tr><tr><td style="font-size:0;height:16px" height="16">&nbsp;</td></tr><tr><td dir="ltr" style="font-size:16px;font-family:Helvetica, Arial, sans-serif;line-height:1.15;text-align:center"><span style="color:#47342b;white-space:pre-wrap">This Wednesday, April 15</span><span style="font-size:9.6px;color:#47342b;white-space:pre-wrap">th</span><span style="color:#47342b;white-space:pre-wrap">, we’ll be gathering at 6 p.m. at Lincoln Park for evening prayer followed by a happy hour at </span><a href="https://barreldc.com/washington-capitol-hill-eastern-market-metro-shakespeare-theatre-national-mall-barrel-drink-menu" target="_blank" rel="noopener nofollow" ses:no-track="" style="color:inherit;text-decoration:inherit"><span style="text-decoration:underline;color:#1a62ff;white-space:pre-wrap">Barrel</span></a><span style="color:#47342b;white-space:pre-wrap"> on Pennsylvania Ave.<br></span><span style="color:#47342b;white-space:pre-wrap"><br></span></td></tr><tr><td style="font-size:0;height:16px" height="16">&nbsp;</td></tr><tr><td><table cellpadding="0" cellspacing="0" border="0" style="width:100%"><tbody><tr><td align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:100%;max-width:272px"><tbody><tr><td style="width:100%;padding:0"><table cellpadding="0" cellspacing="0" style="width:100%;border-spacing:0;border-collapse:separate"><tbody><tr><td valign="middle" height="45" style="height:45px;vertical-align:middle;box-sizing:border-box;background-color:#00277d;border-top-left-radius:90.66666666666666px;border-top-right-radius:90.66666666666666px;border-bottom-left-radius:90.66666666666666px;border-bottom-right-radius:90.66666666666666px"><a href="https://partiful.com/e/flQMZuaZj5SS6fv5LEIR?c=XK70xL8Y" ses:no-track="" target="_blank" rel="noopener" style="text-decoration:none;display:block"><table cellpadding="0" cellspacing="0" style="width:100%;height:100%;border-spacing:0;border-collapse:collapse"><tbody><tr><td style="color:#ffffff;font-size:18.6667px;font-weight:bold;font-family:Arial, Helvetica, sans-serif;font-style:normal;text-decoration:none;direction:ltr;text-align:center;line-height:1.4em;letter-spacing:0em;vertical-align:middle;box-sizing:border-box"><span style="color:#ffffff;mso-style-textfill-type:solid;mso-style-textfill-fill-color:#ffffff">RSVP Here
-</span></td></tr></tbody></table></a></td></tr></tbody></table></td></tr></tbody></table></td></tr></tbody></table></td></tr><tr><td style="font-size:0;height:16px" height="16">&nbsp;</td></tr><tr><td><table cellpadding="0" cellspacing="0" border="0" style="width:100%"><tbody><tr><td align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:100%;max-width:272px"><tbody><tr><td style="width:100%;padding:0"><img src="images/7279785fdcf6480d426751609e40a6fb.jpg" width="272" height="191" style="display:block;width:100%;height:auto;max-width:100%"></td></tr></tbody></table></td></tr></tbody></table></td></tr><tr><td style="font-size:0;height:16px" height="16">&nbsp;</td></tr><tr><td dir="ltr" style="color:#47342b;font-size:19.9999px;font-weight:700;white-space:pre-wrap;line-height:1.15;text-align:center">Becoming the Church of Tomorrow Event<br></td></tr><tr><td style="font-size:0;height:16px" height="16">&nbsp;</td></tr><tr><td dir="ltr" style="font-size:16px;font-family:Helvetica, Arial, sans-serif;line-height:1.15;text-align:center"><span style="color:#47342b;white-space:pre-wrap">Join Bishop Mariann Budde and Canon Stephanie Spellers for an evening of worship, food, and great conversation! Spellers’s latest book, </span><a href="https://stephaniespellers.com/church-tomorrow" target="_blank" rel="noopener nofollow" ses:no-track="" style="color:inherit;text-decoration:inherit"><span style="text-decoration:underline;color:#1a62ff;white-space:pre-wrap">Church Tomorrow?</span></a><span style="color:#47342b;white-space:pre-wrap">, wrestles with the decline of traditional religion, the wisdom of nonreligious Millennials and Gen Zs, and our call to be courageous witnesses for the God of love. </span><span style="color:#47342b;white-space:pre-wrap"><br></span></td></tr><tr><td style="font-size:0;height:16px" height="16">&nbsp;</td></tr><tr><td><table cellpadding="0" cellspacing="0" border="0" style="width:100%"><tbody><tr><td align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:100%;max-width:272px"><tbody><tr><td style="width:100%;padding:0"><table cellpadding="0" cellspacing="0" style="width:100%;border-spacing:0;border-collapse:separate"><tbody><tr><td valign="middle" height="45" style="height:45px;vertical-align:middle;box-sizing:border-box;background-color:#00277d;border-top-left-radius:90.66666666666666px;border-top-right-radius:90.66666666666666px;border-bottom-left-radius:90.66666666666666px;border-bottom-right-radius:90.66666666666666px"><a href="https://partiful.com/e/Z7DAPkqxvMxhcbiPH7Ao" ses:no-track="" target="_blank" rel="noopener" style="text-decoration:none;display:block"><table cellpadding="0" cellspacing="0" style="width:100%;height:100%;border-spacing:0;border-collapse:collapse"><tbody><tr><td style="color:#ffffff;font-size:18.6667px;font-weight:bold;font-family:Arial, Helvetica, sans-serif;font-style:normal;text-decoration:none;direction:ltr;text-align:center;line-height:1.4em;letter-spacing:0em;vertical-align:middle;box-sizing:border-box"><span style="color:#ffffff;mso-style-textfill-type:solid;mso-style-textfill-fill-color:#ffffff">RSVP Here
-</span></td></tr></tbody></table></a></td></tr></tbody></table></td></tr></tbody></table></td></tr></tbody></table></td></tr></tbody></table></td></tr></tbody></table></td><td width="20" style="width:20px;box-sizing:border-box;font-size:0">&nbsp;</td><td width="47.92%" style="width:47.92%;box-sizing:border-box;vertical-align:top"><table border="0" cellpadding="0" cellspacing="0" style="border-spacing:0px;border-collapse:separate;width:100%;table-layout:fixed"><tbody><tr><td><table align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="color:#000;font-style:normal;font-weight:normal;font-size:16px;line-height:1.4;letter-spacing:0;text-align:left;direction:ltr;border-collapse:collapse;font-family:Arial, Helvetica, sans-serif;white-space:normal;word-wrap:break-word;word-break:break-word"><tbody><tr><td dir="ltr" style="font-size:14.6667px;font-weight:700;white-space:pre-wrap;text-align:left"><br></td></tr><tr><td style="font-size:0;height:16px" height="16">&nbsp;</td></tr><tr><td><table cellpadding="0" cellspacing="0" border="0" style="width:100%"><tbody><tr><td align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:100%;max-width:269px"><tbody><tr><td style="width:100%;padding:0"><img src="images/9a7e7d05941be419b7cedb0f498aeb57.png" width="269" height="254" style="display:block;width:100%;height:auto;max-width:100%"></td></tr></tbody></table></td></tr></tbody></table></td></tr><tr><td style="font-size:0;height:16px" height="16">&nbsp;</td></tr><tr><td dir="ltr" style="color:#47342b;font-size:19.9999px;font-weight:700;white-space:pre-wrap;line-height:1.15;text-align:center">DCEF Baseball Game<br></td></tr><tr><td style="font-size:0;height:16px" height="16">&nbsp;</td></tr><tr><td dir="ltr" style="color:#47342b;font-size:16px;font-family:Helvetica, Arial, sans-serif;line-height:1.15;text-align:center"><span style="white-space:pre-wrap">On Saturday, May 2</span><span style="font-size:9.6px;white-space:pre-wrap">nd</span><span style="white-space:pre-wrap">, join us 3:30 at the Nationals Stadium for an afternoon of fun and fellowship at a very special Star Wars themed game! Please email  </span><span style="text-decoration:underline;white-space:pre-wrap"><a href="mailto:dcepiscopalfellowship@gmail.com" target="_blank" rel="noopener noreferrer" style="color:#47342b;text-decoration:underline">dcepiscopalfellowship@gmail.com</a></span><span style="white-space:pre-wrap"> to reserve a ticket or with any questions!</span><span style="white-space:pre-wrap"><br></span></td></tr><tr><td style="font-size:0;height:16px" height="16">&nbsp;</td></tr><tr><td><table cellpadding="0" cellspacing="0" border="0" style="width:100%"><tbody><tr><td align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:100%;max-width:269px"><tbody><tr><td style="width:100%;padding:0"><table cellpadding="0" cellspacing="0" style="width:100%;border-spacing:0;border-collapse:separate"><tbody><tr><td valign="middle" height="45" style="height:45px;vertical-align:middle;box-sizing:border-box;background-color:#00277d;border-top-left-radius:89.66666666666666px;border-top-right-radius:89.66666666666666px;border-bottom-left-radius:89.66666666666666px;border-bottom-right-radius:89.66666666666666px"><a href="https://partiful.com/e/wvzST2r3Q3bQoPQq6AMn" ses:no-track="" target="_blank" rel="noopener" style="text-decoration:none;display:block"><table cellpadding="0" cellspacing="0" style="width:100%;height:100%;border-spacing:0;border-collapse:collapse"><tbody><tr><td style="color:#ffffff;font-size:18.6667px;font-weight:bold;font-family:Arial, Helvetica, sans-serif;font-style:normal;text-decoration:none;direction:ltr;text-align:center;line-height:1.4em;letter-spacing:0em;vertical-align:middle;box-sizing:border-box"><span style="color:#ffffff;mso-style-textfill-type:solid;mso-style-textfill-fill-color:#ffffff">RSVP Here
-</span></td></tr></tbody></table></a></td></tr></tbody></table></td></tr></tbody></table></td></tr></tbody></table></td></tr><tr><td style="font-size:0;height:16px" height="16">&nbsp;</td></tr><tr><td><table cellpadding="0" cellspacing="0" border="0" style="width:100%"><tbody><tr><td align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:100%;max-width:269px"><tbody><tr><td style="width:100%;padding:0"><img src="images/a411d159750e71cac8d5d817c8fd8f0c.jpg" width="269" height="152" style="display:block;width:100%;height:auto;max-width:100%"></td></tr></tbody></table></td></tr></tbody></table></td></tr><tr><td style="font-size:0;height:16px" height="16">&nbsp;</td></tr><tr><td dir="ltr" style="color:#47342b;font-size:19.9999px;font-weight:700;white-space:pre-wrap;line-height:1.15;text-align:center">Spring Scavenger Hunt   and Social<br></td></tr><tr><td style="font-size:0;height:16px" height="16">&nbsp;</td></tr><tr><td dir="ltr" style="color:#47342b;font-size:16px;font-family:Helvetica, Arial, sans-serif;line-height:1.2;text-align:center"><span style="white-space:pre-wrap">We will come together at All Souls’ Episcopal Church for a spring-themed scavenger hunt and social on May 23</span><span style="font-size:9.6px;white-space:pre-wrap">rd.</span><span style="white-space:pre-wrap"> The scavenger hunt will begin at 2 p.m., and light food and refreshments will follow!</span><span style="white-space:pre-wrap"><br></span></td></tr><tr><td style="font-size:0;height:16px" height="16">&nbsp;</td></tr><tr><td><table cellpadding="0" cellspacing="0" border="0" style="width:100%"><tbody><tr><td align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:100%;max-width:269px"><tbody><tr><td style="width:100%;padding:0"><table cellpadding="0" cellspacing="0" style="width:100%;border-spacing:0;border-collapse:separate"><tbody><tr><td valign="middle" height="45" style="height:45px;vertical-align:middle;box-sizing:border-box;background-color:#00277d;border-top-left-radius:89.66666666666666px;border-top-right-radius:89.66666666666666px;border-bottom-left-radius:89.66666666666666px;border-bottom-right-radius:89.66666666666666px"><a href="https://partiful.com/e/n3boporE3CVSJHdVF9ag" ses:no-track="" target="_blank" rel="noopener" style="text-decoration:none;display:block"><table cellpadding="0" cellspacing="0" style="width:100%;height:100%;border-spacing:0;border-collapse:collapse"><tbody><tr><td style="color:#ffffff;font-size:18.6667px;font-weight:bold;font-family:Arial, Helvetica, sans-serif;font-style:normal;text-decoration:none;direction:ltr;text-align:center;line-height:1.4em;letter-spacing:0em;vertical-align:middle;box-sizing:border-box"><span style="color:#ffffff;mso-style-textfill-type:solid;mso-style-textfill-fill-color:#ffffff">RSVP Here
-</span></td></tr></tbody></table></a></td></tr></tbody></table></td></tr></tbody></table></td></tr></tbody></table></td></tr></tbody></table></td></tr></tbody></table></td></tr></tbody></table></td></tr></tbody></table><!--[if !mso]><!--><table border="0" cellpadding="0" cellspacing="0" class="layout-4-under-450" align="center" style="display:none;border-spacing:0px;border-collapse:separate;width:100%;max-width:100%;table-layout:fixed;margin:0 auto;background-color:#e9ddcd"><tbody><tr><td style="text-align:center;padding:69.71150173541017px 0px"><table border="0" cellpadding="0" cellspacing="0" style="border-spacing:0px;border-collapse:separate;width:100%;max-width:450px;table-layout:fixed;margin:0 auto"><tbody><tr><td width="100.00%" style="width:100.00%;box-sizing:border-box;vertical-align:top"><table border="0" cellpadding="0" cellspacing="0" style="border-spacing:0px;border-collapse:separate;width:100%;table-layout:fixed"><tbody><tr><td><table align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="color:#000;font-style:normal;font-weight:normal;font-size:16px;line-height:1.4;letter-spacing:0;text-align:left;direction:ltr;border-collapse:collapse;font-family:Arial, Helvetica, sans-serif;white-space:normal;word-wrap:break-word;word-break:break-word"><tbody><tr><td><table cellpadding="0" cellspacing="0" border="0" style="width:100%"><tbody><tr><td align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:100%;max-width:450px"><tbody><tr><td style="width:100%;padding:0"><img src="images/f2a2e19144cd2cde365c0bcecddf09c3.png" width="450" height="309" style="display:block;width:100%;height:auto;max-width:100%"></td></tr></tbody></table></td></tr></tbody></table></td></tr><tr><td style="font-size:0;height:16px" height="16">&nbsp;</td></tr><tr><td dir="ltr" style="color:#47342b;font-size:19.9999px;font-weight:700;white-space:pre-wrap;line-height:0.55;text-align:center;mso-line-height-alt:1px">Evening Prayer<br></td></tr><tr><td style="font-size:0;height:16px" height="16">&nbsp;</td></tr><tr><td dir="ltr" style="color:#47342b;font-size:19.9999px;font-weight:700;white-space:pre-wrap;line-height:0.55;text-align:center;mso-line-height-alt:1px">and Happy Hour<br></td></tr><tr><td style="font-size:0;height:16px" height="16">&nbsp;</td></tr><tr><td dir="ltr" style="font-size:16px;font-family:Helvetica, Arial, sans-serif;line-height:1.15;text-align:center"><span style="color:#47342b;white-space:pre-wrap">This Wednesday, April 15</span><span style="font-size:9.6px;color:#47342b;white-space:pre-wrap">th</span><span style="color:#47342b;white-space:pre-wrap">, we’ll be gathering at 6 p.m. at Lincoln Park for evening prayer followed by a happy hour at </span><a href="https://barreldc.com/washington-capitol-hill-eastern-market-metro-shakespeare-theatre-national-mall-barrel-drink-menu" target="_blank" rel="noopener nofollow" ses:no-track="" style="color:inherit;text-decoration:inherit"><span style="text-decoration:underline;color:#1a62ff;white-space:pre-wrap">Barrel</span></a><span style="color:#47342b;white-space:pre-wrap"> on Pennsylvania Ave.<br></span><span style="color:#47342b;white-space:pre-wrap"><br></span></td></tr><tr><td style="font-size:0;height:16px" height="16">&nbsp;</td></tr><tr><td><table cellpadding="0" cellspacing="0" border="0" style="width:100%"><tbody><tr><td align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:100%;max-width:450px"><tbody><tr><td style="width:100%;padding:0"><table cellpadding="0" cellspacing="0" style="width:100%;border-spacing:0;border-collapse:separate"><tbody><tr><td valign="middle" height="75" style="height:75px;vertical-align:middle;box-sizing:border-box;background-color:#00277d;border-top-left-radius:150px;border-top-right-radius:150px;border-bottom-left-radius:150px;border-bottom-right-radius:150px"><a href="https://partiful.com/e/flQMZuaZj5SS6fv5LEIR?c=XK70xL8Y" ses:no-track="" target="_blank" rel="noopener" style="text-decoration:none;display:block"><table cellpadding="0" cellspacing="0" style="width:100%;height:100%;border-spacing:0;border-collapse:collapse"><tbody><tr><td style="color:#ffffff;font-size:18.6667px;font-weight:bold;font-family:Arial, Helvetica, sans-serif;font-style:normal;text-decoration:none;direction:ltr;text-align:center;line-height:1.4em;letter-spacing:0em;vertical-align:middle;box-sizing:border-box"><span style="color:#ffffff;mso-style-textfill-type:solid;mso-style-textfill-fill-color:#ffffff">RSVP Here
-</span></td></tr></tbody></table></a></td></tr></tbody></table></td></tr></tbody></table></td></tr></tbody></table></td></tr><tr><td style="font-size:0;height:16px" height="16">&nbsp;</td></tr><tr><td><table cellpadding="0" cellspacing="0" border="0" style="width:100%"><tbody><tr><td align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:100%;max-width:450px"><tbody><tr><td style="width:100%;padding:0"><img src="images/7279785fdcf6480d426751609e40a6fb.jpg" width="450" height="316" style="display:block;width:100%;height:auto;max-width:100%"></td></tr></tbody></table></td></tr></tbody></table></td></tr><tr><td style="font-size:0;height:16px" height="16">&nbsp;</td></tr><tr><td dir="ltr" style="color:#47342b;font-size:19.9999px;font-weight:700;white-space:pre-wrap;line-height:1.15;text-align:center">Becoming the Church of Tomorrow Event<br></td></tr><tr><td style="font-size:0;height:16px" height="16">&nbsp;</td></tr><tr><td dir="ltr" style="font-size:16px;font-family:Helvetica, Arial, sans-serif;line-height:1.15;text-align:center"><span style="color:#47342b;white-space:pre-wrap">Join Bishop Mariann Budde and Canon Stephanie Spellers for an evening of worship, food, and great conversation! Spellers’s latest book, </span><a href="https://stephaniespellers.com/church-tomorrow" target="_blank" rel="noopener nofollow" ses:no-track="" style="color:inherit;text-decoration:inherit"><span style="text-decoration:underline;color:#1a62ff;white-space:pre-wrap">Church Tomorrow?</span></a><span style="color:#47342b;white-space:pre-wrap">, wrestles with the decline of traditional religion, the wisdom of nonreligious Millennials and Gen Zs, and our call to be courageous witnesses for the God of love. </span><span style="color:#47342b;white-space:pre-wrap"><br></span></td></tr><tr><td style="font-size:0;height:16px" height="16">&nbsp;</td></tr><tr><td><table cellpadding="0" cellspacing="0" border="0" style="width:100%"><tbody><tr><td align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:100%;max-width:450px"><tbody><tr><td style="width:100%;padding:0"><table cellpadding="0" cellspacing="0" style="width:100%;border-spacing:0;border-collapse:separate"><tbody><tr><td valign="middle" height="75" style="height:75px;vertical-align:middle;box-sizing:border-box;background-color:#00277d;border-top-left-radius:150px;border-top-right-radius:150px;border-bottom-left-radius:150px;border-bottom-right-radius:150px"><a href="https://partiful.com/e/Z7DAPkqxvMxhcbiPH7Ao" ses:no-track="" target="_blank" rel="noopener" style="text-decoration:none;display:block"><table cellpadding="0" cellspacing="0" style="width:100%;height:100%;border-spacing:0;border-collapse:collapse"><tbody><tr><td style="color:#ffffff;font-size:18.6667px;font-weight:bold;font-family:Arial, Helvetica, sans-serif;font-style:normal;text-decoration:none;direction:ltr;text-align:center;line-height:1.4em;letter-spacing:0em;vertical-align:middle;box-sizing:border-box"><span style="color:#ffffff;mso-style-textfill-type:solid;mso-style-textfill-fill-color:#ffffff">RSVP Here
-</span></td></tr></tbody></table></a></td></tr></tbody></table></td></tr></tbody></table></td></tr></tbody></table></td></tr></tbody></table></td></tr></tbody></table></td></tr><tr><td style="font-size:0;height:16px" height="16">&nbsp;</td></tr><tr><td width="100.00%" style="width:100.00%;box-sizing:border-box;vertical-align:top"><table border="0" cellpadding="0" cellspacing="0" style="border-spacing:0px;border-collapse:separate;width:100%;table-layout:fixed"><tbody><tr><td><table align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="color:#000;font-style:normal;font-weight:normal;font-size:16px;line-height:1.4;letter-spacing:0;text-align:left;direction:ltr;border-collapse:collapse;font-family:Arial, Helvetica, sans-serif;white-space:normal;word-wrap:break-word;word-break:break-word"><tbody><tr><td dir="ltr" style="font-size:14.6667px;font-weight:700;white-space:pre-wrap;text-align:left"><br></td></tr><tr><td style="font-size:0;height:16px" height="16">&nbsp;</td></tr><tr><td><table cellpadding="0" cellspacing="0" border="0" style="width:100%"><tbody><tr><td align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:100%;max-width:450px"><tbody><tr><td style="width:100%;padding:0"><img src="images/9a7e7d05941be419b7cedb0f498aeb57.png" width="450" height="425" style="display:block;width:100%;height:auto;max-width:100%"></td></tr></tbody></table></td></tr></tbody></table></td></tr><tr><td style="font-size:0;height:16px" height="16">&nbsp;</td></tr><tr><td dir="ltr" style="color:#47342b;font-size:19.9999px;font-weight:700;white-space:pre-wrap;line-height:1.15;text-align:center">DCEF Baseball Game<br></td></tr><tr><td style="font-size:0;height:16px" height="16">&nbsp;</td></tr><tr><td dir="ltr" style="color:#47342b;font-size:16px;font-family:Helvetica, Arial, sans-serif;line-height:1.15;text-align:center"><span style="white-space:pre-wrap">On Saturday, May 2</span><span style="font-size:9.6px;white-space:pre-wrap">nd</span><span style="white-space:pre-wrap">, join us 3:30 at the Nationals Stadium for an afternoon of fun and fellowship at a very special Star Wars themed game! Please email  </span><span style="text-decoration:underline;white-space:pre-wrap"><a href="mailto:dcepiscopalfellowship@gmail.com" target="_blank" rel="noopener noreferrer" style="color:#47342b;text-decoration:underline">dcepiscopalfellowship@gmail.com</a></span><span style="white-space:pre-wrap"> to reserve a ticket or with any questions!</span><span style="white-space:pre-wrap"><br></span></td></tr><tr><td style="font-size:0;height:16px" height="16">&nbsp;</td></tr><tr><td><table cellpadding="0" cellspacing="0" border="0" style="width:100%"><tbody><tr><td align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:100%;max-width:450px"><tbody><tr><td style="width:100%;padding:0"><table cellpadding="0" cellspacing="0" style="width:100%;border-spacing:0;border-collapse:separate"><tbody><tr><td valign="middle" height="75" style="height:75px;vertical-align:middle;box-sizing:border-box;background-color:#00277d;border-top-left-radius:150px;border-top-right-radius:150px;border-bottom-left-radius:150px;border-bottom-right-radius:150px"><a href="https://partiful.com/e/wvzST2r3Q3bQoPQq6AMn" ses:no-track="" target="_blank" rel="noopener" style="text-decoration:none;display:block"><table cellpadding="0" cellspacing="0" style="width:100%;height:100%;border-spacing:0;border-collapse:collapse"><tbody><tr><td style="color:#ffffff;font-size:18.6667px;font-weight:bold;font-family:Arial, Helvetica, sans-serif;font-style:normal;text-decoration:none;direction:ltr;text-align:center;line-height:1.4em;letter-spacing:0em;vertical-align:middle;box-sizing:border-box"><span style="color:#ffffff;mso-style-textfill-type:solid;mso-style-textfill-fill-color:#ffffff">RSVP Here
-</span></td></tr></tbody></table></a></td></tr></tbody></table></td></tr></tbody></table></td></tr></tbody></table></td></tr><tr><td style="font-size:0;height:16px" height="16">&nbsp;</td></tr><tr><td><table cellpadding="0" cellspacing="0" border="0" style="width:100%"><tbody><tr><td align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:100%;max-width:450px"><tbody><tr><td style="width:100%;padding:0"><img src="images/a411d159750e71cac8d5d817c8fd8f0c.jpg" width="450" height="255" style="display:block;width:100%;height:auto;max-width:100%"></td></tr></tbody></table></td></tr></tbody></table></td></tr><tr><td style="font-size:0;height:16px" height="16">&nbsp;</td></tr><tr><td dir="ltr" style="color:#47342b;font-size:19.9999px;font-weight:700;white-space:pre-wrap;line-height:1.15;text-align:center">Spring Scavenger Hunt   and Social<br></td></tr><tr><td style="font-size:0;height:16px" height="16">&nbsp;</td></tr><tr><td dir="ltr" style="color:#47342b;font-size:16px;font-family:Helvetica, Arial, sans-serif;line-height:1.2;text-align:center"><span style="white-space:pre-wrap">We will come together at All Souls’ Episcopal Church for a spring-themed scavenger hunt and social on May 23</span><span style="font-size:9.6px;white-space:pre-wrap">rd.</span><span style="white-space:pre-wrap"> The scavenger hunt will begin at 2 p.m., and light food and refreshments will follow!</span><span style="white-space:pre-wrap"><br></span></td></tr><tr><td style="font-size:0;height:16px" height="16">&nbsp;</td></tr><tr><td><table cellpadding="0" cellspacing="0" border="0" style="width:100%"><tbody><tr><td align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:100%;max-width:450px"><tbody><tr><td style="width:100%;padding:0"><table cellpadding="0" cellspacing="0" style="width:100%;border-spacing:0;border-collapse:separate"><tbody><tr><td valign="middle" height="75" style="height:75px;vertical-align:middle;box-sizing:border-box;background-color:#00277d;border-top-left-radius:150px;border-top-right-radius:150px;border-bottom-left-radius:150px;border-bottom-right-radius:150px"><a href="https://partiful.com/e/n3boporE3CVSJHdVF9ag" ses:no-track="" target="_blank" rel="noopener" style="text-decoration:none;display:block"><table cellpadding="0" cellspacing="0" style="width:100%;height:100%;border-spacing:0;border-collapse:collapse"><tbody><tr><td style="color:#ffffff;font-size:18.6667px;font-weight:bold;font-family:Arial, Helvetica, sans-serif;font-style:normal;text-decoration:none;direction:ltr;text-align:center;line-height:1.4em;letter-spacing:0em;vertical-align:middle;box-sizing:border-box"><span style="color:#ffffff;mso-style-textfill-type:solid;mso-style-textfill-fill-color:#ffffff">RSVP Here
-</span></td></tr></tbody></table></a></td></tr></tbody></table></td></tr></tbody></table></td></tr></tbody></table></td></tr></tbody></table></td></tr></tbody></table></td></tr></tbody></table></td></tr></tbody></table><!--<![endif]--></td></tr><tr><td style="font-size:0;height:16px" height="16">&nbsp;</td></tr><tr><td><table border="0" cellpadding="0" cellspacing="0" class="layout-5" align="center" style="display:table;border-spacing:0px;border-collapse:separate;width:100%;max-width:100%;table-layout:fixed;margin:0 auto;background-color:#e9ddcd;border-top-left-radius:0;border-top-right-radius:0;border-bottom-left-radius:0;border-bottom-right-radius:0"><tbody><tr><td style="text-align:center;padding:12px 20px"><table border="0" cellpadding="0" cellspacing="0" style="border-spacing:0px;border-collapse:separate;width:100%;max-width:560px;table-layout:fixed;margin:0 auto"><tbody><tr><td width="100.00%" style="width:100.00%;box-sizing:border-box;vertical-align:middle;border-top-left-radius:0;border-top-right-radius:0;border-bottom-left-radius:0;border-bottom-right-radius:0"><table border="0" cellpadding="0" cellspacing="0" style="border-spacing:0px;border-collapse:separate;width:100%;table-layout:fixed"><tbody><tr><td style="padding:5px"><table align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="color:#000;font-style:normal;font-weight:normal;font-size:16px;line-height:1.4;letter-spacing:0;text-align:left;direction:ltr;border-collapse:collapse;font-family:Arial, Helvetica, sans-serif;white-space:normal;word-wrap:break-word;word-break:break-word"><tbody><tr><td dir="ltr" style="color:#00277d;font-size:50.6665px;font-weight:700;font-family:Verdana, Geneva, sans-serif;white-space:pre-wrap;text-align:center">Events around    the Diocese<br></td></tr><tr><td style="font-size:0;height:16px" height="16">&nbsp;</td></tr><tr><td dir="ltr" style="font-size:18.6666px;font-family:Helvetica, Arial, sans-serif;line-height:1.6;text-align:center"><span style="color:#47342b;white-space:pre-wrap">We are also partnering with other organizations to host and spread word of events young adults in the diocese might be interested in. If you have any ideas of events you know about or are hosting please share it with us using </span><a href="https://forms.gle/epcKDnZ1tQeatfwU9" target="_blank" rel="noopener nofollow" ses:no-track="" style="color:inherit;text-decoration:inherit"><span style="text-decoration:underline;color:#1a62ff;white-space:pre-wrap">this form</span></a><span style="color:#47342b;white-space:pre-wrap">!</span><span style="color:#47342b;white-space:pre-wrap"><br></span></td></tr><tr><td style="font-size:0;height:16px" height="16">&nbsp;</td></tr><tr><td><table cellpadding="0" cellspacing="0" border="0" style="width:100%"><tbody><tr><td align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:100%;max-width:550px"><tbody><tr><td height="0" style="border-top:1px dashed #ffffff;height:0;font-size:0">&nbsp;</td></tr></tbody></table></td></tr></tbody></table></td></tr></tbody></table></td></tr></tbody></table></td></tr></tbody></table></td></tr></tbody></table><!--[if !mso]><!--><table border="0" cellpadding="0" cellspacing="0" class="layout-5-under-1" align="center" style="display:none;border-spacing:0px;border-collapse:separate;width:100%;max-width:100%;table-layout:fixed;margin:0 auto;background-color:#e9ddcd;border-top-left-radius:0;border-top-right-radius:0;border-bottom-left-radius:0;border-bottom-right-radius:0"><tbody><tr><td style="text-align:center;padding:12px 20px"><table border="0" cellpadding="0" cellspacing="0" style="border-spacing:0px;border-collapse:separate;width:100%;max-width:1px;table-layout:fixed;margin:0 auto"><tbody><tr><td width="100.00%" style="width:100.00%;box-sizing:border-box;vertical-align:middle;border-top:-4.5px solid #000000;border-bottom:-4.5px solid #000000;border-left:-4.5px solid #000000;border-right:-4.5px solid #000000;border-top-left-radius:0;border-top-right-radius:0;border-bottom-left-radius:0;border-bottom-right-radius:0"><table border="0" cellpadding="0" cellspacing="0" style="border-spacing:0px;border-collapse:separate;width:100%;table-layout:fixed"><tbody><tr><td style="padding:5px"><table align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="color:#000;font-style:normal;font-weight:normal;font-size:16px;line-height:1.4;letter-spacing:0;text-align:left;direction:ltr;border-collapse:collapse;font-family:Arial, Helvetica, sans-serif;white-space:normal;word-wrap:break-word;word-break:break-word"><tbody><tr><td dir="ltr" style="color:#00277d;font-size:50.6665px;font-weight:700;font-family:Verdana, Geneva, sans-serif;white-space:pre-wrap;text-align:center">Events around    the Diocese<br></td></tr><tr><td style="font-size:0;height:16px" height="16">&nbsp;</td></tr><tr><td dir="ltr" style="font-size:18.6666px;font-family:Helvetica, Arial, sans-serif;line-height:1.6;text-align:center"><span style="color:#47342b;white-space:pre-wrap">We are also partnering with other organizations to host and spread word of events young adults in the diocese might be interested in. If you have any ideas of events you know about or are hosting please share it with us using </span><a href="https://forms.gle/epcKDnZ1tQeatfwU9" target="_blank" rel="noopener nofollow" ses:no-track="" style="color:inherit;text-decoration:inherit"><span style="text-decoration:underline;color:#1a62ff;white-space:pre-wrap">this form</span></a><span style="color:#47342b;white-space:pre-wrap">!</span><span style="color:#47342b;white-space:pre-wrap"><br></span></td></tr><tr><td style="font-size:0;height:16px" height="16">&nbsp;</td></tr><tr><td><table cellpadding="0" cellspacing="0" border="0" style="width:100%"><tbody><tr><td align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:100%;max-width:0px"><tbody><tr><td height="0" style="border-top:1px dashed #ffffff;height:0;font-size:0">&nbsp;</td></tr></tbody></table></td></tr></tbody></table></td></tr></tbody></table></td></tr></tbody></table></td></tr></tbody></table></td></tr></tbody></table><!--<![endif]--></td></tr><tr><td style="font-size:0;height:16px" height="16">&nbsp;</td></tr><tr><td><table border="0" cellpadding="0" cellspacing="0" class="layout-6" align="center" style="display:table;border-spacing:0px;border-collapse:separate;width:100%;max-width:100%;table-layout:fixed;margin:0 auto;background-color:#e9ddcd"><tbody><tr><td style="text-align:center;padding:27.211501735410167px 0px"><table border="0" cellpadding="0" cellspacing="0" style="border-spacing:0px;border-collapse:separate;width:100%;max-width:560px;table-layout:fixed;margin:0 auto"><tbody><tr><td width="48.51%" style="width:48.51%;box-sizing:border-box;vertical-align:top"><table border="0" cellpadding="0" cellspacing="0" style="border-spacing:0px;border-collapse:separate;width:100%;table-layout:fixed"><tbody><tr><td><table align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="color:#000;font-style:normal;font-weight:normal;font-size:16px;line-height:1.4;letter-spacing:0;text-align:left;direction:ltr;border-collapse:collapse;font-family:Arial, Helvetica, sans-serif;white-space:normal;word-wrap:break-word;word-break:break-word"><tbody><tr><td dir="ltr" style="font-size:16px;font-family:Helvetica, Arial, sans-serif;white-space:pre-wrap;text-align:left"><br></td></tr><tr><td style="font-size:0;height:16px" height="16">&nbsp;</td></tr><tr><td><table cellpadding="0" cellspacing="0" border="0" style="width:100%"><tbody><tr><td align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:100%;max-width:272px"><tbody><tr><td style="width:100%;padding:0"><img src="images/d31b97df4099249b6f9081ec7e36f17f.png" width="272" height="208" style="display:block;width:100%;height:auto;max-width:100%"></td></tr></tbody></table></td></tr></tbody></table></td></tr><tr><td style="font-size:0;height:16px" height="16">&nbsp;</td></tr><tr><td dir="ltr" style="color:#47342b;font-size:16px;text-align:center"><span style="font-size:19.9998px;font-weight:700;white-space:pre-wrap">River Cleanup </span><span style="font-size:10.6667px;font-style:italic;white-space:pre-wrap"> </span><span style="font-size:10.6667px;font-style:italic;white-space:pre-wrap"><br></span></td></tr><tr><td style="font-size:0;height:16px" height="16">&nbsp;</td></tr><tr><td dir="ltr" style="font-size:16px;font-family:Helvetica, Arial, sans-serif;line-height:1.15;text-align:center"><span style="color:#47342b;white-space:pre-wrap">Join us for the</span><a href="https://waterandwilderness.org" target="_blank" rel="noopener nofollow" ses:no-track="" style="color:inherit;text-decoration:inherit"><span style="text-decoration:underline;color:#1a62ff;white-space:pre-wrap"> Water &amp; Wilderness Church</span></a><span style="color:#47342b;white-space:pre-wrap"> Earth Day Clean Up Event at Gravelly Point Park on April 18</span><span style="font-size:9.6px;color:#47342b;white-space:pre-wrap">th</span><span style="color:#47342b;white-space:pre-wrap">, beginning at 9!</span><span style="color:#47342b;white-space:pre-wrap"><br></span></td></tr><tr><td style="font-size:0;height:16px" height="16">&nbsp;</td></tr><tr><td dir="ltr" style="color:#47342b;font-size:16px;font-family:Helvetica, Arial, sans-serif;white-space:pre-wrap;line-height:1.15;text-align:center"><br></td></tr></tbody></table></td></tr></tbody></table></td><td width="20" style="width:20px;box-sizing:border-box;font-size:0">&nbsp;</td><td width="47.92%" style="width:47.92%;box-sizing:border-box;vertical-align:top"><table border="0" cellpadding="0" cellspacing="0" style="border-spacing:0px;border-collapse:separate;width:100%;table-layout:fixed"><tbody><tr><td><table align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="color:#000;font-style:normal;font-weight:normal;font-size:16px;line-height:1.4;letter-spacing:0;text-align:left;direction:ltr;border-collapse:collapse;font-family:Arial, Helvetica, sans-serif;white-space:normal;word-wrap:break-word;word-break:break-word"><tbody><tr><td dir="ltr" style="font-size:14.6667px;font-weight:700;white-space:pre-wrap;text-align:left"><br></td></tr><tr><td style="font-size:0;height:16px" height="16">&nbsp;</td></tr><tr><td><table cellpadding="0" cellspacing="0" border="0" style="width:100%"><tbody><tr><td align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:100%;max-width:269px"><tbody><tr><td style="width:100%;padding:0"><img src="images/d78095404af505c83bc609cd28d87af3.png" width="269" height="205" style="display:block;width:100%;height:auto;max-width:100%"></td></tr></tbody></table></td></tr></tbody></table></td></tr><tr><td style="font-size:0;height:16px" height="16">&nbsp;</td></tr><tr><td dir="ltr" style="color:#47342b;font-size:18.6665px;font-weight:700;white-space:pre-wrap;text-align:center">Community Sing-Along <br></td></tr><tr><td style="font-size:0;height:16px" height="16">&nbsp;</td></tr><tr><td dir="ltr" style="color:#47342b;font-size:16px;font-family:Helvetica, Arial, sans-serif;line-height:1.15;text-align:center"><span style="white-space:pre-wrap">We’ll be gathering with our friends at Water &amp; Wilderness Church to hear Father Pete Nunnally lead us in music at the Titanic Memorial on April 23</span><span style="font-size:9.6px;white-space:pre-wrap">rd</span><span style="white-space:pre-wrap"> at 7 p.m.</span><span style="white-space:pre-wrap"><br></span></td></tr><tr><td style="font-size:0;height:16px" height="16">&nbsp;</td></tr><tr><td dir="ltr" style="color:#47342b;font-size:16px;font-family:Helvetica, Arial, sans-serif;white-space:pre-wrap;line-height:1.15;text-align:center"><br></td></tr></tbody></table></td></tr></tbody></table></td></tr></tbody></table></td></tr></tbody></table><!--[if !mso]><!--><table border="0" cellpadding="0" cellspacing="0" class="layout-6-under-450" align="center" style="display:none;border-spacing:0px;border-collapse:separate;width:100%;max-width:100%;table-layout:fixed;margin:0 auto;background-color:#e9ddcd"><tbody><tr><td style="text-align:center;padding:27.211501735410167px 0px"><table border="0" cellpadding="0" cellspacing="0" style="border-spacing:0px;border-collapse:separate;width:100%;max-width:450px;table-layout:fixed;margin:0 auto"><tbody><tr><td width="100.00%" style="width:100.00%;box-sizing:border-box;vertical-align:top"><table border="0" cellpadding="0" cellspacing="0" style="border-spacing:0px;border-collapse:separate;width:100%;table-layout:fixed"><tbody><tr><td><table align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="color:#000;font-style:normal;font-weight:normal;font-size:16px;line-height:1.4;letter-spacing:0;text-align:left;direction:ltr;border-collapse:collapse;font-family:Arial, Helvetica, sans-serif;white-space:normal;word-wrap:break-word;word-break:break-word"><tbody><tr><td dir="ltr" style="font-size:16px;font-family:Helvetica, Arial, sans-serif;white-space:pre-wrap;text-align:left"><br></td></tr><tr><td style="font-size:0;height:16px" height="16">&nbsp;</td></tr><tr><td><table cellpadding="0" cellspacing="0" border="0" style="width:100%"><tbody><tr><td align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:100%;max-width:450px"><tbody><tr><td style="width:100%;padding:0"><img src="images/d31b97df4099249b6f9081ec7e36f17f.png" width="450" height="344" style="display:block;width:100%;height:auto;max-width:100%"></td></tr></tbody></table></td></tr></tbody></table></td></tr><tr><td style="font-size:0;height:16px" height="16">&nbsp;</td></tr><tr><td dir="ltr" style="color:#47342b;font-size:16px;text-align:center"><span style="font-size:19.9998px;font-weight:700;white-space:pre-wrap">River Cleanup </span><span style="font-size:10.6667px;font-style:italic;white-space:pre-wrap"> </span><span style="font-size:10.6667px;font-style:italic;white-space:pre-wrap"><br></span></td></tr><tr><td style="font-size:0;height:16px" height="16">&nbsp;</td></tr><tr><td dir="ltr" style="font-size:16px;font-family:Helvetica, Arial, sans-serif;line-height:1.15;text-align:center"><span style="color:#47342b;white-space:pre-wrap">Join us for the</span><a href="https://waterandwilderness.org" target="_blank" rel="noopener nofollow" ses:no-track="" style="color:inherit;text-decoration:inherit"><span style="text-decoration:underline;color:#1a62ff;white-space:pre-wrap"> Water &amp; Wilderness Church</span></a><span style="color:#47342b;white-space:pre-wrap"> Earth Day Clean Up Event at Gravelly Point Park on April 18</span><span style="font-size:9.6px;color:#47342b;white-space:pre-wrap">th</span><span style="color:#47342b;white-space:pre-wrap">, beginning at 9!</span><span style="color:#47342b;white-space:pre-wrap"><br></span></td></tr><tr><td style="font-size:0;height:16px" height="16">&nbsp;</td></tr><tr><td dir="ltr" style="color:#47342b;font-size:16px;font-family:Helvetica, Arial, sans-serif;white-space:pre-wrap;line-height:1.15;text-align:center"><br></td></tr></tbody></table></td></tr></tbody></table></td></tr><tr><td style="font-size:0;height:16px" height="16">&nbsp;</td></tr><tr><td width="100.00%" style="width:100.00%;box-sizing:border-box;vertical-align:top"><table border="0" cellpadding="0" cellspacing="0" style="border-spacing:0px;border-collapse:separate;width:100%;table-layout:fixed"><tbody><tr><td><table align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="color:#000;font-style:normal;font-weight:normal;font-size:16px;line-height:1.4;letter-spacing:0;text-align:left;direction:ltr;border-collapse:collapse;font-family:Arial, Helvetica, sans-serif;white-space:normal;word-wrap:break-word;word-break:break-word"><tbody><tr><td dir="ltr" style="font-size:14.6667px;font-weight:700;white-space:pre-wrap;text-align:left"><br></td></tr><tr><td style="font-size:0;height:16px" height="16">&nbsp;</td></tr><tr><td><table cellpadding="0" cellspacing="0" border="0" style="width:100%"><tbody><tr><td align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:100%;max-width:450px"><tbody><tr><td style="width:100%;padding:0"><img src="images/d78095404af505c83bc609cd28d87af3.png" width="450" height="343" style="display:block;width:100%;height:auto;max-width:100%"></td></tr></tbody></table></td></tr></tbody></table></td></tr><tr><td style="font-size:0;height:16px" height="16">&nbsp;</td></tr><tr><td dir="ltr" style="color:#47342b;font-size:18.6665px;font-weight:700;white-space:pre-wrap;text-align:center">Community Sing-Along <br></td></tr><tr><td style="font-size:0;height:16px" height="16">&nbsp;</td></tr><tr><td dir="ltr" style="color:#47342b;font-size:16px;font-family:Helvetica, Arial, sans-serif;line-height:1.15;text-align:center"><span style="white-space:pre-wrap">We’ll be gathering with our friends at Water &amp; Wilderness Church to hear Father Pete Nunnally lead us in music at the Titanic Memorial on April 23</span><span style="font-size:9.6px;white-space:pre-wrap">rd</span><span style="white-space:pre-wrap"> at 7 p.m.</span><span style="white-space:pre-wrap"><br></span></td></tr><tr><td style="font-size:0;height:16px" height="16">&nbsp;</td></tr><tr><td dir="ltr" style="color:#47342b;font-size:16px;font-family:Helvetica, Arial, sans-serif;white-space:pre-wrap;line-height:1.15;text-align:center"><br></td></tr></tbody></table></td></tr></tbody></table></td></tr></tbody></table></td></tr></tbody></table><!--<![endif]--></td></tr><tr><td style="font-size:0;height:16px" height="16">&nbsp;</td></tr><tr><td dir="ltr" style="font-size:17.3333px;font-family:Helvetica, Arial, sans-serif;white-space:pre-wrap;line-height:0.95;text-align:center;padding:0px 20px;mso-line-height-alt:1px">Forwarded this email? Email <a href="mailto:dcepiscopalfellowship@gmail.com" target="_blank" rel="noopener noreferrer" style="color:#000000;text-decoration:none">dcepiscopalfellowship@gmail.com</a> <br></td></tr><tr><td style="font-size:0;height:16px" height="16">&nbsp;</td></tr><tr><td dir="ltr" style="font-size:17.3333px;font-family:Helvetica, Arial, sans-serif;white-space:pre-wrap;line-height:0.95;text-align:center;padding:0px 20px;mso-line-height-alt:1px">to get on the email list!<br></td></tr><tr><td style="font-size:0;height:16px" height="16">&nbsp;</td></tr><tr><td style="padding:0px 20px"><table cellpadding="0" cellspacing="0" border="0" style="width:100%"><tbody><tr><td align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:100%;max-width:560px"><tbody><tr><td style="width:100%;padding:0"><img src="images/115a80d9717e3e5614fd99afd4bcc1f7.jpg" width="560" height="166" style="display:block;width:100%;height:auto;max-width:100%"></td></tr></tbody></table></td></tr></tbody></table></td></tr></tbody></table></td></tr></tbody></table></td></tr><tr><td height="100%" style="height:100%;font-size:0;line-height:0" aria-hidden="true">&nbsp;</td></tr></tbody></table><!--[if mso]></td>
-                </tr>
-              </tbody>
-            </table>
-          </center><![endif]--></td></tr></tbody></table></body></html>
+    }
+  }
+  events.forEach(processEvent);
+  return events;
+}
+function processEvent(ev) {
+  const raw=ev.description||'';
+  if(!ev.url){
+    const m=raw.match(/RSVP:\s*<a[^>]+href="([^"]+)"/i)||raw.match(/RSVP:\s*(https?:\/\/[^\s<"]+)/i);
+    if(m) ev.url=m[1];
+  }
+  let desc=raw.replace(/<[^>]+>/g,'');
+  desc=desc.replace(/&quot;/g,'"').replace(/&amp;/g,'&').replace(/&#39;/g,"'")
+           .replace(/&lt;/g,'<').replace(/&gt;/g,'>');
+  if(!ev.image){
+    desc=desc.replace(/\[image:\s*"?([^"\]\n]+?)"?\s*\]/gi,(_,p)=>{
+      const p2=p.trim(); ev.image=p2.includes('/')?p2:'images/'+p2; return '';
+    });
+  }
+  desc=desc.replace(/RSVP:\s*[^\n]*/gi,'');
+  const tagCats=[];
+  desc=desc.replace(/#(DIOCESE)\b/gi,(_,c)=>{tagCats.push(c.toUpperCase());return '';});
+  ev.description=desc.replace(/\n{3,}/g,'\n\n').trim();
+  if(!ev.categories||!ev.categories.length){
+    const today=new Date();today.setHours(0,0,0,0);
+    ev.categories=tagCats.length?tagCats:[ev.dtstart>=today?'UPCOMING':'PAST'];
+  } else if(tagCats.includes('DIOCESE')){ ev.categories=['DIOCESE']; }
+}
+
+/* ═══════════════════════════════════════════════
+   EMAIL HTML BUILDER
+═══════════════════════════════════════════════ */
+function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+function imgUrl(src) {
+  if (!src) return '';
+  if (src.startsWith('http')) return src;
+  const base = document.getElementById('cfg-base-url').value.replace(/\/$/,'');
+  return `${base}/${src.replace(/^\//,'')}`;
+}
+function cfgVal(id) { return document.getElementById(id).value.trim(); }
+
+function buildEmail(events) {
+  const today = new Date(); today.setHours(0,0,0,0);
+  const past     = events.filter(e=>e.categories.includes('PAST')).sort((a,b)=>b.dtstart-a.dtstart);
+  const upcoming = events.filter(e=>e.categories.includes('UPCOMING')&&e.dtstart>=today).sort((a,b)=>a.dtstart-b.dtstart);
+  const diocese  = events.filter(e=>e.categories.includes('DIOCESE')&&e.dtstart>=today).sort((a,b)=>a.dtstart-b.dtstart);
+  return [
+    shellOpen(), header(), hero(), welcome(),
+    past.length     ? sectionPast(past)         : '',
+    upcoming.length ? sectionUpcoming(upcoming) : '',
+    diocese.length  ? sectionDiocese(diocese)   : '',
+    footer(), shellClose(),
+  ].join('\n');
+}
+
+function shellOpen() {
+  return `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="format-detection" content="telephone=no,date=no,address=no,email=no">
+<title>DC Episcopal Fellowship &mdash; ${esc(cfgVal('cfg-season'))}</title>
+<style>
+body,table,td{-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;}
+table,td{mso-table-lspace:0pt;mso-table-rspace:0pt;}
+img{-ms-interpolation-mode:bicubic;border:0;outline:none;text-decoration:none;}
+body{margin:0;padding:0;background-color:${C.page};}
+a{color:${C.blue};}
+@media screen and (max-width:600px){
+  .email-body{width:100%!important;}
+  .col-half{display:block!important;width:100%!important;padding:16px 20px!important;}
+  .col-spacer{display:none!important;}
+  .rsvp-btn{display:block!important;text-align:center!important;}
+}
+</style>
+</head>
+<body style="margin:0;padding:0;background-color:${C.page};">
+<table width="100%" border="0" cellpadding="0" cellspacing="0" style="background-color:${C.page};">
+<tr><td align="center" style="padding:24px 0;">
+<table class="email-body" width="600" border="0" cellpadding="0" cellspacing="0"
+  style="max-width:600px;width:100%;background-color:${C.cream};border-radius:6px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.10);">`;
+}
+function shellClose() { return `</table></td></tr></table></body></html>`; }
+
+function header() {
+  return `<tr><td bgcolor="${C.navy}" style="background-color:${C.navy};padding:20px 24px;text-align:center;">
+  <p style="margin:0;font-family:${FH};font-size:18px;font-weight:800;color:${C.white};letter-spacing:.06em;text-transform:uppercase;">DC EPISCOPAL FELLOWSHIP</p>
+  <p style="margin:6px 0 0;font-family:${FH};font-size:13px;font-weight:600;color:rgba(255,255,255,.75);letter-spacing:.04em;text-transform:uppercase;">${esc(cfgVal('cfg-season'))}</p>
+</td></tr>`;
+}
+function hero() {
+  const url = imgUrl(cfgVal('cfg-hero'));
+  if (!url) return '';
+  return `<tr><td style="padding:0;font-size:0;line-height:0;">
+  <img src="${esc(url)}" width="600" alt="DC Episcopal Fellowship" style="display:block;width:100%;max-width:600px;height:auto;">
+</td></tr>`;
+}
+function welcome() {
+  return `<tr><td style="background-color:${C.cream};padding:28px 36px 24px;">
+  <p style="margin:0;font-family:${FB};font-size:14px;line-height:1.75;color:${C.brown};">${esc(cfgVal('cfg-welcome'))}</p>
+</td></tr>`;
+}
+
+function sectionHead(title) {
+  return `<tr><td bgcolor="${C.sand}" style="background-color:${C.sand};padding:14px 36px;">
+  <p style="margin:0;font-family:${FH};font-size:18px;font-weight:700;color:${C.navy};letter-spacing:.03em;">${esc(title)}</p>
+</td></tr>`;
+}
+function divider() {
+  return `<tr><td style="font-size:0;height:1px;background-color:${C.border};">&nbsp;</td></tr>`;
+}
+function twoColRow(cellA, cellB) {
+  const gap = cellB
+    ? `<td class="col-spacer" width="16" style="width:16px;">&nbsp;</td>`
+    : `<td width="268" style="width:268px;">&nbsp;</td>`;
+  return `<tr><td style="padding:0 20px;"><table width="100%" border="0" cellpadding="0" cellspacing="0"><tr>${cellA}${gap}${cellB||''}</tr></table></td></tr>`;
+}
+
+function sectionPast(past) {
+  const cell = ev => {
+    const label = `${MONTH_NAMES[ev.dtstart.getMonth()]} ${ev.dtstart.getFullYear()}`
+                + (ev.location ? ` &mdash; ${esc(ev.location.split(',')[0])}` : '');
+    const img = ev.image
+      ? `<img src="${esc(imgUrl(ev.image))}" width="252" alt="${esc(ev.summary)}" style="display:block;width:100%;max-width:252px;height:160px;object-fit:cover;border-radius:3px;margin-bottom:12px;">`
+      : '';
+    return `<td class="col-half" valign="top" width="252" style="width:252px;padding:18px 0 22px;vertical-align:top;">
+      ${img}
+      <p style="margin:0 0 4px;font-family:${FH};font-size:11px;font-weight:700;color:${C.navy};text-transform:uppercase;letter-spacing:.04em;">${label}</p>
+      <p style="margin:0 0 8px;font-family:${FH};font-size:14px;font-weight:700;color:${C.navy};line-height:1.25;">${esc(ev.summary)}</p>
+      <p style="margin:0;font-family:${FB};font-size:13px;line-height:1.7;color:${C.brown};">${esc(ev.description||'')}</p>
+    </td>`;
+  };
+  const rows = [];
+  for (let i=0; i<past.length; i+=2) rows.push(twoColRow(cell(past[i]), past[i+1]?cell(past[i+1]):null));
+  return sectionHead('Looking Back') + rows.join('');
+}
+
+function sectionUpcoming(upcoming) {
+  const cards = upcoming.map(ev => {
+    const meta   = formatDateMeta(ev.dtstart, ev.hasTime, ev.location);
+    const imgTag = ev.image
+      ? `<tr><td style="padding:0;font-size:0;line-height:0;"><img src="${esc(imgUrl(ev.image))}" width="600" alt="${esc(ev.summary)}" style="display:block;width:100%;max-width:600px;height:auto;max-height:280px;object-fit:cover;"></td></tr>`
+      : '';
+    const btn = ev.url
+      ? `<tr><td style="padding:6px 0 0;"><a class="rsvp-btn" href="${esc(ev.url)}" style="display:inline-block;background-color:${C.navy};color:${C.white};font-family:${FH};font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;text-decoration:none;padding:10px 22px;border-radius:3px;">RSVP Here</a></td></tr>`
+      : '';
+    return divider() + `<tr><td style="background-color:${C.cream};">
+      <table width="100%" border="0" cellpadding="0" cellspacing="0">
+        ${imgTag}
+        <tr><td style="padding:20px 28px 22px;">
+          <p style="margin:0 0 6px;font-family:${FH};font-size:17px;font-weight:700;color:${C.navy};line-height:1.25;">${esc(ev.summary)}</p>
+          <p style="margin:0 0 10px;font-family:${FH};font-size:12px;font-weight:700;color:${C.brown};letter-spacing:.03em;">${meta}</p>
+          <p style="margin:0 0 14px;font-family:${FB};font-size:13px;line-height:1.7;color:${C.brown};">${esc(ev.description||'')}</p>
+          <table border="0" cellpadding="0" cellspacing="0">${btn}</table>
+        </td></tr>
+      </table>
+    </td></tr>`;
+  });
+  return sectionHead('Upcoming Events')
+    + `<tr><td style="padding:16px 28px 8px;"><p style="margin:0;font-family:${FB};font-size:14px;line-height:1.75;color:${C.brown};">${cfgVal('cfg-upcoming-intro')}</p></td></tr>`
+    + cards.join('');
+}
+
+function sectionDiocese(diocese) {
+  const cell = ev => {
+    const meta = formatDateMeta(ev.dtstart, ev.hasTime, ev.location);
+    const img  = ev.image
+      ? `<img src="${esc(imgUrl(ev.image))}" width="252" alt="${esc(ev.summary)}" style="display:block;width:100%;max-width:252px;height:auto;max-height:180px;object-fit:cover;border-radius:3px;margin-bottom:10px;">`
+      : '';
+    const link = ev.url ? ` <a href="${esc(ev.url)}" style="color:${C.blue};text-decoration:none;">Learn more</a>` : '';
+    return `<td class="col-half" valign="top" width="252" style="width:252px;padding:16px 0 20px;vertical-align:top;">
+      ${img}
+      <p style="margin:0 0 4px;font-family:${FH};font-size:14px;font-weight:700;color:${C.navy};line-height:1.25;">${esc(ev.summary)}</p>
+      <p style="margin:0 0 8px;font-family:${FH};font-size:11px;font-weight:700;color:${C.brown};letter-spacing:.03em;">${meta}</p>
+      <p style="margin:0;font-family:${FB};font-size:13px;line-height:1.7;color:${C.brown};">${esc(ev.description||'')}${link}</p>
+    </td>`;
+  };
+  const rows = [];
+  for (let i=0; i<diocese.length; i+=2) rows.push(twoColRow(cell(diocese[i]), diocese[i+1]?cell(diocese[i+1]):null));
+  return sectionHead('Events Around the Diocese')
+    + `<tr><td style="padding:14px 28px 4px;"><p style="margin:0;font-family:${FB};font-size:14px;line-height:1.75;color:${C.brown};">${cfgVal('cfg-diocese-intro')}</p></td></tr>`
+    + rows.join('');
+}
+
+function footer() {
+  return divider() + `<tr><td bgcolor="${C.navy}" style="background-color:${C.navy};padding:24px 36px;text-align:center;">
+  <p style="margin:0;font-family:${FH};font-size:13px;color:rgba(255,255,255,.8);line-height:1.7;">
+    Forwarded this email? Email
+    <a href="mailto:dcepiscopalfellowship@gmail.com" style="color:#ffffff;">dcepiscopalfellowship@gmail.com</a>
+    to get on the email list!
+  </p>
+</td></tr>`;
+}
+
+/* ═══════════════════════════════════════════════
+   UI
+═══════════════════════════════════════════════ */
+let generatedHTML = '';
+let cachedEvents  = null;
+
+function setStatus(msg) { document.getElementById('status').textContent = msg; }
+
+function showPreview(html) {
+  generatedHTML = html;
+  const frame = document.getElementById('preview-frame');
+  frame.srcdoc = html;
+  frame.onload = () => {
+    try { frame.style.height = (frame.contentDocument.documentElement.scrollHeight + 4) + 'px'; }
+    catch(e) { frame.style.height = '1400px'; }
+  };
+  frame.style.display = 'block';
+  document.getElementById('loading-msg').style.display = 'none';
+  document.getElementById('btn-copy').disabled     = false;
+  document.getElementById('btn-download').disabled = false;
+}
+
+function regenerate() {
+  if (cachedEvents) showPreview(buildEmail(cachedEvents));
+}
+
+async function loadAndRender() {
+  setStatus('Fetching calendar…');
+  for (const proxy of CORS_PROXIES) {
+    try {
+      const res = await fetch(proxy(GCAL_ICS_URL), { cache: 'no-store' });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const text = await res.text();
+      if (!text.includes('BEGIN:VCALENDAR')) throw new Error('Invalid ICS');
+      cachedEvents = parseICS(text);
+      const today = new Date(); today.setHours(0,0,0,0);
+      const u = cachedEvents.filter(e=>e.categories.includes('UPCOMING')&&e.dtstart>=today).length;
+      const p = cachedEvents.filter(e=>e.categories.includes('PAST')).length;
+      const d = cachedEvents.filter(e=>e.categories.includes('DIOCESE')&&e.dtstart>=today).length;
+      setStatus(`${u} upcoming · ${p} past · ${d} diocese`);
+      document.getElementById('btn-regenerate').disabled = false;
+      showPreview(buildEmail(cachedEvents));
+      return;
+    } catch(err) { console.warn('Proxy failed:', err); }
+  }
+  setStatus('Could not load calendar.');
+  document.getElementById('loading-msg').textContent = 'Could not load calendar events. Make sure the calendar is set to public.';
+}
+
+document.getElementById('btn-regenerate').addEventListener('click', regenerate);
+document.getElementById('btn-apply').addEventListener('click', () => {
+  document.getElementById('config-fields').classList.add('hidden');
+  document.getElementById('config-toggle').classList.remove('open');
+  regenerate();
+});
+document.getElementById('btn-copy').addEventListener('click', async () => {
+  try {
+    await navigator.clipboard.writeText(generatedHTML);
+    const fb = document.getElementById('copy-feedback');
+    fb.classList.add('show');
+    setTimeout(() => fb.classList.remove('show'), 2200);
+  } catch(e) { alert('Copy failed — try Download instead.'); }
+});
+document.getElementById('btn-download').addEventListener('click', () => {
+  const blob = new Blob([generatedHTML], { type: 'text/html' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `dcef-email-${new Date().toISOString().slice(0,10)}.html`;
+  a.click();
+  URL.revokeObjectURL(a.href);
+});
+document.getElementById('config-toggle').addEventListener('click', function() {
+  const fields = document.getElementById('config-fields');
+  const isOpen = !fields.classList.contains('hidden');
+  fields.classList.toggle('hidden', isOpen);
+  this.classList.toggle('open', !isOpen);
+});
+
+loadAndRender();
+</script>
+</body>
+</html>
