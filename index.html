@@ -11,13 +11,14 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --navy:   #00277d;
-      --blue:   #1a62ff;
-      --cream:  #faf3eb;
-      --sand:   #e9ddcd;
-      --brown:  #47342b;
-      --page:   #f0f1f5;
-      --border: #ddd0be;
+      --navy:    #00277d;
+      --blue:    #1a62ff;
+      --cream:   #faf3eb;
+      --sand:    #e9ddcd;
+      --brown:   #47342b;
+      --page:    #f0f1f5;
+      --border:  #ddd0be;
+      --diocese: #5a8a5a;
     }
 
     html { scroll-behavior: smooth; }
@@ -331,9 +332,9 @@
     }
     .cal-day.has-event:hover { background-color: var(--blue); }
     .cal-day.has-event.diocese {
-      background-color: #5a8a5a;
+      background-color: var(--diocese);
     }
-    .cal-day.has-event.diocese:hover { background-color: #6fa86f; }
+    .cal-day.has-event.diocese:hover { filter: brightness(1.15); }
     .cal-color-key {
       display: flex;
       gap: 20px;
@@ -353,7 +354,7 @@
       flex-shrink: 0;
     }
     .key-dot.navy  { background-color: var(--navy); }
-    .key-dot.green { background-color: #5a8a5a; }
+    .key-dot.green { background-color: var(--diocese); }
 
     .cal-legend {
       margin-top: 12px;
@@ -899,9 +900,11 @@ function renderCalendar(events) {
     return;
   }
 
-  // Determine which months to show (up to 4)
+  // Determine which months to show (up to 4), sorted chronologically
   const monthKeys = [...new Set(
-    relevant.map(e => `${e.dtstart.getFullYear()}-${e.dtstart.getMonth()}`)
+    relevant
+      .sort((a,b) => a.dtstart - b.dtstart)
+      .map(e => `${e.dtstart.getFullYear()}-${e.dtstart.getMonth()}`)
   )].slice(0, 4);
 
   wrap.innerHTML = monthKeys.map(key => {
@@ -1041,22 +1044,66 @@ function renderPast(events) {
 
 /* ═══════════════════════════════════════════════
    CONFIG
-   Make your Google Calendar public:
-     Calendar Settings → Access permissions →
-     "Make available to public" ✓
+   ─ One-time code changes (require a deploy):
+       SIGNUP_ENDPOINT   email signup script URL
+       GCAL_CALENDAR_ID  Google Calendar address
+       CONFIG_FILE_ID    Google Drive file ID for
+                         the live config JSON
+   ─ No-deploy changes (edit config.json on Drive):
+       heroImages, heroInterval, colors, diocese color
 ═══════════════════════════════════════════════ */
-// Formspree endpoint for email signups — sign up free at formspree.io,
-// create a form, and paste the endpoint here: e.g. 'https://formspree.io/f/xpwzgkbn'
 const SIGNUP_ENDPOINT = 'https://script.google.com/macros/s/AKfycbyC11DNrEkOIvBeGvgTBoRyV5cRML3YuTyqiFVsiLMYFNlkxTDmPFHWVFFlWehigqVILA/exec';
 
-const GCAL_ICS_URL = 'https://calendar.google.com/calendar/ical/'
-                   + 'dcepiscopalfellowship%40gmail.com/public/basic.ics';
+const GCAL_CALENDAR_ID = 'dcepiscopalfellowship%40gmail.com';
+let   GCAL_ICS_URL     = `https://calendar.google.com/calendar/ical/${GCAL_CALENDAR_ID}/public/basic.ics`;
+
+// Paste the Google Drive file ID of your config.json here (one-time setup).
+// Get it from: Drive → share file → copy link → the string between /d/ and /view
+const CONFIG_FILE_ID = '';
 
 // Live ICS sources — tried in order, first success wins
 const CORS_PROXIES = [
   () => `/.netlify/functions/fetch-ics`,
   url => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}&_=${Date.now()}`,
 ];
+
+/* ═══════════════════════════════════════════════
+   REMOTE CONFIG  (config.json hosted on Google Drive)
+
+   Supported fields:
+   {
+     "heroImages":   ["https://drive.google.com/uc?export=view&id=...", ...],
+     "heroInterval": 6000,
+     "calendarId":   "your-calendar@gmail.com",
+     "colors": {
+       "navy": "#00277d", "blue": "#1a62ff",
+       "cream": "#faf3eb", "sand": "#e9ddcd",
+       "brown": "#47342b", "diocese": "#5a8a5a"
+     }
+   }
+═══════════════════════════════════════════════ */
+async function loadConfig() {
+  if (!CONFIG_FILE_ID) return {};
+  try {
+    const res = await fetch(`/.netlify/functions/fetch-config?id=${CONFIG_FILE_ID}`);
+    if (!res.ok) return {};
+    return await res.json();
+  } catch (e) {
+    return {};
+  }
+}
+
+function applyConfig(cfg) {
+  // Apply colour overrides to CSS custom properties
+  if (cfg.colors) {
+    const root = document.documentElement.style;
+    Object.entries(cfg.colors).forEach(([k, v]) => root.setProperty(`--${k}`, v));
+  }
+  // Override calendar URL if a different ID is provided
+  if (cfg.calendarId) {
+    GCAL_ICS_URL = `https://calendar.google.com/calendar/ical/${encodeURIComponent(cfg.calendarId)}/public/basic.ics`;
+  }
+}
 
 /* ═══════════════════════════════════════════════
    LOAD EVENTS
@@ -1128,26 +1175,32 @@ function showError(msg) {
 
 /* ═══════════════════════════════════════════════
    HERO SLIDESHOW
-   Drop images into hero-images/ and list them in
-   hero-images/manifest.json → { "images": ["a.jpg", ...], "interval": 6000 }
+   Priority: config.heroImages → hero-images/manifest.json → fallback image
 ═══════════════════════════════════════════════ */
-async function initHero() {
+async function initHero(cfg = {}) {
   const hero = document.getElementById('hero');
   const dots = document.getElementById('hero-dots');
 
   let srcs     = ['images/242e9a9fc21b5f936f40236a56e20ac2.jpg'];
   let interval = 6000;
 
-  try {
-    const res = await fetch('hero-images/manifest.json');
-    if (res.ok) {
-      const manifest = await res.json();
-      if (Array.isArray(manifest.images) && manifest.images.length > 0) {
-        srcs     = manifest.images.map(f => 'hero-images/' + f);
-        interval = manifest.interval || 6000;
+  if (cfg.heroImages && cfg.heroImages.length) {
+    // Use images from remote config (Google Drive URLs)
+    srcs     = cfg.heroImages;
+    interval = cfg.heroInterval || 6000;
+  } else {
+    // Fall back to local manifest.json
+    try {
+      const res = await fetch('hero-images/manifest.json');
+      if (res.ok) {
+        const manifest = await res.json();
+        if (Array.isArray(manifest.images) && manifest.images.length > 0) {
+          srcs     = manifest.images.map(f => 'hero-images/' + f);
+          interval = manifest.interval || 6000;
+        }
       }
-    }
-  } catch (e) { /* use fallback */ }
+    } catch (e) { /* use fallback */ }
+  }
 
   // Build slides
   const slides = srcs.map((src, i) => {
@@ -1214,8 +1267,10 @@ async function handleSubscribe(e) {
 /* ═══════════════════════════════════════════════
    INIT
 ═══════════════════════════════════════════════ */
-document.addEventListener('DOMContentLoaded', () => {
-  initHero();
+document.addEventListener('DOMContentLoaded', async () => {
+  const cfg = await loadConfig();
+  applyConfig(cfg);
+  initHero(cfg);
   loadEvents();
 });
 </script>
