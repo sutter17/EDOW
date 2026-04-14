@@ -544,27 +544,46 @@ function regenerate() {
   if (cachedEvents) showPreview(buildEmail(cachedEvents));
 }
 
+function applyEvents(text, source) {
+  cachedEvents = parseICS(text);
+  const today = new Date(); today.setHours(0,0,0,0);
+  const u = cachedEvents.filter(e=>e.categories.includes('UPCOMING')&&e.dtstart>=today).length;
+  const p = cachedEvents.filter(e=>e.categories.includes('PAST')).length;
+  const d = cachedEvents.filter(e=>e.categories.includes('DIOCESE')&&e.dtstart>=today).length;
+  setStatus(`${u} upcoming · ${p} past · ${d} diocese${source ? ' — ' + source : ''}`);
+  document.getElementById('btn-regenerate').disabled = false;
+  showPreview(buildEmail(cachedEvents));
+}
+
 async function loadAndRender() {
   setStatus('Fetching calendar…');
+
+  // ── 1. Try live proxies ──
   for (const proxy of CORS_PROXIES) {
     try {
       const res = await fetch(proxy(GCAL_ICS_URL), { cache: 'no-store' });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const text = await res.text();
       if (!text.includes('BEGIN:VCALENDAR')) throw new Error('Invalid ICS');
-      cachedEvents = parseICS(text);
-      const today = new Date(); today.setHours(0,0,0,0);
-      const u = cachedEvents.filter(e=>e.categories.includes('UPCOMING')&&e.dtstart>=today).length;
-      const p = cachedEvents.filter(e=>e.categories.includes('PAST')).length;
-      const d = cachedEvents.filter(e=>e.categories.includes('DIOCESE')&&e.dtstart>=today).length;
-      setStatus(`${u} upcoming · ${p} past · ${d} diocese`);
-      document.getElementById('btn-regenerate').disabled = false;
-      showPreview(buildEmail(cachedEvents));
+      applyEvents(text);
       return;
     } catch(err) { console.warn('Proxy failed:', err); }
   }
+
+  // ── 2. Fall back to local events.ics ──
+  try {
+    const res = await fetch('events.ics');
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const text = await res.text();
+    if (!text.includes('BEGIN:VCALENDAR')) throw new Error('Invalid ICS');
+    applyEvents(text, 'local events.ics');
+    return;
+  } catch(err) { console.warn('Local ICS failed:', err); }
+
+  // ── 3. Nothing worked ──
   setStatus('Could not load calendar.');
-  document.getElementById('loading-msg').textContent = 'Could not load calendar events. Make sure the calendar is set to public.';
+  document.getElementById('loading-msg').textContent =
+    'Could not load calendar events. Make sure the calendar is set to public, or place an events.ics file in the project root.';
 }
 
 document.getElementById('btn-regenerate').addEventListener('click', regenerate);
