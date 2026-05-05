@@ -3,3 +3,5 @@
 .env
 node_modules
 scripts/partiful-response.json
+# Local Netlify folder
+.netlify

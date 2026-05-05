@@ -499,6 +499,54 @@
     .image-field       { display: flex; gap: 8px; }
     .image-field input { flex: 1; }
 
+    /* ════════════ PARTIFUL ════════════ */
+    .partiful-id-field { display: flex; gap: 8px; }
+    .partiful-id-field input,
+    .partiful-id-field select { flex: 1; }
+
+    .partiful-status {
+      display: none;
+      align-items: center;
+      gap: 12px;
+      background: var(--cream);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 14px;
+      margin-top: 8px;
+      font-size: 12px;
+    }
+
+    .partiful-status.visible { display: flex; }
+
+    .rsvp-counts {
+      font-family: 'League Spartan', sans-serif;
+      font-weight: 700;
+      font-size: 13px;
+      color: var(--navy);
+    }
+
+    .rsvp-counts .going  { color: var(--green); }
+    .rsvp-counts .maybe  { color: #a07a20; }
+
+    .partiful-status a {
+      margin-left: auto;
+      font-size: 12px;
+      color: var(--navy);
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .partiful-status a:hover { text-decoration: underline; }
+
+    .partiful-loading {
+      font-size: 12px;
+      color: #aaa;
+      margin-top: 6px;
+      display: none;
+    }
+
+    .partiful-loading.visible { display: block; }
+
     /* ════════════ IMAGE PICKER ════════════ */
     .picker-toolbar {
       display: flex;
@@ -722,6 +770,55 @@
         </div>
       </div>
 
+      <hr class="form-divider">
+      <div class="form-section-title">Partiful</div>
+
+      <div class="form-row">
+        <label>Linked Partiful Event</label>
+        <div class="partiful-id-field">
+          <select id="f-partiful-id">
+            <option value="">— None —</option>
+          </select>
+          <button class="btn btn-secondary btn-sm" id="btn-refresh-partiful" title="Refresh list">↻</button>
+        </div>
+        <div class="partiful-loading" id="partiful-loading">Loading…</div>
+        <div class="partiful-status" id="partiful-status">
+          <span class="rsvp-counts" id="partiful-counts"></span>
+          <a id="partiful-link" href="#" target="_blank">Open on Partiful ↗</a>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="toggle-row">
+          <div class="toggle-label">
+            Sync changes to Partiful
+            <small>Update title, date, and location when saving</small>
+          </div>
+          <label class="toggle" aria-label="Sync to Partiful">
+            <input type="checkbox" id="f-partiful-sync">
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+      </div>
+
+      <div class="form-row" id="partiful-create-row">
+        <div class="toggle-row">
+          <div class="toggle-label">
+            Also create on Partiful
+            <small>Posts a new Partiful event and links it automatically</small>
+          </div>
+          <label class="toggle" aria-label="Create on Partiful">
+            <input type="checkbox" id="f-partiful-create">
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+        <div class="partiful-id-field" id="partiful-account-row" style="margin-top:8px;display:none">
+          <select id="f-partiful-account" style="flex:1">
+            <option value="">Loading accounts…</option>
+          </select>
+        </div>
+      </div>
+
     </div>
 
     <div class="modal-footer">
@@ -940,19 +1037,21 @@ function isDiocese(ev) {
    DESCRIPTION PARSING / BUILDING
 ═══════════════════════════════════════════ */
 function parseDesc(raw) {
-  let text = raw || '', image = '', rsvp = '', diocese = false;
-  text = text.replace(/\[image:\s*"?([^"\]\n]+?)"?\s*\]/gi, (_, p) => { image = p.trim(); return ''; });
-  text = text.replace(/^RSVP:\s*(.+)$/mi,  (_, u) => { rsvp = u.trim();  return ''; });
-  text = text.replace(/#DIOCESE\b/gi,       ()     => { diocese = true;   return ''; });
-  return { text: text.trim(), image, rsvp, diocese };
+  let text = raw || '', image = '', rsvp = '', diocese = false, partifulId = '';
+  text = text.replace(/\[image:\s*"?([^"\]\n]+?)"?\s*\]/gi,    (_, p) => { image = p.trim();      return ''; });
+  text = text.replace(/\[partiful:\s*([^\]\n]+?)\s*\]/gi,       (_, p) => { partifulId = p.trim(); return ''; });
+  text = text.replace(/^RSVP:\s*(.+)$/mi,                       (_, u) => { rsvp = u.trim();       return ''; });
+  text = text.replace(/#DIOCESE\b/gi,                            ()     => { diocese = true;        return ''; });
+  return { text: text.trim(), image, rsvp, diocese, partifulId };
 }
 
-function buildDesc(text, image, rsvp, diocese) {
+function buildDesc(text, image, rsvp, diocese, partifulId) {
   return [
     text.trim(),
-    rsvp    ? `RSVP: ${rsvp}` : '',
-    image   ? `[image:${image}]` : '',
-    diocese ? '#DIOCESE' : '',
+    rsvp       ? `RSVP: ${rsvp}` : '',
+    image      ? `[image:${image}]` : '',
+    diocese    ? '#DIOCESE' : '',
+    partifulId ? `[partiful:${partifulId}]` : '',
   ].filter(Boolean).join('\n');
 }
 
@@ -964,39 +1063,62 @@ function openEditor(ev) {
   document.getElementById('editor-heading').textContent = ev ? 'Edit Event' : 'New Event';
   document.getElementById('btn-delete-event').style.display = ev ? '' : 'none';
 
+  // Reset Partiful status
+  document.getElementById('partiful-status').classList.remove('visible');
+  document.getElementById('partiful-loading').classList.remove('visible');
+
   if (ev) {
     const allDay = !!ev.start?.date;
     const start  = ev.start?.dateTime || ev.start?.date || '';
     const end    = ev.end?.dateTime   || ev.end?.date   || '';
-    const { text, image, rsvp, diocese } = parseDesc(ev.description);
+    const { text, image, rsvp, diocese, partifulId } = parseDesc(ev.description);
 
-    set('f-title',      ev.summary || '');
-    set('f-allday',     allDay, 'checked');
-    set('f-start-date', start.slice(0, 10));
-    set('f-start-time', allDay ? '' : start.slice(11, 16));
-    set('f-end-date',   end.slice(0, 10));
-    set('f-end-time',   allDay ? '' : end.slice(11, 16));
-    set('f-location',   ev.location || '');
-    set('f-desc',       text);
-    set('f-image',      image);
-    set('f-rsvp',       rsvp);
-    set('f-diocese',    diocese, 'checked');
+    set('f-title',         ev.summary || '');
+    set('f-allday',        allDay, 'checked');
+    set('f-start-date',    start.slice(0, 10));
+    set('f-start-time',    allDay ? '' : start.slice(11, 16));
+    set('f-end-date',      end.slice(0, 10));
+    set('f-end-time',      allDay ? '' : end.slice(11, 16));
+    set('f-location',      ev.location || '');
+    set('f-desc',          text);
+    set('f-image',         image);
+    set('f-rsvp',          rsvp);
+    set('f-diocese',       diocese, 'checked');
+    set('f-partiful-id',   partifulId);
+    set('f-partiful-sync', !!partifulId, 'checked');
     toggleAlldayUI(allDay);
+    document.getElementById('partiful-create-row').style.display = 'none';
+    if (partifulId) fetchPartifulStatus(partifulId);
   } else {
     const today = new Date().toISOString().slice(0, 10);
-    set('f-title',      '');
-    set('f-allday',     false, 'checked');
-    set('f-start-date', today);
-    set('f-start-time', '18:00');
-    set('f-end-date',   today);
-    set('f-end-time',   '20:00');
-    set('f-location',   '');
-    set('f-desc',       '');
-    set('f-image',      '');
-    set('f-rsvp',       '');
-    set('f-diocese',    false, 'checked');
+    set('f-title',         '');
+    set('f-allday',        false, 'checked');
+    set('f-start-date',    today);
+    set('f-start-time',    '18:00');
+    set('f-end-date',      today);
+    set('f-end-time',      '20:00');
+    set('f-location',      '');
+    set('f-desc',          '');
+    set('f-image',         '');
+    set('f-rsvp',          '');
+    set('f-diocese',       false, 'checked');
+    set('f-partiful-id',   '');
+    set('f-partiful-sync', false, 'checked');
+    set('f-partiful-create', false, 'checked');
     toggleAlldayUI(false);
+    document.getElementById('partiful-create-row').style.display = '';
   }
+
+  // Load Partiful events into dropdown (cache used after first load)
+  loadPartifulEvents().then(() => {
+    const select = document.getElementById('f-partiful-id');
+    if (ev) {
+      const { partifulId } = parseDesc(ev.description);
+      select.value = partifulId || '';
+    } else {
+      select.value = '';
+    }
+  });
 
   showModal('modal-editor', 'editor-backdrop');
 }
@@ -1032,6 +1154,7 @@ document.getElementById('btn-save-event').onclick = async () => {
       val('f-image').trim(),
       val('f-rsvp').trim(),
       document.getElementById('f-diocese').checked,
+      val('f-partiful-id').trim(),
     ),
     start: allDay
       ? { date: startDate }
@@ -1041,18 +1164,74 @@ document.getElementById('btn-save-event').onclick = async () => {
       : { dateTime: `${endDate || startDate}T${endTime || '00:00'}:00`, timeZone: 'America/New_York' },
   };
 
+  const partifulId      = val('f-partiful-id').trim();
+  const partifulSync    = document.getElementById('f-partiful-sync').checked;
+  const partifulNew     = document.getElementById('f-partiful-create').checked;
+  const partifulAccount = val('f-partiful-account').trim();
+
   try {
+    // ── Partiful: create new event if requested ──────────
+    let resolvedPartifulId = partifulId;
+
+    if (!currentEvent && partifulNew) {
+      const accountQs = partifulAccount ? `&account=${encodeURIComponent(partifulAccount)}` : '';
+      const pRes = await fetch(`/.netlify/functions/partiful?action=create${accountQs}`, {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({
+          title:       body.summary,
+          startDate:   body.start.dateTime || body.start.date,
+          endDate:     body.end.dateTime   || body.end.date,
+          location:    body.location || '',
+          description: val('f-desc'),
+          visibility:  'PUBLIC',
+        }),
+      });
+      const pData = await pRes.json();
+      console.log('[Partiful create] status:', pRes.status, 'response:', pData);
+      if (pRes.ok && pData.eventId) {
+        resolvedPartifulId = pData.eventId;
+        body.description = buildDesc(
+          val('f-desc'), val('f-image').trim(), val('f-rsvp').trim(),
+          document.getElementById('f-diocese').checked, resolvedPartifulId,
+        );
+        // Refresh dropdown cache and select the newly created event
+        partifulEventsCache = null;
+        await loadPartifulEvents();
+        document.getElementById('f-partiful-id').value = resolvedPartifulId;
+      } else {
+        const reason = pData.message || pData.error || pRes.statusText || 'unknown error';
+        showToast(`Partiful create failed: ${reason}`, 5000);
+        console.error('[Partiful create] failed:', pData);
+      }
+    }
+
+    // ── Google Calendar save ─────────────────────────────
     if (currentEvent) {
       await calFetch(`/calendars/${encodeURIComponent(CALENDAR_ID)}/events/${currentEvent.id}`, {
         method: 'PUT', body: JSON.stringify(body),
       });
-      showToast('Event updated!');
     } else {
       await calFetch(`/calendars/${encodeURIComponent(CALENDAR_ID)}/events`, {
         method: 'POST', body: JSON.stringify(body),
       });
-      showToast('Event created!');
     }
+
+    // ── Partiful: sync changes to existing event ─────────
+    if (resolvedPartifulId && partifulSync && currentEvent) {
+      await fetch(`/.netlify/functions/partiful?action=update&eventId=${resolvedPartifulId}`, {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({
+          title:     body.summary,
+          location:  body.location || '',
+          startDate: body.start.dateTime || body.start.date,
+          endDate:   body.end.dateTime   || body.end.date,
+        }),
+      });
+    }
+
+    showToast(currentEvent ? 'Event updated!' : 'Event created!');
     closeModal('modal-editor', 'editor-backdrop');
     loadEvents();
   } catch (e) {
@@ -1159,6 +1338,116 @@ async function uploadPhoto(file, progressId, fillId, labelId, onSuccess) {
 /* ═══════════════════════════════════════════
    IMAGE PICKER
 ═══════════════════════════════════════════ */
+/* ═══════════════════════════════════════════
+   PARTIFUL
+═══════════════════════════════════════════ */
+async function fetchPartifulStatus(eventId) {
+  if (!eventId || eventId === 'undefined') return;
+  const loading = document.getElementById('partiful-loading');
+  const status  = document.getElementById('partiful-status');
+  const counts  = document.getElementById('partiful-counts');
+  const link    = document.getElementById('partiful-link');
+
+  status.classList.remove('visible');
+  link.style.display = '';
+  loading.classList.add('visible');
+
+  try {
+    const res  = await fetch(`/.netlify/functions/partiful?action=get&eventId=${encodeURIComponent(eventId)}`);
+    const text = await res.text();
+    if (!res.ok) throw new Error(`HTTP ${res.status}: ${text}`);
+    const data = JSON.parse(text);
+
+    counts.innerHTML =
+      `<span class="going">${data.going} going</span>` +
+      (data.maybe   ? ` · <span class="maybe">${data.maybe} maybe</span>` : '') +
+      (data.declined ? ` · ${data.declined} declined` : '');
+
+    link.href = data.url || `https://partiful.com/e/${eventId}`;
+    status.classList.add('visible');
+    set('f-partiful-sync', true, 'checked');
+  } catch (err) {
+    console.error('[fetchPartifulStatus]', err);
+    counts.innerHTML = `Could not load Partiful data: ${err.message}`;
+    status.classList.add('visible');
+    link.style.display = 'none';
+  } finally {
+    loading.classList.remove('visible');
+  }
+}
+
+/* ── Partiful event dropdown ────────────────────────────── */
+let partifulEventsCache = null;
+
+async function loadPartifulEvents(forceRefresh = false) {
+  const select  = document.getElementById('f-partiful-id');
+  const loading = document.getElementById('partiful-loading');
+
+  if (!forceRefresh && partifulEventsCache) {
+    repopulateSelect(select, partifulEventsCache, select.value);
+    return;
+  }
+
+  loading.textContent = 'Loading Partiful events…';
+  loading.classList.add('visible');
+
+  try {
+    const res  = await fetch('/.netlify/functions/partiful?action=events');
+    const data = await res.json();
+    partifulEventsCache = data.events || [];
+    repopulateSelect(select, partifulEventsCache, select.value);
+  } catch (e) {
+    loading.textContent = 'Could not load Partiful events';
+    return;
+  } finally {
+    loading.classList.remove('visible');
+  }
+}
+
+function repopulateSelect(select, events, currentId) {
+  const prev = currentId || select.value;
+  select.innerHTML = '<option value="">— None —</option>';
+  events.forEach(ev => {
+    const date   = ev.startDate ? new Date(ev.startDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : '';
+    const label  = date ? `${ev.title} (${date})` : ev.title;
+    const opt    = document.createElement('option');
+    opt.value    = ev.id;
+    opt.textContent = label;
+    select.appendChild(opt);
+  });
+  // Re-select previously chosen value if it's in the list
+  if (prev) select.value = prev;
+}
+
+document.getElementById('f-partiful-id').onchange = () => {
+  const id = val('f-partiful-id');
+  document.getElementById('partiful-status').classList.remove('visible');
+  if (id) fetchPartifulStatus(id);
+};
+
+document.getElementById('btn-refresh-partiful').onclick = () => loadPartifulEvents(true);
+
+/* ── Partiful account dropdown ──────────────────────────── */
+async function loadPartifulAccounts() {
+  const select = document.getElementById('f-partiful-account');
+  try {
+    const res  = await fetch('/.netlify/functions/partiful?action=accounts');
+    const data = await res.json();
+    select.innerHTML = (data.accounts || []).map(a =>
+      `<option value="${esc(a.name)}">${esc(a.name)}</option>`
+    ).join('');
+  } catch {
+    select.innerHTML = '<option value="">Could not load accounts</option>';
+  }
+}
+
+document.getElementById('f-partiful-create').onchange = function () {
+  document.getElementById('partiful-account-row').style.display = this.checked ? '' : 'none';
+  if (this.checked && document.getElementById('f-partiful-account').options.length <= 1) {
+    loadPartifulAccounts();
+  }
+};
+
 document.getElementById('btn-browse-r2').onclick = openPicker;
 
 function openPicker() {
@@ -1181,7 +1470,7 @@ function renderPickerGrid() {
 
   grid.innerHTML = list.map(p => `
     <div class="picker-item ${p.key === pickerSelected ? 'selected' : ''}" data-key="${esc(p.key)}">
-      <img src="${p.url}" alt="${esc(p.key)}" loading="lazy">
+      <img src="${p.url}" alt="${esc(p.key)}">
       <div class="picker-item-name">${esc(p.key)}</div>
     </div>
   `).join('');
