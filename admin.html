@@ -1,0 +1,1253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DCEF Admin</title>
+  <link rel="icon" href="images/Logo.jpg" type="image/jpeg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <style>
+    :root {
+      --navy:   #5b558a;
+      --blue:   #1a62ff;
+      --cream:  #faf3eb;
+      --sand:   #e9ddcd;
+      --brown:  #47342b;
+      --page:   #f0f1f5;
+      --border: #ddd0be;
+      --green:  #5a8a5a;
+      --danger: #b0302a;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: Verdana, Geneva, sans-serif;
+      font-size: 14px;
+      background: var(--page);
+      color: #333;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* ════════════ LOGIN ════════════ */
+    #screen-login {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    .login-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 48px 40px;
+      text-align: center;
+      width: 340px;
+      box-shadow: 0 4px 28px rgba(0,0,0,.09);
+    }
+
+    .login-card img {
+      width: 72px;
+      margin-bottom: 18px;
+    }
+
+    .login-card h1 {
+      font-family: 'League Spartan', sans-serif;
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--navy);
+      margin-bottom: 6px;
+      letter-spacing: .02em;
+    }
+
+    .login-card p {
+      color: #888;
+      font-size: 12px;
+      line-height: 1.6;
+      margin-bottom: 28px;
+    }
+
+    .btn-google {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      padding: 11px 16px;
+      background: #fff;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      font-family: Verdana, sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      color: #333;
+      cursor: pointer;
+      transition: background .15s, border-color .15s;
+    }
+
+    .btn-google:hover { background: var(--page); border-color: #bbb; }
+
+    /* ════════════ APP SHELL ════════════ */
+    #screen-app {
+      display: none;
+      height: 100vh;
+      flex-direction: column;
+    }
+
+    #screen-app.visible { display: flex; }
+
+    .app-header {
+      background: var(--navy);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      padding: 0 20px;
+      height: 54px;
+      gap: 14px;
+      flex-shrink: 0;
+    }
+
+    .app-header img { height: 30px; }
+
+    .app-header-title {
+      font-family: 'League Spartan', sans-serif;
+      font-size: 16px;
+      font-weight: 800;
+      letter-spacing: .03em;
+      flex: 1;
+    }
+
+    .app-tabs { display: flex; gap: 4px; }
+
+    .tab-btn {
+      background: rgba(255,255,255,.15);
+      border: none;
+      border-radius: 6px;
+      color: #fff;
+      font-family: 'League Spartan', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      padding: 6px 14px;
+      cursor: pointer;
+      transition: background .15s;
+    }
+
+    .tab-btn.active,
+    .tab-btn:hover { background: rgba(255,255,255,.28); }
+
+    .btn-signout {
+      background: none;
+      border: 1.5px solid rgba(255,255,255,.4);
+      border-radius: 6px;
+      color: #fff;
+      font-size: 12px;
+      padding: 5px 12px;
+      cursor: pointer;
+      transition: background .15s;
+    }
+
+    .btn-signout:hover { background: rgba(255,255,255,.12); }
+
+    .app-body { flex: 1; overflow: hidden; }
+
+    /* ════════════ PANELS ════════════ */
+    .panel {
+      display: none;
+      height: 100%;
+      overflow-y: auto;
+      padding: 24px;
+    }
+
+    .panel.active { display: block; }
+
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .panel-header h2 {
+      font-family: 'League Spartan', sans-serif;
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--navy);
+    }
+
+    /* ════════════ BUTTONS ════════════ */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      border: none;
+      border-radius: 7px;
+      font-family: 'League Spartan', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: filter .15s;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .btn:hover { filter: brightness(.9); }
+    .btn-primary   { background: var(--navy);   color: #fff; }
+    .btn-secondary { background: var(--sand);   color: var(--brown); }
+    .btn-danger    { background: var(--danger);  color: #fff; }
+    .btn-ghost     { background: none; border: 1.5px solid var(--border); color: #555; }
+    .btn-sm        { padding: 5px 11px; font-size: 12px; }
+
+    /* ════════════ EVENT LIST ════════════ */
+    .section-label {
+      font-family: 'League Spartan', sans-serif;
+      font-size: 11px;
+      font-weight: 800;
+      color: #aaa;
+      text-transform: uppercase;
+      letter-spacing: .09em;
+      margin: 22px 0 10px;
+    }
+
+    .event-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      padding: 12px 14px;
+      margin-bottom: 8px;
+      cursor: pointer;
+      transition: border-color .15s, box-shadow .15s;
+    }
+
+    .event-row:hover {
+      border-color: var(--navy);
+      box-shadow: 0 2px 10px rgba(91,85,138,.12);
+    }
+
+    .event-date-pill {
+      flex-shrink: 0;
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: var(--navy);
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-family: 'League Spartan', sans-serif;
+      font-size: 10px;
+      font-weight: 800;
+      line-height: 1.1;
+      text-transform: uppercase;
+    }
+
+    .event-date-pill.diocese { background: var(--green); }
+    .event-date-pill .day    { font-size: 17px; line-height: 1; }
+
+    .event-info { flex: 1; min-width: 0; }
+
+    .event-row-title {
+      font-family: 'League Spartan', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--navy);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .event-row-meta {
+      font-size: 11px;
+      color: #999;
+      margin-top: 2px;
+    }
+
+    .state-msg {
+      text-align: center;
+      color: #bbb;
+      padding: 36px 16px;
+      font-size: 13px;
+    }
+
+    /* ════════════ PHOTOS ════════════ */
+    .upload-zone {
+      border: 2px dashed var(--border);
+      border-radius: 10px;
+      padding: 28px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color .15s, background .15s;
+      margin-bottom: 20px;
+    }
+
+    .upload-zone:hover,
+    .upload-zone.drag-over {
+      border-color: var(--navy);
+      background: rgba(91,85,138,.04);
+    }
+
+    .upload-zone strong { display: block; font-size: 14px; color: #444; }
+    .upload-zone p      { color: #aaa; font-size: 12px; margin-top: 4px; }
+    .upload-icon        { font-size: 30px; margin-bottom: 8px; }
+
+    .progress-wrap { margin-bottom: 16px; display: none; }
+    .progress-wrap.visible { display: block; }
+    .progress-bar  { height: 4px; background: var(--border); border-radius: 4px; overflow: hidden; }
+    .progress-fill { height: 100%; background: var(--navy); width: 0%; transition: width .3s; }
+    .progress-label { font-size: 11px; color: #888; margin-top: 4px; }
+
+    .photo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 12px;
+    }
+
+    .photo-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .photo-card img   { width: 100%; height: 110px; object-fit: cover; display: block; }
+    .photo-card-info  { padding: 8px 10px 10px; }
+    .photo-card-name  { font-size: 11px; color: #777; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 6px; }
+
+    /* ════════════ MODALS ════════════ */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.45);
+      z-index: 200;
+      display: none;
+    }
+
+    .modal-backdrop.visible { display: block; }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      z-index: 201;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      overflow-y: auto;
+    }
+
+    .modal.visible { display: flex; }
+
+    .modal-box {
+      background: #fff;
+      border-radius: 12px;
+      width: 100%;
+      max-width: 660px;
+      max-height: 92vh;
+      overflow-y: auto;
+      box-shadow: 0 10px 48px rgba(0,0,0,.22);
+      margin: auto;
+    }
+
+    #modal-picker .modal-box { max-width: 760px; }
+
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 22px 14px;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      background: #fff;
+      z-index: 1;
+      border-radius: 12px 12px 0 0;
+    }
+
+    .modal-header h2 {
+      font-family: 'League Spartan', sans-serif;
+      font-size: 17px;
+      font-weight: 800;
+      color: var(--navy);
+    }
+
+    .btn-close {
+      background: none;
+      border: none;
+      font-size: 18px;
+      color: #bbb;
+      cursor: pointer;
+      padding: 4px 6px;
+      line-height: 1;
+      border-radius: 4px;
+    }
+
+    .btn-close:hover { color: #555; background: var(--page); }
+
+    .modal-body   { padding: 22px; }
+    .modal-footer {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 22px 18px;
+      border-top: 1px solid var(--border);
+    }
+
+    .spacer { flex: 1; }
+
+    /* ════════════ FORM ════════════ */
+    .form-row { margin-bottom: 14px; }
+
+    .form-row label {
+      display: block;
+      font-family: 'League Spartan', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      margin-bottom: 5px;
+    }
+
+    .form-row input[type="text"],
+    .form-row input[type="url"],
+    .form-row input[type="date"],
+    .form-row input[type="time"],
+    .form-row textarea {
+      width: 100%;
+      padding: 9px 12px;
+      border: 1.5px solid var(--border);
+      border-radius: 7px;
+      font-family: Verdana, sans-serif;
+      font-size: 13px;
+      color: #333;
+      background: #fff;
+      outline: none;
+      transition: border-color .15s;
+    }
+
+    .form-row input:focus,
+    .form-row textarea:focus { border-color: var(--navy); }
+
+    .form-row textarea { resize: vertical; min-height: 80px; line-height: 1.6; }
+
+    .form-row-inline       { display: flex; gap: 10px; }
+    .form-row-inline > div { flex: 1; }
+
+    .form-divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 18px 0;
+    }
+
+    .form-section-title {
+      font-family: 'League Spartan', sans-serif;
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--navy);
+      text-transform: uppercase;
+      letter-spacing: .07em;
+      margin-bottom: 12px;
+    }
+
+    /* Toggle switch */
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 0;
+    }
+
+    .toggle-label      { font-size: 13px; color: #444; }
+    .toggle-label small { display: block; color: #bbb; font-size: 11px; margin-top: 2px; }
+
+    .toggle { position: relative; width: 40px; height: 22px; flex-shrink: 0; }
+    .toggle input { opacity: 0; width: 0; height: 0; }
+
+    .toggle-slider {
+      position: absolute;
+      inset: 0;
+      background: #ddd;
+      border-radius: 22px;
+      cursor: pointer;
+      transition: background .2s;
+    }
+
+    .toggle-slider::before {
+      content: '';
+      position: absolute;
+      width: 16px; height: 16px;
+      left: 3px; top: 3px;
+      background: #fff;
+      border-radius: 50%;
+      transition: transform .2s;
+      box-shadow: 0 1px 3px rgba(0,0,0,.2);
+    }
+
+    .toggle input:checked + .toggle-slider                { background: var(--navy); }
+    .toggle input:checked + .toggle-slider::before        { transform: translateX(18px); }
+    .toggle.green input:checked + .toggle-slider          { background: var(--green); }
+
+    .image-field       { display: flex; gap: 8px; }
+    .image-field input { flex: 1; }
+
+    /* ════════════ IMAGE PICKER ════════════ */
+    .picker-toolbar {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+
+    .picker-toolbar input {
+      flex: 1;
+      padding: 8px 12px;
+      border: 1.5px solid var(--border);
+      border-radius: 7px;
+      font-size: 13px;
+      outline: none;
+    }
+
+    .picker-toolbar input:focus { border-color: var(--navy); }
+
+    .picker-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: 10px;
+    }
+
+    .picker-item {
+      border: 2.5px solid transparent;
+      border-radius: 8px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: border-color .15s, box-shadow .15s;
+    }
+
+    .picker-item:hover   { border-color: var(--navy); }
+    .picker-item.selected { border-color: var(--navy); box-shadow: 0 0 0 3px rgba(91,85,138,.18); }
+
+    .picker-item img          { width: 100%; height: 80px; object-fit: cover; display: block; }
+    .picker-item-name         { font-size: 10px; color: #777; padding: 4px 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; background: #fff; }
+
+    /* ════════════ TOAST ════════════ */
+    #toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(12px);
+      background: #222;
+      color: #fff;
+      padding: 9px 18px;
+      border-radius: 8px;
+      font-size: 13px;
+      opacity: 0;
+      transition: opacity .22s, transform .22s;
+      z-index: 999;
+      pointer-events: none;
+      white-space: nowrap;
+    }
+
+    #toast.visible {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══════════ LOGIN ══════════ -->
+<div id="screen-login">
+  <div class="login-card">
+    <img src="images/Logo.jpg" alt="DC Episcopal Fellowship">
+    <h1>DCEF Admin</h1>
+    <p>Sign in with your authorized Google account to manage events and photos.</p>
+    <button class="btn-google" id="btn-signin">
+      <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true">
+        <path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844a4.14 4.14 0 0 1-1.796 2.716v2.259h2.908C16.658 14.251 17.64 11.943 17.64 9.2Z"/>
+        <path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18Z"/>
+        <path fill="#FBBC05" d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332Z"/>
+        <path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 6.29C4.672 4.163 6.656 3.58 9 3.58Z"/>
+      </svg>
+      Sign in with Google
+    </button>
+  </div>
+</div>
+
+<!-- ══════════ APP ══════════ -->
+<div id="screen-app">
+  <header class="app-header">
+    <img src="images/Logo.jpg" alt="DCEF">
+    <span class="app-header-title">DCEF Admin</span>
+    <div class="app-tabs">
+      <button class="tab-btn active" data-tab="events">Events</button>
+      <button class="tab-btn" data-tab="photos">Photos</button>
+    </div>
+    <button class="btn-signout" id="btn-signout">Sign out</button>
+  </header>
+
+  <div class="app-body">
+
+    <!-- Events panel -->
+    <div class="panel active" id="panel-events">
+      <div class="panel-header">
+        <h2>Events</h2>
+        <button class="btn btn-primary" id="btn-new-event">+ New Event</button>
+      </div>
+      <div class="section-label">Upcoming</div>
+      <div id="list-upcoming"><div class="state-msg">Loading…</div></div>
+      <div class="section-label" style="margin-top:28px">Past Events</div>
+      <div id="list-past"><div class="state-msg">Loading…</div></div>
+    </div>
+
+    <!-- Photos panel -->
+    <div class="panel" id="panel-photos">
+      <div class="panel-header"><h2>Photos</h2></div>
+
+      <div class="upload-zone" id="upload-zone">
+        <div class="upload-icon">📷</div>
+        <strong>Click to upload</strong>
+        <p>or drag and drop — JPG, PNG, WEBP, etc.</p>
+        <input type="file" id="file-input" accept="image/*" style="display:none">
+      </div>
+
+      <div class="progress-wrap" id="upload-progress">
+        <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+        <div class="progress-label" id="progress-label">Uploading…</div>
+      </div>
+
+      <div class="photo-grid" id="photo-grid">
+        <div class="state-msg">Loading…</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════ EVENT EDITOR MODAL ══════════ -->
+<div class="modal-backdrop" id="editor-backdrop"></div>
+<div class="modal" id="modal-editor">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h2 id="editor-heading">Edit Event</h2>
+      <button class="btn-close" id="btn-editor-close" aria-label="Close">✕</button>
+    </div>
+
+    <div class="modal-body">
+
+      <div class="form-row">
+        <label>Event Title</label>
+        <input type="text" id="f-title" placeholder="e.g. Evening Prayer at St. John's">
+      </div>
+
+      <div class="form-row">
+        <div class="toggle-row">
+          <div class="toggle-label">
+            All-day event
+            <small>Date only — no start/end time</small>
+          </div>
+          <label class="toggle" aria-label="All-day">
+            <input type="checkbox" id="f-allday">
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+      </div>
+
+      <div class="form-row-inline">
+        <div class="form-row">
+          <label>Start Date</label>
+          <input type="date" id="f-start-date">
+        </div>
+        <div class="form-row" id="f-start-time-row">
+          <label>Start Time</label>
+          <input type="time" id="f-start-time">
+        </div>
+      </div>
+
+      <div class="form-row-inline">
+        <div class="form-row">
+          <label>End Date</label>
+          <input type="date" id="f-end-date">
+        </div>
+        <div class="form-row" id="f-end-time-row">
+          <label>End Time</label>
+          <input type="time" id="f-end-time">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <label>Location</label>
+        <input type="text" id="f-location" placeholder="e.g. St. John's Church, Lafayette Square">
+      </div>
+
+      <div class="form-row">
+        <label>Description</label>
+        <textarea id="f-desc" placeholder="Event details visible to attendees…" rows="4"></textarea>
+      </div>
+
+      <hr class="form-divider">
+      <div class="form-section-title">Custom Tags</div>
+
+      <div class="form-row">
+        <label>Image</label>
+        <div class="image-field">
+          <input type="text" id="f-image" placeholder="filename.jpg">
+          <button class="btn btn-secondary btn-sm" id="btn-browse-r2">Browse R2</button>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <label>RSVP Link</label>
+        <input type="url" id="f-rsvp" placeholder="https://partiful.com/e/…">
+      </div>
+
+      <div class="form-row">
+        <div class="toggle-row">
+          <div class="toggle-label">
+            Diocese Event
+            <small>Shows in "Events Around the Diocese" section</small>
+          </div>
+          <label class="toggle green" aria-label="Diocese">
+            <input type="checkbox" id="f-diocese">
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn btn-danger btn-sm" id="btn-delete-event" style="display:none">Delete Event</button>
+      <div class="spacer"></div>
+      <button class="btn btn-ghost btn-sm" id="btn-cancel-event">Cancel</button>
+      <button class="btn btn-primary btn-sm" id="btn-save-event">Save Event</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ IMAGE PICKER MODAL ══════════ -->
+<div class="modal-backdrop" id="picker-backdrop"></div>
+<div class="modal" id="modal-picker">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h2>Choose Image from R2</h2>
+      <button class="btn-close" id="btn-picker-close" aria-label="Close">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="picker-toolbar">
+        <input type="text" id="picker-search" placeholder="Filter by filename…">
+        <button class="btn btn-secondary btn-sm" id="btn-picker-upload">Upload New</button>
+        <input type="file" id="picker-file-input" accept="image/*" style="display:none">
+      </div>
+      <div class="progress-wrap" id="picker-progress">
+        <div class="progress-bar"><div class="progress-fill" id="picker-progress-fill"></div></div>
+        <div class="progress-label" id="picker-progress-label">Uploading…</div>
+      </div>
+      <div class="picker-grid" id="picker-grid">
+        <div class="state-msg">Loading images…</div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <div class="spacer"></div>
+      <button class="btn btn-ghost btn-sm" id="btn-picker-cancel">Cancel</button>
+      <button class="btn btn-primary btn-sm" id="btn-picker-select">Use Selected</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+/* ═══════════════════════════════════════════
+   CONFIG
+   ─ Set GOOGLE_CLIENT_ID to your OAuth 2.0
+     Web Client ID from Google Cloud Console.
+   ─ Required scopes: .../auth/calendar
+═══════════════════════════════════════════ */
+const GOOGLE_CLIENT_ID = '606199250637-k92kvdupc6t4gtcpv12pnka69k4ffa7s.apps.googleusercontent.com';  // ← paste here
+const CALENDAR_ID      = 'dcepiscopalfellowship@gmail.com';
+
+/* ═══════════════════════════════════════════
+   STATE
+═══════════════════════════════════════════ */
+let accessToken    = null;
+let tokenClient    = null;
+let currentEvent   = null;   // event object being edited, or null for new
+let allPhotos      = [];     // cached photo list from R2
+let pickerSelected = null;   // filename selected in picker
+
+const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+/* ═══════════════════════════════════════════
+   GOOGLE AUTH
+═══════════════════════════════════════════ */
+window.addEventListener('load', () => {
+  if (!GOOGLE_CLIENT_ID) {
+    document.querySelector('.login-card p').textContent =
+      '⚠️ GOOGLE_CLIENT_ID is not set in admin.html. Open the file and paste your OAuth Client ID.';
+    document.getElementById('btn-signin').disabled = true;
+    return;
+  }
+  tokenClient = google.accounts.oauth2.initTokenClient({
+    client_id: GOOGLE_CLIENT_ID,
+    scope:     'https://www.googleapis.com/auth/calendar',
+    callback:  onToken,
+  });
+});
+
+function onToken(resp) {
+  if (resp.error) { showToast('Sign-in failed: ' + resp.error); return; }
+  accessToken = resp.access_token;
+  document.getElementById('screen-login').style.display = 'none';
+  document.getElementById('screen-app').classList.add('visible');
+  loadEvents();
+  loadPhotos();
+}
+
+document.getElementById('btn-signin').onclick = () =>
+  tokenClient.requestAccessToken({ prompt: 'select_account' });
+
+document.getElementById('btn-signout').onclick = () => {
+  if (accessToken) google.accounts.oauth2.revoke(accessToken, () => {});
+  accessToken = null;
+  document.getElementById('screen-app').classList.remove('visible');
+  document.getElementById('screen-login').style.display = 'flex';
+};
+
+/* ═══════════════════════════════════════════
+   TABS
+═══════════════════════════════════════════ */
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.onclick = () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('panel-' + btn.dataset.tab).classList.add('active');
+  };
+});
+
+/* ═══════════════════════════════════════════
+   CALENDAR API
+═══════════════════════════════════════════ */
+async function calFetch(path, opts = {}) {
+  const res = await fetch('https://www.googleapis.com/calendar/v3' + path, {
+    ...opts,
+    headers: {
+      Authorization:  `Bearer ${accessToken}`,
+      'Content-Type': 'application/json',
+      ...(opts.headers || {}),
+    },
+  });
+  if (res.status === 401) {
+    showToast('Session expired — please sign in again.');
+    return null;
+  }
+  if (res.status === 204) return null;
+  if (!res.ok) {
+    const err = await res.text().catch(() => res.statusText);
+    throw new Error(err || `HTTP ${res.status}`);
+  }
+  return res.json();
+}
+
+async function loadEvents() {
+  const enc = encodeURIComponent;
+  const now  = new Date().toISOString();
+  const base = `/calendars/${enc(CALENDAR_ID)}/events?singleEvents=true&orderBy=startTime&maxResults=100`;
+
+  const [up, past] = await Promise.all([
+    calFetch(`${base}&timeMin=${enc(now)}`),
+    calFetch(`${base}&timeMax=${enc(now)}&maxResults=50`),
+  ]);
+
+  const active = e => e.status !== 'cancelled';
+  renderList('list-upcoming', (up?.items   || []).filter(active));
+  renderList('list-past',     (past?.items || []).filter(active).reverse());
+}
+
+/* ═══════════════════════════════════════════
+   EVENT LIST RENDERING
+═══════════════════════════════════════════ */
+function renderList(id, events) {
+  const wrap = document.getElementById(id);
+  if (!events.length) {
+    wrap.innerHTML = '<div class="state-msg">No events.</div>';
+    return;
+  }
+
+  wrap.innerHTML = events.map(ev => {
+    const d   = eventDate(ev);
+    const dio = isDiocese(ev);
+    const pill = d
+      ? `<div class="event-date-pill ${dio ? 'diocese' : ''}">
+           <span>${MONTHS[d.getMonth()]}</span>
+           <span class="day">${d.getDate()}</span>
+         </div>`
+      : `<div class="event-date-pill" style="font-size:9px">No date</div>`;
+
+    const badges = [];
+    if (dio) badges.push('<span style="color:var(--green)">Diocese</span>');
+    if (/RSVP:/i.test(ev.description || ''))   badges.push('RSVP');
+    if (/\[image:/i.test(ev.description || '')) badges.push('Image');
+
+    const dateStr = d
+      ? d.toLocaleString('en-US', { weekday:'short', month:'short', day:'numeric',
+          ...(ev.start?.dateTime ? { hour:'numeric', minute:'2-digit' } : {}) })
+      : '';
+    const loc = ev.location ? ev.location.split(',')[0] : '';
+    const meta = [dateStr, loc].filter(Boolean).join(' · ')
+               + (badges.length ? ' · ' + badges.join(', ') : '');
+
+    return `<div class="event-row" data-id="${esc(ev.id)}">
+      ${pill}
+      <div class="event-info">
+        <div class="event-row-title">${esc(ev.summary || '(no title)')}</div>
+        <div class="event-row-meta">${meta}</div>
+      </div>
+      <button class="btn btn-ghost btn-sm edit-btn" data-id="${esc(ev.id)}">Edit</button>
+    </div>`;
+  }).join('');
+
+  // Build a quick lookup
+  const map = Object.fromEntries(events.map(e => [e.id, e]));
+
+  wrap.querySelectorAll('.event-row').forEach(row => {
+    row.onclick = () => openEditor(map[row.dataset.id]);
+  });
+  wrap.querySelectorAll('.edit-btn').forEach(btn => {
+    btn.onclick = (e) => { e.stopPropagation(); openEditor(map[btn.dataset.id]); };
+  });
+}
+
+function eventDate(ev) {
+  const s = ev.start?.dateTime || ev.start?.date;
+  return s ? new Date(s) : null;
+}
+
+function isDiocese(ev) {
+  return /#DIOCESE\b/i.test(ev.description || '');
+}
+
+/* ═══════════════════════════════════════════
+   DESCRIPTION PARSING / BUILDING
+═══════════════════════════════════════════ */
+function parseDesc(raw) {
+  let text = raw || '', image = '', rsvp = '', diocese = false;
+  text = text.replace(/\[image:\s*"?([^"\]\n]+?)"?\s*\]/gi, (_, p) => { image = p.trim(); return ''; });
+  text = text.replace(/^RSVP:\s*(.+)$/mi,  (_, u) => { rsvp = u.trim();  return ''; });
+  text = text.replace(/#DIOCESE\b/gi,       ()     => { diocese = true;   return ''; });
+  return { text: text.trim(), image, rsvp, diocese };
+}
+
+function buildDesc(text, image, rsvp, diocese) {
+  return [
+    text.trim(),
+    rsvp    ? `RSVP: ${rsvp}` : '',
+    image   ? `[image:${image}]` : '',
+    diocese ? '#DIOCESE' : '',
+  ].filter(Boolean).join('\n');
+}
+
+/* ═══════════════════════════════════════════
+   EVENT EDITOR
+═══════════════════════════════════════════ */
+function openEditor(ev) {
+  currentEvent = ev || null;
+  document.getElementById('editor-heading').textContent = ev ? 'Edit Event' : 'New Event';
+  document.getElementById('btn-delete-event').style.display = ev ? '' : 'none';
+
+  if (ev) {
+    const allDay = !!ev.start?.date;
+    const start  = ev.start?.dateTime || ev.start?.date || '';
+    const end    = ev.end?.dateTime   || ev.end?.date   || '';
+    const { text, image, rsvp, diocese } = parseDesc(ev.description);
+
+    set('f-title',      ev.summary || '');
+    set('f-allday',     allDay, 'checked');
+    set('f-start-date', start.slice(0, 10));
+    set('f-start-time', allDay ? '' : start.slice(11, 16));
+    set('f-end-date',   end.slice(0, 10));
+    set('f-end-time',   allDay ? '' : end.slice(11, 16));
+    set('f-location',   ev.location || '');
+    set('f-desc',       text);
+    set('f-image',      image);
+    set('f-rsvp',       rsvp);
+    set('f-diocese',    diocese, 'checked');
+    toggleAlldayUI(allDay);
+  } else {
+    const today = new Date().toISOString().slice(0, 10);
+    set('f-title',      '');
+    set('f-allday',     false, 'checked');
+    set('f-start-date', today);
+    set('f-start-time', '18:00');
+    set('f-end-date',   today);
+    set('f-end-time',   '20:00');
+    set('f-location',   '');
+    set('f-desc',       '');
+    set('f-image',      '');
+    set('f-rsvp',       '');
+    set('f-diocese',    false, 'checked');
+    toggleAlldayUI(false);
+  }
+
+  showModal('modal-editor', 'editor-backdrop');
+}
+
+function toggleAlldayUI(allDay) {
+  document.getElementById('f-start-time-row').style.display = allDay ? 'none' : '';
+  document.getElementById('f-end-time-row').style.display   = allDay ? 'none' : '';
+}
+
+document.getElementById('f-allday').onchange = function() { toggleAlldayUI(this.checked); };
+
+document.getElementById('btn-new-event').onclick    = () => openEditor(null);
+document.getElementById('btn-cancel-event').onclick = () => closeModal('modal-editor', 'editor-backdrop');
+document.getElementById('btn-editor-close').onclick = () => closeModal('modal-editor', 'editor-backdrop');
+document.getElementById('editor-backdrop').onclick  = () => closeModal('modal-editor', 'editor-backdrop');
+
+document.getElementById('btn-save-event').onclick = async () => {
+  const allDay    = document.getElementById('f-allday').checked;
+  const startDate = val('f-start-date');
+  const startTime = val('f-start-time');
+  const endDate   = val('f-end-date');
+  const endTime   = val('f-end-time');
+  const title     = val('f-title').trim();
+
+  if (!title)     { showToast('Title is required.');      return; }
+  if (!startDate) { showToast('Start date is required.'); return; }
+
+  const body = {
+    summary:     title,
+    location:    val('f-location').trim(),
+    description: buildDesc(
+      val('f-desc'),
+      val('f-image').trim(),
+      val('f-rsvp').trim(),
+      document.getElementById('f-diocese').checked,
+    ),
+    start: allDay
+      ? { date: startDate }
+      : { dateTime: `${startDate}T${startTime || '00:00'}:00`, timeZone: 'America/New_York' },
+    end: allDay
+      ? { date: endDate || startDate }
+      : { dateTime: `${endDate || startDate}T${endTime || '00:00'}:00`, timeZone: 'America/New_York' },
+  };
+
+  try {
+    if (currentEvent) {
+      await calFetch(`/calendars/${encodeURIComponent(CALENDAR_ID)}/events/${currentEvent.id}`, {
+        method: 'PUT', body: JSON.stringify(body),
+      });
+      showToast('Event updated!');
+    } else {
+      await calFetch(`/calendars/${encodeURIComponent(CALENDAR_ID)}/events`, {
+        method: 'POST', body: JSON.stringify(body),
+      });
+      showToast('Event created!');
+    }
+    closeModal('modal-editor', 'editor-backdrop');
+    loadEvents();
+  } catch (e) {
+    showToast('Error saving: ' + e.message);
+  }
+};
+
+document.getElementById('btn-delete-event').onclick = async () => {
+  if (!currentEvent) return;
+  if (!confirm(`Delete "${currentEvent.summary}"? This cannot be undone.`)) return;
+  try {
+    await calFetch(`/calendars/${encodeURIComponent(CALENDAR_ID)}/events/${currentEvent.id}`,
+      { method: 'DELETE' });
+    showToast('Event deleted.');
+    closeModal('modal-editor', 'editor-backdrop');
+    loadEvents();
+  } catch (e) {
+    showToast('Error deleting: ' + e.message);
+  }
+};
+
+/* ═══════════════════════════════════════════
+   PHOTOS
+═══════════════════════════════════════════ */
+async function loadPhotos() {
+  try {
+    const res  = await fetch('/.netlify/functions/r2-presign?action=list');
+    const data = await res.json();
+    allPhotos  = data.images || [];
+    renderPhotoGrid(allPhotos);
+  } catch (e) {
+    document.getElementById('photo-grid').innerHTML =
+      `<div class="state-msg">Could not load photos: ${e.message}</div>`;
+  }
+}
+
+function renderPhotoGrid(photos) {
+  const grid = document.getElementById('photo-grid');
+  if (!photos.length) {
+    grid.innerHTML = '<div class="state-msg">No photos yet. Upload one above.</div>';
+    return;
+  }
+  grid.innerHTML = photos.map(p => `
+    <div class="photo-card">
+      <img src="${p.url}" alt="${esc(p.key)}" loading="lazy">
+      <div class="photo-card-info">
+        <div class="photo-card-name">${esc(p.key)}</div>
+        <button class="btn btn-ghost btn-sm" style="width:100%"
+          onclick="navigator.clipboard.writeText('${esc(p.key)}').then(()=>showToast('Filename copied!'))">
+          Copy filename
+        </button>
+      </div>
+    </div>
+  `).join('');
+}
+
+// Upload zone
+const uploadZone = document.getElementById('upload-zone');
+const fileInput  = document.getElementById('file-input');
+
+uploadZone.onclick    = () => fileInput.click();
+uploadZone.ondragover = (e) => { e.preventDefault(); uploadZone.classList.add('drag-over'); };
+uploadZone.ondragleave = () => uploadZone.classList.remove('drag-over');
+uploadZone.ondrop     = (e) => {
+  e.preventDefault();
+  uploadZone.classList.remove('drag-over');
+  if (e.dataTransfer.files[0]) uploadPhoto(e.dataTransfer.files[0], 'upload-progress', 'progress-fill', 'progress-label');
+};
+fileInput.onchange = () => {
+  if (fileInput.files[0]) uploadPhoto(fileInput.files[0], 'upload-progress', 'progress-fill', 'progress-label');
+};
+
+async function uploadPhoto(file, progressId, fillId, labelId, onSuccess) {
+  const progress = document.getElementById(progressId);
+  const fill     = document.getElementById(fillId);
+  const label    = document.getElementById(labelId);
+
+  progress.classList.add('visible');
+  fill.style.width = '10%';
+  label.textContent = `Uploading ${file.name}…`;
+
+  try {
+    const res  = await fetch(
+      `/.netlify/functions/r2-presign?action=presign&filename=${encodeURIComponent(file.name)}&type=${encodeURIComponent(file.type)}`
+    );
+    const { uploadUrl, publicUrl } = await res.json();
+
+    fill.style.width = '50%';
+    await fetch(uploadUrl, { method: 'PUT', body: file, headers: { 'Content-Type': file.type } });
+    fill.style.width = '100%';
+    label.textContent = 'Upload complete!';
+
+    setTimeout(() => { progress.classList.remove('visible'); fill.style.width = '0%'; }, 1800);
+
+    showToast(`${file.name} uploaded.`);
+    await loadPhotos();
+    if (onSuccess) onSuccess(file.name, publicUrl);
+  } catch (e) {
+    label.textContent = 'Upload failed: ' + e.message;
+    showToast('Upload failed: ' + e.message);
+  }
+}
+
+/* ═══════════════════════════════════════════
+   IMAGE PICKER
+═══════════════════════════════════════════ */
+document.getElementById('btn-browse-r2').onclick = openPicker;
+
+function openPicker() {
+  pickerSelected = val('f-image') || null;
+  renderPickerGrid();
+  showModal('modal-picker', 'picker-backdrop');
+}
+
+function renderPickerGrid() {
+  const grid   = document.getElementById('picker-grid');
+  const filter = document.getElementById('picker-search').value.toLowerCase();
+  const list   = filter ? allPhotos.filter(p => p.key.toLowerCase().includes(filter)) : allPhotos;
+
+  if (!list.length) {
+    grid.innerHTML = allPhotos.length
+      ? '<div class="state-msg">No matches.</div>'
+      : '<div class="state-msg">No photos in R2 yet. Upload one first.</div>';
+    return;
+  }
+
+  grid.innerHTML = list.map(p => `
+    <div class="picker-item ${p.key === pickerSelected ? 'selected' : ''}" data-key="${esc(p.key)}">
+      <img src="${p.url}" alt="${esc(p.key)}" loading="lazy">
+      <div class="picker-item-name">${esc(p.key)}</div>
+    </div>
+  `).join('');
+
+  grid.querySelectorAll('.picker-item').forEach(item => {
+    item.onclick = () => {
+      grid.querySelectorAll('.picker-item').forEach(i => i.classList.remove('selected'));
+      item.classList.add('selected');
+      pickerSelected = item.dataset.key;
+    };
+  });
+}
+
+document.getElementById('picker-search').oninput = renderPickerGrid;
+
+document.getElementById('btn-picker-select').onclick = () => {
+  if (pickerSelected) set('f-image', pickerSelected);
+  closeModal('modal-picker', 'picker-backdrop');
+};
+
+document.getElementById('btn-picker-cancel').onclick = () => closeModal('modal-picker', 'picker-backdrop');
+document.getElementById('btn-picker-close').onclick  = () => closeModal('modal-picker', 'picker-backdrop');
+document.getElementById('picker-backdrop').onclick   = () => closeModal('modal-picker', 'picker-backdrop');
+
+// Upload from inside picker
+const pickerFileInput = document.getElementById('picker-file-input');
+document.getElementById('btn-picker-upload').onclick = () => pickerFileInput.click();
+pickerFileInput.onchange = () => {
+  if (!pickerFileInput.files[0]) return;
+  uploadPhoto(
+    pickerFileInput.files[0],
+    'picker-progress', 'picker-progress-fill', 'picker-progress-label',
+    (filename) => { pickerSelected = filename; renderPickerGrid(); }
+  );
+};
+
+/* ═══════════════════════════════════════════
+   MODAL HELPERS
+═══════════════════════════════════════════ */
+function showModal(modalId, backdropId) {
+  document.getElementById(backdropId).classList.add('visible');
+  document.getElementById(modalId).classList.add('visible');
+}
+
+function closeModal(modalId, backdropId) {
+  document.getElementById(modalId).classList.remove('visible');
+  document.getElementById(backdropId).classList.remove('visible');
+}
+
+/* ═══════════════════════════════════════════
+   UTILITIES
+═══════════════════════════════════════════ */
+function val(id)               { return document.getElementById(id).value; }
+function set(id, v, prop = 'value') { document.getElementById(id)[prop] = v; }
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+let toastTimer;
+function showToast(msg, ms = 3200) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('visible');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('visible'), ms);
+}
+</script>
+</body>
+</html>

@@ -1,2 +1,5 @@
 /.claude
 /API
+.env
+node_modules
+scripts/partiful-response.json

@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>DC Episcopal Fellowship — Spring 2026</title>
+  <link rel="icon" href="images/Logo.jpg" type="image/jpeg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -11,7 +12,7 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --navy:    #00277d;
+      --navy:    #5b558a;
       --blue:    #1a62ff;
       --cream:   #faf3eb;
       --sand:    #e9ddcd;
@@ -385,6 +386,7 @@
       color: #fff;
       margin-top: 1px;
     }
+    .cal-legend-dot.diocese { background-color: var(--diocese); }
 
     /* ════════════════════════════
        DIOCESE EVENTS
@@ -821,7 +823,7 @@ function processEvent(ev) {
   if (!ev.image) {
     desc = desc.replace(/\[image:\s*"?([^"\]\n]+?)"?\s*\]/gi, (_, p) => {
       const p2 = p.trim();
-      ev.image = p2.includes('/') ? p2 : 'images/' + p2;
+      ev.image = resolveImage(p2);
       return '';
     });
   }
@@ -963,8 +965,9 @@ function renderMonth(year, month, dayMap) {
         const timeStr = ev.hasTime ? formatTime(ev.dtstart) : '';
         const loc     = ev.location ? ev.location.split(',')[0] : '';
         const detail  = [timeStr, loc].filter(Boolean).join(', ');
+        const dotClass = ev.categories.includes('DIOCESE') ? 'cal-legend-dot diocese' : 'cal-legend-dot';
         return `<div class="cal-legend-item">
-          <div class="cal-legend-dot">${day}</div>
+          <div class="${dotClass}">${day}</div>
           <span><strong>${MONTH_SHORT[month]} ${day}</strong> — ${esc(ev.summary)}${detail ? ', ' + esc(detail) : ''}</span>
         </div>`;
       })
@@ -1061,10 +1064,22 @@ let   GCAL_ICS_URL     = `https://calendar.google.com/calendar/ical/${GCAL_CALEN
 // Get it from: Drive → share file → copy link → the string between /d/ and /view
 const CONFIG_FILE_ID = '';
 
+// Cloudflare R2 public bucket for event and hero images
+const R2_BASE_URL = 'https://pub-8cc6614b6f84425c8d163c6c3319757d.r2.dev';
+
+// Resolve a bare filename (e.g. "Allsouls.png") to its R2 URL.
+// Full URLs (http/https) are returned unchanged.
+function resolveImage(filename) {
+  if (!filename) return filename;
+  if (/^https?:\/\//i.test(filename)) return filename;
+  return `${R2_BASE_URL}/${filename}`;
+}
+
 // Live ICS sources — tried in order, first success wins
 const CORS_PROXIES = [
   () => `/.netlify/functions/fetch-ics`,
   url => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}&_=${Date.now()}`,
+  url => `https://corsproxy.io/?${encodeURIComponent(url)}`,
 ];
 
 /* ═══════════════════════════════════════════════
@@ -1184,20 +1199,19 @@ async function initHero(cfg = {}) {
   let srcs     = ['images/242e9a9fc21b5f936f40236a56e20ac2.jpg'];
   let interval = 6000;
 
+  interval = cfg.heroInterval || 6000;
+
   if (cfg.heroImages && cfg.heroImages.length) {
-    // Use images from remote config (Google Drive URLs)
-    srcs     = cfg.heroImages;
-    interval = cfg.heroInterval || 6000;
+    // Use images from remote config
+    srcs = cfg.heroImages;
   } else {
-    // Fall back to local manifest.json
+    // Fetch hero/ folder from R2
     try {
-      const res = await fetch('hero-images/manifest.json');
+      const res  = await fetch('/.netlify/functions/r2-presign?action=list&prefix=hero/');
       if (res.ok) {
-        const manifest = await res.json();
-        if (Array.isArray(manifest.images) && manifest.images.length > 0) {
-          srcs     = manifest.images.map(f => 'hero-images/' + f);
-          interval = manifest.interval || 6000;
-        }
+        const data = await res.json();
+        const imgs = (data.images || []).filter(p => /\.(jpe?g|png|webp|gif)$/i.test(p.key));
+        if (imgs.length) srcs = imgs.map(p => p.url);
       }
     } catch (e) { /* use fallback */ }
   }
