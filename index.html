@@ -783,12 +783,12 @@ function unescapeICS(s) {
 }
 
 function parseDt(s) {
-  // Strip Z suffix; format: YYYYMMDD or YYYYMMDDTHHMMSS[Z]
-  const c = s.replace('Z','');
-  const y = +c.substr(0,4), mo = +c.substr(4,2)-1, d = +c.substr(6,2);
-  const h = c.length > 8 ? +c.substr(9,2) : 0;
-  const m = c.length > 11 ? +c.substr(11,2) : 0;
-  return new Date(y, mo, d, h, m);
+  // Format: YYYYMMDD or YYYYMMDDTHHMMSS[Z]
+  // Z suffix = UTC; no Z = local time (TZID handled by Google Calendar export)
+  const y = +s.substr(0,4), mo = +s.substr(4,2)-1, d = +s.substr(6,2);
+  const h = s.length > 8 ? +s.substr(9,2) : 0;
+  const m = s.length > 11 ? +s.substr(11,2) : 0;
+  return s.endsWith('Z') ? new Date(Date.UTC(y, mo, d, h, m)) : new Date(y, mo, d, h, m);
 }
 
 /* Extracts special tags from an event's description and auto-assigns categories.
@@ -828,8 +828,9 @@ function processEvent(ev) {
     });
   }
 
-  // Remove RSVP tag from displayed description wherever it appears
+  // Remove RSVP and [partiful:id] tags from displayed description
   desc = desc.replace(/RSVP:\s*[^\n]*/gi, '');
+  desc = desc.replace(/\[partiful:\s*[^\]\n]+\]/gi, '');
 
   // Extract #DIOCESE tag
   const tagCategories = [];
