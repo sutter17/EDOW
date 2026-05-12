@@ -1,3 +1,5 @@
+const { getStore } = require('@netlify/blobs');
+
 const GCAL_ICS_URL =
   'https://calendar.google.com/calendar/ical/dcepiscopalfellowship%40gmail.com/public/basic.ics';
 
@@ -45,6 +47,36 @@ function parseEvents(icsText) {
   return events;
 }
 
+function buildLogEntry(event, slug) {
+  const h = event.headers || {};
+  const q = event.queryStringParameters || {};
+
+  let geo = {};
+  try { geo = JSON.parse(h['x-nf-geo'] || '{}'); } catch (_) {}
+
+  return {
+    timestamp: new Date().toISOString(),
+    slug,
+    ip: h['x-forwarded-for']?.split(',')[0]?.trim() || h['client-ip'] || null,
+    userAgent: h['user-agent'] || null,
+    referrer: h['referer'] || h['referrer'] || null,
+    language: h['accept-language']?.split(',')[0] || null,
+    country: geo.country?.code || h['x-country'] || null,
+    city: geo.city || null,
+    subdivision: geo.subdivision?.code || null,
+    timezone: geo.timezone || null,
+    latitude: geo.latitude || null,
+    longitude: geo.longitude || null,
+    utm: {
+      source: q.utm_source || null,
+      medium: q.utm_medium || null,
+      campaign: q.utm_campaign || null,
+      content: q.utm_content || null,
+      term: q.utm_term || null,
+    },
+  };
+}
+
 exports.handler = async function (event) {
   const slug = event.queryStringParameters?.slug || '';
 
@@ -52,23 +84,24 @@ exports.handler = async function (event) {
     return { statusCode: 302, headers: { Location: '/' } };
   }
 
-  try {
-    const res = await fetch(GCAL_ICS_URL);
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const text = await res.text();
+  const logEntry = buildLogEntry(event, slug);
+  const logKey = `${Date.now()}-${Math.random().toString(16).slice(2, 6)}`;
 
-    const events = parseEvents(text);
+  // Fetch ICS and write log in parallel
+  const [icsResult] = await Promise.all([
+    fetch(GCAL_ICS_URL)
+      .then((r) => (r.ok ? r.text() : Promise.reject(r.status)))
+      .catch(() => null),
+    getStore('click-logs').setJSON(logKey, logEntry).catch(() => {}),
+  ]);
+
+  if (icsResult) {
+    const events = parseEvents(icsResult);
     const matched = events.find((e) => e.slug === slug);
-
     if (matched) {
-      return {
-        statusCode: 302,
-        headers: { Location: matched.rsvpUrl },
-      };
+      return { statusCode: 302, headers: { Location: matched.rsvpUrl } };
     }
-
-    return { statusCode: 302, headers: { Location: '/' } };
-  } catch (_err) {
-    return { statusCode: 302, headers: { Location: '/' } };
   }
+
+  return { statusCode: 302, headers: { Location: '/' } };
 };
