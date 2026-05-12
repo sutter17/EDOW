@@ -1,0 +1,4 @@
+[[redirects]]
+  from = "/rsvp/:slug"
+  to = "/.netlify/functions/rsvp?slug=:slug"
+  status = 200
