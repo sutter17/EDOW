@@ -1353,7 +1353,7 @@ function renderPhotoGrid(photos) {
   }
   grid.innerHTML = photos.map(p => `
     <div class="photo-card">
-      <img src="${p.url}" alt="${esc(p.key)}" loading="lazy">
+      <img src="${p.url}" alt="${esc(p.key)}">
       <div class="photo-card-info">
         <div class="photo-card-name">${esc(p.key)}</div>
         <button class="btn btn-ghost btn-sm" style="width:100%"
