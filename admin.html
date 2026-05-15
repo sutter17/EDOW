@@ -1356,9 +1356,13 @@ function renderPhotoGrid(photos) {
       <img src="${p.url}" alt="${esc(p.key)}" loading="lazy">
       <div class="photo-card-info">
         <div class="photo-card-name">${esc(p.key)}</div>
-        <button class="btn btn-ghost btn-sm" style="width:100%"
+        <button class="btn btn-ghost btn-sm" style="width:100%;margin-bottom:4px"
           onclick="navigator.clipboard.writeText('${esc(p.key)}').then(()=>showToast('Filename copied!'))">
           Copy filename
+        </button>
+        <button class="btn btn-ghost btn-sm" style="width:100%"
+          onclick="navigator.clipboard.writeText('${esc(p.url)}').then(()=>showToast('${esc(p.url)}', 5000))">
+          Copy URL
         </button>
       </div>
     </div>
