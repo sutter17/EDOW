@@ -11,7 +11,7 @@ const s3 = new S3Client({
 });
 
 const BUCKET     = process.env.R2_BUCKET_NAME;
-const PUBLIC_URL = process.env.R2_PUBLIC_URL; // e.g. https://pub-xxx.r2.dev
+const PUBLIC_URL = (process.env.R2_PUBLIC_URL || 'https://images.dcepiscopalfellowship.org').replace(/\/$/, '');
 
 const CORS = {
   'Access-Control-Allow-Origin':  '*',
