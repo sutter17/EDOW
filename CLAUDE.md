@@ -54,13 +54,7 @@ DC Episcopal Fellowship website. Static HTML/CSS/JS hosted on Netlify (functions
 
 Uploads succeed (proving the function runs and R2 credentials are valid), but thumbnails in the Photos tab and image picker are broken. Upload uses a presigned S3 URL directly — `R2_PUBLIC_URL` is not needed for the upload itself. The list action constructs every thumbnail `src` as `${process.env.R2_PUBLIC_URL}/${key}`, so if that env var is missing the browser gets `src="undefined/filename.jpg"`.
 
-**Fix: set `R2_PUBLIC_URL` in Netlify environment variables**
-- Netlify dashboard → Site settings → Environment variables → add `R2_PUBLIC_URL`
-- Value: `https://images.dcepiscopalfellowship.org` (the custom domain already used by `index.html`)
-- No trailing slash
-- Redeploy or trigger a new function invocation after saving
-
-`index.html` has this URL hardcoded as `R2_BASE_URL` — the env var just needs to match it.
+**Fix (applied in code):** `r2-presign.js` now defaults `PUBLIC_URL` to `https://images.dcepiscopalfellowship.org` if `R2_PUBLIC_URL` is not set, and strips any trailing slash. This matches `R2_BASE_URL` hardcoded in `index.html` so both pages use identical URLs.
 
 ---
 
