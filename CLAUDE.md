@@ -52,21 +52,15 @@ DC Episcopal Fellowship website. Static HTML/CSS/JS hosted on Netlify (functions
 
 ### R2 Image Previews Not Loading in Admin
 
-Images load fine on the public site (`index.html`) because it uses a hardcoded custom domain:
-```js
-const R2_BASE_URL = 'https://images.dcepiscopalfellowship.org';
-```
-The admin Photos tab and image picker get their URLs from the `r2-presign` function, which uses `process.env.R2_PUBLIC_URL`. These are two separate URL sources — the env var and the hardcoded constant may not match or the env var may not be set at all.
+Uploads succeed (proving the function runs and R2 credentials are valid), but thumbnails in the Photos tab and image picker are broken. Upload uses a presigned S3 URL directly — `R2_PUBLIC_URL` is not needed for the upload itself. The list action constructs every thumbnail `src` as `${process.env.R2_PUBLIC_URL}/${key}`, so if that env var is missing the browser gets `src="undefined/filename.jpg"`.
 
-**Cause 1 — `R2_PUBLIC_URL` env var not set in Netlify**
-- Symptom: image `src` attributes in admin read `undefined/filename.jpg`
-- Verify: open DevTools → Elements → inspect a `<img>` in the photo grid and check its `src`
-- Fix: add `R2_PUBLIC_URL` to Netlify environment variables (Site settings → Environment variables) set to `https://images.dcepiscopalfellowship.org` — matching the hardcoded constant in `index.html`
+**Fix: set `R2_PUBLIC_URL` in Netlify environment variables**
+- Netlify dashboard → Site settings → Environment variables → add `R2_PUBLIC_URL`
+- Value: `https://images.dcepiscopalfellowship.org` (the custom domain already used by `index.html`)
+- No trailing slash
+- Redeploy or trigger a new function invocation after saving
 
-**Cause 2 — `R2_PUBLIC_URL` set to the `r2.dev` subdomain instead of the custom domain**
-- Symptom: images load on home page (custom domain) but return 403/404 in admin (`r2.dev` URL)
-- Verify: check what `R2_PUBLIC_URL` is set to in Netlify; check if `pub-xxx.r2.dev` public access is enabled in Cloudflare
-- Fix: set `R2_PUBLIC_URL` to `https://images.dcepiscopalfellowship.org` to match the custom domain already in use
+`index.html` has this URL hardcoded as `R2_BASE_URL` — the env var just needs to match it.
 
 ---
 
