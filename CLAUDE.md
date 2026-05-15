@@ -52,30 +52,21 @@ DC Episcopal Fellowship website. Static HTML/CSS/JS hosted on Netlify (functions
 
 ### R2 Image Previews Not Loading in Admin
 
-Images in the Photos tab and the image picker show broken/blank thumbnails. Potential causes and solutions:
+Images load fine on the public site (`index.html`) because it uses a hardcoded custom domain:
+```js
+const R2_BASE_URL = 'https://images.dcepiscopalfellowship.org';
+```
+The admin Photos tab and image picker get their URLs from the `r2-presign` function, which uses `process.env.R2_PUBLIC_URL`. These are two separate URL sources — the env var and the hardcoded constant may not match or the env var may not be set at all.
 
-1. **`R2_PUBLIC_URL` not set or wrong**
-   - Symptom: image `src` is `undefined/filename.jpg` or `null/filename.jpg`
-   - Fix: Set `R2_PUBLIC_URL` in Netlify env vars to the full public base URL with no trailing slash, e.g. `https://pub-abc123.r2.dev`
-   - Verify: open browser devtools → Network tab → check the actual `src` on `<img>` elements
+**Cause 1 — `R2_PUBLIC_URL` env var not set in Netlify**
+- Symptom: image `src` attributes in admin read `undefined/filename.jpg`
+- Verify: open DevTools → Elements → inspect a `<img>` in the photo grid and check its `src`
+- Fix: add `R2_PUBLIC_URL` to Netlify environment variables (Site settings → Environment variables) set to `https://images.dcepiscopalfellowship.org` — matching the hardcoded constant in `index.html`
 
-2. **Cloudflare R2 public access not enabled**
-   - Symptom: 403 or "Access Denied" on image requests even with correct URL
-   - Fix: In Cloudflare dashboard → R2 → your bucket → Settings → "Public access" → enable the `r2.dev` subdomain. Without this toggle, the public URL returns 403 for all objects.
-   - Note: enabling public access exposes all objects in the bucket publicly
-
-3. **CORS policy on R2 bucket blocking admin origin**
-   - Symptom: images load in a new tab but not in admin page; devtools shows a CORS error
-   - Fix: In Cloudflare dashboard → R2 → bucket → Settings → CORS policy → add a rule allowing `GET` from `*` (or specifically from your admin domain)
-   - Example CORS rule: `[{"AllowedOrigins":["*"],"AllowedMethods":["GET"],"MaxAgeSeconds":3600}]`
-
-4. **Trailing slash in `R2_PUBLIC_URL`**
-   - Symptom: URLs double-slash like `https://pub-xxx.r2.dev//filename.jpg` → 403 or 404
-   - Fix: Remove trailing slash from the env var value
-
-5. **Mixed content (HTTP/HTTPS)**
-   - Symptom: browser silently blocks images on HTTPS page with HTTP image src
-   - Fix: Ensure `R2_PUBLIC_URL` uses `https://`
+**Cause 2 — `R2_PUBLIC_URL` set to the `r2.dev` subdomain instead of the custom domain**
+- Symptom: images load on home page (custom domain) but return 403/404 in admin (`r2.dev` URL)
+- Verify: check what `R2_PUBLIC_URL` is set to in Netlify; check if `pub-xxx.r2.dev` public access is enabled in Cloudflare
+- Fix: set `R2_PUBLIC_URL` to `https://images.dcepiscopalfellowship.org` to match the custom domain already in use
 
 ---
 
