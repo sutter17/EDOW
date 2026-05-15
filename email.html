@@ -956,8 +956,21 @@ window.addEventListener('message',e=>{
 });
 
 /* ── Init ── */
+async function loadSiteContent() {
+  try {
+    const res  = await fetch('/.netlify/functions/site-content');
+    if (!res.ok) return;
+    const data = await res.json();
+    const strip = (html) => { const d=document.createElement('div'); d.innerHTML=html; return d.textContent||''; };
+    if (data.season)         state.overrides.season        = data.season;
+    if (data.welcomeText)    state.overrides.welcomeText   = data.welcomeText;
+    if (data.upcomingIntro)  state.overrides.upcomingIntro = strip(data.upcomingIntro);
+    if (data.dioceseIntro)   state.overrides.dioceseIntro  = strip(data.dioceseIntro);
+  } catch (_) {}
+}
+
 renderSidebarList();
-loadEvents();
+loadSiteContent().then(() => loadEvents());
 </script>
 </body>
 </html>

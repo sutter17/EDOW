@@ -634,8 +634,8 @@
       <!-- slides injected by JS; fallback background set inline -->
     </div>
     <div class="welcome-overlay">
-      <h2>Welcome, Spring 2026</h2>
-      <p>As we enter the seasons of Easter and spring, everything is blooming. We celebrate the joy of the resurrection as our world wakes up from its winter slumber. Please join us for our spring events, filled with faith, fellowship, and lots of fun!</p>
+      <h2 id="welcome-heading">Welcome, Spring 2026</h2>
+      <p id="welcome-text">As we enter the seasons of Easter and spring, everything is blooming. We celebrate the joy of the resurrection as our world wakes up from its winter slumber. Please join us for our spring events, filled with faith, fellowship, and lots of fun!</p>
       <a class="btn-subscribe" href="#subscribe">Get the Newsletter</a>
     </div>
     <div class="hero-dots" id="hero-dots"></div>
@@ -645,7 +645,7 @@
   <section id="upcoming">
     <div class="section-heading">Upcoming Events</div>
     <div class="section-intro">
-      <p>This spring, we have a full calendar of fun events! From baseball to scavenger hunts, we hope you will join us as we come together in this season of joy and community. Find all event info on our <a href="https://www.instagram.com/dc_episcopal_fellowship/" target="_blank">Instagram</a> or <a href="https://partiful.com/u/TdAJl2k33LHLrWpyeNeC" target="_blank">Partiful</a>!</p>
+      <p id="upcoming-intro">This spring, we have a full calendar of fun events! From baseball to scavenger hunts, we hope you will join us as we come together in this season of joy and community. Find all event info on our <a href="https://www.instagram.com/dc_episcopal_fellowship/" target="_blank">Instagram</a> or <a href="https://partiful.com/u/TdAJl2k33LHLrWpyeNeC" target="_blank">Partiful</a>!</p>
     </div>
     <div id="events-upcoming"></div>
   </section>
@@ -664,7 +664,7 @@
   <section id="diocese">
     <div class="section-heading">Events Around the Diocese</div>
     <div class="section-intro">
-      <p>We are also partnering with other organizations to spread word of events young adults in the diocese might enjoy. If you have ideas or are hosting something, please <a href="https://forms.gle/epcKDnZ1tQeatfwU9" target="_blank">share them with us</a>!</p>
+      <p id="diocese-intro">We are also partnering with other organizations to spread word of events young adults in the diocese might enjoy. If you have ideas or are hosting something, please <a href="https://forms.gle/epcKDnZ1tQeatfwU9" target="_blank">share them with us</a>!</p>
     </div>
     <div class="diocese-grid" id="events-diocese"></div>
   </section>
@@ -1282,10 +1282,23 @@ async function handleSubscribe(e) {
 /* ═══════════════════════════════════════════════
    INIT
 ═══════════════════════════════════════════════ */
+async function loadSiteContent() {
+  try {
+    const res  = await fetch('/.netlify/functions/site-content');
+    if (!res.ok) return;
+    const data = await res.json();
+    if (data.welcomeHeading) document.getElementById('welcome-heading').textContent = data.welcomeHeading;
+    if (data.welcomeText)    document.getElementById('welcome-text').textContent    = data.welcomeText;
+    if (data.upcomingIntro)  document.getElementById('upcoming-intro').innerHTML    = data.upcomingIntro;
+    if (data.dioceseIntro)   document.getElementById('diocese-intro').innerHTML     = data.dioceseIntro;
+  } catch (_) {}
+}
+
 document.addEventListener('DOMContentLoaded', async () => {
   const cfg = await loadConfig();
   applyConfig(cfg);
   initHero(cfg);
+  loadSiteContent();
   loadEvents();
 });
 </script>

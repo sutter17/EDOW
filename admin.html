@@ -352,7 +352,9 @@
       width: 100%;
       max-width: 660px;
       max-height: 92vh;
-      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
       box-shadow: 0 10px 48px rgba(0,0,0,.22);
       margin: auto;
     }
@@ -392,13 +394,14 @@
 
     .btn-close:hover { color: #555; background: var(--page); }
 
-    .modal-body   { padding: 22px; }
+    .modal-body   { padding: 22px; overflow-y: auto; flex: 1; }
     .modal-footer {
       display: flex;
       align-items: center;
       gap: 10px;
       padding: 14px 22px 18px;
       border-top: 1px solid var(--border);
+      flex-shrink: 0;
     }
 
     .spacer { flex: 1; }
@@ -638,7 +641,9 @@
     <div class="app-tabs">
       <button class="tab-btn active" data-tab="events">Events</button>
       <button class="tab-btn" data-tab="photos">Photos</button>
+      <button class="tab-btn" data-tab="content">Content</button>
     </div>
+    <a href="email.html" target="_blank" class="btn-signout" style="text-decoration:none;margin-right:6px;">Email Generator</a>
     <button class="btn-signout" id="btn-signout">Sign out</button>
   </header>
 
@@ -674,6 +679,42 @@
 
       <div class="photo-grid" id="photo-grid">
         <div class="state-msg">Loading…</div>
+      </div>
+    </div>
+
+    <!-- Content panel -->
+    <div class="panel" id="panel-content">
+      <div class="panel-header">
+        <h2>Site Content</h2>
+        <button class="btn btn-primary" id="btn-save-content">Save Changes</button>
+      </div>
+
+      <div class="form-section-title">Season</div>
+      <div class="form-row">
+        <label>Season Label</label>
+        <input type="text" id="c-season" placeholder="e.g. Spring 2026">
+      </div>
+
+      <div class="form-section-title">Welcome Section</div>
+      <div class="form-row">
+        <label>Heading</label>
+        <input type="text" id="c-welcome-heading" placeholder="e.g. Welcome, Spring 2026">
+      </div>
+      <div class="form-row">
+        <label>Body Text</label>
+        <textarea id="c-welcome-text" rows="4" placeholder="Welcome paragraph shown on the hero section…"></textarea>
+      </div>
+
+      <div class="form-section-title">Upcoming Events Section</div>
+      <div class="form-row">
+        <label>Intro Text <small style="font-weight:400;text-transform:none;letter-spacing:0">(HTML allowed — links will render)</small></label>
+        <textarea id="c-upcoming-intro" rows="3" placeholder="Intro paragraph for the Upcoming Events section…"></textarea>
+      </div>
+
+      <div class="form-section-title">Diocese Events Section</div>
+      <div class="form-row">
+        <label>Intro Text <small style="font-weight:400;text-transform:none;letter-spacing:0">(HTML allowed — links will render)</small></label>
+        <textarea id="c-diocese-intro" rows="3" placeholder="Intro paragraph for the Diocese section…"></textarea>
       </div>
     </div>
 
@@ -907,6 +948,7 @@ function onToken(resp) {
   document.getElementById('screen-app').classList.add('visible');
   loadEvents();
   loadPhotos();
+  loadContent();
 }
 
 document.getElementById('btn-signin').onclick = () =>
@@ -917,6 +959,41 @@ document.getElementById('btn-signout').onclick = () => {
   accessToken = null;
   document.getElementById('screen-app').classList.remove('visible');
   document.getElementById('screen-login').style.display = 'flex';
+};
+
+/* ═══════════════════════════════════════════
+   SITE CONTENT
+═══════════════════════════════════════════ */
+async function loadContent() {
+  try {
+    const res  = await fetch('/.netlify/functions/site-content');
+    const data = await res.json();
+    if (data.season)         document.getElementById('c-season').value          = data.season;
+    if (data.welcomeHeading) document.getElementById('c-welcome-heading').value  = data.welcomeHeading;
+    if (data.welcomeText)    document.getElementById('c-welcome-text').value     = data.welcomeText;
+    if (data.upcomingIntro)  document.getElementById('c-upcoming-intro').value   = data.upcomingIntro;
+    if (data.dioceseIntro)   document.getElementById('c-diocese-intro').value    = data.dioceseIntro;
+  } catch (_) {}
+}
+
+document.getElementById('btn-save-content').onclick = async function () {
+  const payload = {
+    season:         document.getElementById('c-season').value,
+    welcomeHeading: document.getElementById('c-welcome-heading').value,
+    welcomeText:    document.getElementById('c-welcome-text').value,
+    upcomingIntro:  document.getElementById('c-upcoming-intro').value,
+    dioceseIntro:   document.getElementById('c-diocese-intro').value,
+  };
+  try {
+    const res = await fetch('/.netlify/functions/site-content', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify(payload),
+    });
+    showToast(res.ok ? 'Content saved!' : `Save failed (${res.status})`);
+  } catch (err) {
+    showToast('Save failed: ' + err.message);
+  }
 };
 
 /* ═══════════════════════════════════════════
